@@ -1,0 +1,16 @@
+#python
+__pycache__
+.ipynb_checkpoints
+
+.vscode/*.json
+.ipynb
+hidden/python/runner_examples_coverage_report.html
+hidden/python/coverage_report_html.html
+hidden/.vscode/
+
+#pylint
+public
+codeclimate.json
+
+#Mac
+.DS_Store
