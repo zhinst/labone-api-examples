@@ -29,6 +29,8 @@ Arguments:
 
 Options:
     -h --help               Show this screen.
+    -s --server_host IP     Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT   Port number of the data server [default: 8004]
     --no-plot               Hide plot of the recorded data.
     -r --stream_rate RATE   The rate of the scope streaming data, the data will be
                             set at a rate of clockbase/2**rate.
@@ -65,6 +67,8 @@ import matplotlib.pyplot as plt
 
 def run_example(
     device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
     plot: bool = True,
     stream_rate: int = 12,
     inputselect_1: int = 16,
@@ -78,16 +82,8 @@ def run_example(
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
     # This example can't run with HF2 Instruments or instruments without the DIG option.
-    required_devtype = r"UHFLI|MF"  # Regular expression of supported instruments.
-    required_options = ["DIG"]
-    required_err_msg = "This example requires the DIG Option on either UHFLI or MF instruments \
-        (HF2 is unsupported)."
     (daq, device, _) = zhinst.utils.create_api_session(
-        device_id,
-        apilevel_example,
-        required_devtype=required_devtype,
-        required_options=required_options,
-        required_err_msg=required_err_msg,
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

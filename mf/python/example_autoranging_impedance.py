@@ -21,7 +21,9 @@ Arguments:
     <device_id>  The ID of the device [device_type: MF*(IA)]
 
 Options:
-    -h --help                 Show this screen.
+    -h --help              Show this screen.
+    -s --server_host IP    Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT  Port number of the data server [default: 8004]
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -34,7 +36,11 @@ import time
 import zhinst.utils
 
 
-def run_example(device_id: str):
+def run_example(
+    device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
+):
     """run the example."""
 
     apilevel_example = 6  # The API level supported by this example.
@@ -42,9 +48,8 @@ def run_example(device_id: str):
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
-    err_msg = "This example only supports instruments with IA option."
     (daq, device, _) = zhinst.utils.create_api_session(
-        device_id, apilevel_example, required_options=["IA"], required_err_msg=err_msg
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

@@ -26,10 +26,12 @@ Arguments:
     <device_id>  The ID of the device [device_type: .*LI|.*IA|.*IS]
 
 Options:
-    -h --help           Show this screen.
-    -a --filename FILE  If specified, additionally save the data to a directory
-                        structure/filename specified by filename. [default: None]
-    --no-plot           Hide plot of the recorded data.
+    -h --help              Show this screen.
+    -s --server_host IP    Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT  Port number of the data server [default: 8004]
+    -a --filename FILE     If specified, additionally save the data to a directory
+                           structure/filename specified by filename. [default: None]
+    --no-plot              Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -46,7 +48,13 @@ from zhinst.ziPython import ziListEnum
 import matplotlib.pyplot as plt
 
 
-def run_example(device_id: str, plot: bool = True, filename: str = ""):
+def run_example(
+    device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
+    plot: bool = True,
+    filename: str = "",
+):
     """run the example."""
 
     apilevel_example = 6  # The API level supported by this example.
@@ -54,12 +62,8 @@ def run_example(device_id: str, plot: bool = True, filename: str = ""):
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
-    err_msg = "This example only supports instruments with demodulators."
     (daq, device, _) = zhinst.utils.create_api_session(
-        device_id,
-        apilevel_example,
-        required_devtype=".*LI|.*IA|.*IS",
-        required_err_msg=err_msg,
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

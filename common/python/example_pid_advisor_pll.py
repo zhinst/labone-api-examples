@@ -23,8 +23,10 @@ Arguments:
     <device_id>  The ID of the device [device_type: UHF.*(PID)|MF.*(PID)]
 
 Options:
-    -h --help  Show this screen.
-    --no-plot  Hide plot of the recorded data.
+    -h --help              Show this screen.
+    -s --server_host IP    Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT  Port number of the data server [default: 8004]
+    --no-plot              Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -40,21 +42,17 @@ import zhinst.utils
 import matplotlib.pyplot as plt
 
 
-def run_example(device_id: str, plot: bool = True):
+def run_example(
+    device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
+    plot: bool = True,
+):
     """run the example."""
 
     apilevel_example = 6  # The API level supported by this example.
-    err_msg = (
-        "This example requires a UHF or an MF with the PID Option installed. "
-        "For HF2, see the example zhinst.examples.hf2.example_pid_advisor_pll."
-    )
-    required_devtype = r"UHF|MF"  # Regular expression of supported instruments.
     (daq, device, props) = zhinst.utils.create_api_session(
-        device_id,
-        apilevel_example,
-        required_devtype=required_devtype,
-        required_options=["PID"],
-        required_err_msg=err_msg,
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

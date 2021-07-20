@@ -23,8 +23,10 @@ Arguments:
     <device_id>  The ID of the device to run the example with. [device_type: HF2(PLL)]
 
 Options:
-    -h --help                 Show this screen.
-    --no-plot                 Hide plot of the recorded data.
+    -h --help              Show this screen.
+    -s --server_host IP    Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT  Port number of the data server [default: 8004]
+    --no-plot              Hide plot of the recorded data.
 
 Returns:
       result (dict): A dictionary containing the PID Advisor result.
@@ -43,7 +45,12 @@ import zhinst.utils
 import matplotlib.pyplot as plt
 
 
-def run_example(device_id: str, plot: bool = True):
+def run_example(
+    device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8005,
+    plot: bool = True,
+):
     """run the example."""
 
     # The API level supported by this example. Note, the HF2 data server
@@ -53,15 +60,8 @@ def run_example(device_id: str, plot: bool = True):
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
-    err_msg = (
-        "This example only supports HF2 Instruments with the PLL Option installed."
-    )
     (daq, device, props) = zhinst.utils.create_api_session(
-        device_id,
-        apilevel_example,
-        required_devtype="HF2",
-        required_options=["PLL"],
-        required_err_msg=err_msg,
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

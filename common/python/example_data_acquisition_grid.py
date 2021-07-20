@@ -41,6 +41,8 @@ Arguments:
 
 Options:
     -h --help                 Show this screen.
+    -s --server_host IP       Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT     Port number of the data server [default: 8004]
     -a --amplitude AMPLITUDE  The amplitude to set on the signal output. [default: 0.25]
     -r --num_grids NUM        The number of grids to record. [default: 3]
     --no-plot                 Hide plot of the recorded data.
@@ -60,7 +62,12 @@ import matplotlib.pyplot as plt
 
 
 def run_example(
-    device_id: str, amplitude: float = 0.25, num_grids: int = 3, plot: bool = True
+    device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
+    amplitude: float = 0.25,
+    num_grids: int = 3,
+    plot: bool = True,
 ):
     """run the example."""
 
@@ -71,10 +78,7 @@ def run_example(
     # - the device's discovery properties.
     err_msg = "This example only supports instruments with demodulators."
     (daq, device, props) = zhinst.utils.create_api_session(
-        device_id,
-        apilevel_example,
-        required_devtype=".*LI|.*IA|.*IS",
-        required_err_msg=err_msg,
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

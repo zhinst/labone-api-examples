@@ -25,8 +25,10 @@ Arguments:
     <device_id>  The ID of the device [device_type: .*LI|.*IA|.*IS]
 
 Options:
-    -h --help          Show this screen.
-    -s --setting PATH  Specify the path where to save the settings file. [default: ]
+    -h --help              Show this screen.
+    -s --server_host IP    Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT  Port number of the data server [default: 8004]
+    --setting PATH         Specify the path where to save the settings file. [default: ]
 
 Returns:
     filename (str)  the name (with path) of the XML file where the settings were saved.
@@ -44,14 +46,21 @@ import os
 import zhinst.utils
 
 
-def run_example(device_id: str, setting: str = ""):
+def run_example(
+    device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
+    setting: str = "",
+):
     """run the example."""
 
     apilevel_example = 6  # The API level supported by this example.
     # Call a zhinst utility function that returns:
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.
-    (daq, device, _) = zhinst.utils.create_api_session(device_id, apilevel_example)
+    (daq, device, _) = zhinst.utils.create_api_session(
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
+    )
     zhinst.utils.api_server_version_check(daq)
 
     timestr = time.strftime("%Y%m%d_%H%M%S")

@@ -33,11 +33,13 @@ Arguments:
 
 Options:
     -h --help                 Show this screen.
+    -s --server_host IP       Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT     Port number of the data server [default: 8004]
     -a --amplitude AMPLITUDE  The amplitude to set on the signal output. [default: 0.25]
     -r --repetitions NUM      The value of the DAQ module parameter grid/repetitions to use;
                               if repetitions=n is greater than 1, the data is averaged
                               n times. [default: 1]
-    -s --save                 saves the data to file
+    --save                    saves the data to file
     --no-plot                 Hide plot of the recorded data.
 
 Raises:
@@ -56,6 +58,8 @@ import matplotlib.pyplot as plt
 
 def run_example(
     device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
     amplitude: float = 0.25,
     repetitions: int = 1,
     save: bool = False,
@@ -68,12 +72,8 @@ def run_example(
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
-    err_msg = "This example only supports instruments with demodulators."
     (daq, device, props) = zhinst.utils.create_api_session(
-        device_id,
-        apilevel_example,
-        required_devtype=".*LI|.*IA|.*IS",
-        required_err_msg=err_msg,
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

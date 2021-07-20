@@ -24,6 +24,8 @@ Arguments:
 
 Options:
     -h --help                   Show this screen.
+    -s --server_host IP         Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT       Port number of the data server [default: 8004]
     --no-plot                   Hide plot of the recorded data.
     -v --vector_length LENGTH   Length of the output waveform. [default: 4000]
     -l --monitor_length LENGTH  Number of monitor samples to obtain. [default: 4000]
@@ -50,6 +52,8 @@ import common_uhfqa
 
 def run_example(
     device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
     vector_length: int = 4000,
     monitor_length: int = 4000,
     num_averages: int = 256,
@@ -62,13 +66,8 @@ def run_example(
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
-    required_devtype = "UHFQA"
-    required_options = None
     daq, device, _ = zhinst.utils.create_api_session(
-        device_id,
-        apilevel_example,
-        required_devtype=required_devtype,
-        required_options=required_options,
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
 
     # Perform initialization for UHFQA examples

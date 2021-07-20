@@ -31,6 +31,8 @@ Arguments:
 
 Options:
     -h --help                    Show this screen.
+    -s --server_host IP          Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT        Port number of the data server [default: 8004]
     --no-plot                    Hide plot of the recorded data.
     -i --inputselect INPUT       The input signal to measure with the
                                  scope (/dev..../scopes/0/channels/0/inputselect):
@@ -71,6 +73,8 @@ from matplotlib import cm
 
 def run_example(
     device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8005,
     plot: bool = True,
     inputselect: int = 0,
     amplitude: float = 0.1,
@@ -88,9 +92,8 @@ def run_example(
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
-    err_msg = "This example only supports HF2 Instruments."
     (daq, device, props) = zhinst.utils.create_api_session(
-        device_id, apilevel_example, required_devtype="HF2", required_err_msg=err_msg
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

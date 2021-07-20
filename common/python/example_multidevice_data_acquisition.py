@@ -26,10 +26,12 @@ Arguments:
     <device_ids_slave>  The IDs of the slave devices [device_type: .*LI]
 
 Options:
-    -h --help         Show this screen.
-    -s --synchronize  Multi-device synchronization will be started and
-                      stopped before and after the data acquisition
-    --no-plot         Hide plot of the recorded data.
+    -h --help              Show this screen.
+    -s --server_host IP    Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT  Port number of the data server [default: 8004]
+    --synchronize          Multi-device synchronization will be started and
+                           stopped before and after the data acquisition
+    --no-plot              Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -48,6 +50,8 @@ import matplotlib.pyplot as plt
 def run_example(
     device_id_master: str,
     device_ids_slave: list,
+    server_host: str = "localhost",
+    server_port: int = 8004,
     plot: bool = True,
     synchronize: bool = True,
 ):
@@ -56,7 +60,7 @@ def run_example(
     # Connection to the data server and devices
     # Connection to the local server 'localhost' ^= '127.0.0.1'
     apilevel = 6
-    daq = zhinst.ziPython.ziDAQServer("localhost", 8004, apilevel)
+    daq = zhinst.ziPython.ziDAQServer(server_host, server_port, apilevel)
     discovery = zhinst.ziPython.ziDiscovery()
 
     props = []

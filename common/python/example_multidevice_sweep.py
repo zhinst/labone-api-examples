@@ -28,12 +28,13 @@ Arguments:
     <device_ids_slave>  The IDs of the slave devices [device_type: UHFLI|MF|HF2]
 
 Options:
-    -h --help                Show this screen.
+    -h --help                 Show this screen.
+    -s --server_host IP       Hostname or IP address of the dataserver [default: localhost]
     -a --amplitude AMPLITUDE  The amplitude to set on the signal output. [default: 0.1]
-    -s --synchronize         Multi-device synchronization will be started and
-                             stopped before and after the sweep
-    --no-plot                Hide plot of the recorded data.
-    --save                   Saves the data to file.
+    --synchronize             Multi-device synchronization will be started and
+                              stopped before and after the sweep
+    --no-plot                 Hide plot of the recorded data.
+    --save                    Saves the data to file.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -51,6 +52,7 @@ import matplotlib.pyplot as plt
 def run_example(
     device_id_master: str,
     device_ids_slave: list,
+    server_host: str = "localhost",
     amplitude: float = 0.1,
     plot: bool = True,
     synchronize: bool = True,
@@ -85,9 +87,9 @@ def run_example(
             )
 
     if device_type == "HF2LI":
-        daq = zhinst.ziPython.ziDAQServer("localhost", 8005, 1)
+        daq = zhinst.ziPython.ziDAQServer(server_host, 8005, 1)
     else:
-        daq = zhinst.ziPython.ziDAQServer("localhost", 8004, 6)
+        daq = zhinst.ziPython.ziDAQServer(server_host, 8004, 6)
 
     for prop in props:
         if prop["devicetype"] == "UHFLI":

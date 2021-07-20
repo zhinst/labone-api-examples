@@ -21,13 +21,14 @@ Arguments:
     <device_id>  The ID of the device to run the example with. [device_type: UHF(AWG)]
 
 Options:
-    -h --help                 Show this screen.
-    -s --awg_sourcefile       Specify an AWG sequencer file to compile and upload.
-                              This file must exist in the AWG source sub-folder of your
-                              LabOne data directory (this location is provided by the
-                              directory parameter). The source folder must not be included;
-                              specify the filename only with extension.
-                              [default: ]
+    -h --help              Show this screen.
+    -s --server_host IP    Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT  Port number of the data server [default: 8004]
+    --awg_sourcefile       Specify an AWG sequencer file to compile and upload.
+                           This file must exist in the AWG source sub-folder of your
+                           LabOne data directory (this location is provided by the
+                           directory parameter). The source folder must not be included;
+                           specify the filename only with extension. [default: ]
 
 Raises:
     Exception     If the specified device does not match the requirements.
@@ -64,23 +65,22 @@ SOURCE = textwrap.dedent(
 )
 
 
-def run_example(device_id: str, awg_sourcefile: str = ""):
+def run_example(
+    device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
+    awg_sourcefile: str = "",
+):
     """run the example."""
 
     # Settings
     apilevel_example = 6  # The API level supported by this example.
-    err_msg = "This example can only be ran on either a UHFAWG, UHFQA or a UHF with the AWG option \
-        enabled."
     # Call a zhinst utility function that returns:
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
     (daq, device, _) = zhinst.utils.create_api_session(
-        device_id,
-        apilevel_example,
-        required_devtype="UHF",
-        required_options=["AWG"],
-        required_err_msg=err_msg,
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

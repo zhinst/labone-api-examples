@@ -28,6 +28,8 @@ Arguments:
 Options:
     -h --help                   Show this screen.
     --no-plot                   Hide plot of the recorded data.
+    -s --server_host IP         Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT       Port number of the data server [default: 8004]
     -i --inputselect INPUT      The input signal to measure with the
                                 scope (/dev..../scopes/0/channels/0/inputselect):
                                     0 - signal input 0,
@@ -69,6 +71,8 @@ from matplotlib import cm
 
 def run_example(
     device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
     plot: bool = True,
     inputselect: int = 0,
     scope_length: int = 2 ** 12,
@@ -87,20 +91,8 @@ def run_example(
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
     # This example can't run with HF2 Instruments.
-    required_devtype = r"UHF|MF"  # Regular expression of supported instruments.
-    required_options = {}  # No special options required.
-    required_err_msg = (
-        "This example is only compatible with UHF and MF Instruments: "
-        "The HF2 Data Server does not support API Levels > 1, which "
-        "is required to use the extended scope data structure. "
-        "For HF2, see the example zhinst.examples.hf2.example_scope."
-    )
     (daq, device, props) = zhinst.utils.create_api_session(
-        device_id,
-        apilevel_example,
-        required_devtype=required_devtype,
-        required_options=required_options,
-        required_err_msg=required_err_msg,
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 

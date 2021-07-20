@@ -22,7 +22,9 @@ Arguments:
     <device_id>  The ID of the device to run the example with. [device_type: HDAWG]
 
 Options:
-    -h --help                 Show this screen.
+    -h --help              Show this screen.
+    -s --server_host IP    Hostname or IP address of the dataserver [default: localhost]
+    -p --server_port PORT  Port number of the data server [default: 8004]
 
 Raises:
     Exception     If the specified device does not match the requirements.
@@ -50,18 +52,21 @@ def validate_json(json_str):
     return True
 
 
-def run_example(device_id: str):
+def run_example(
+    device_id: str,
+    server_host: str = "localhost",
+    server_port: int = 8004,
+):
     """run the example."""
 
     # Settings
     apilevel_example = 6  # The API level supported by this example.
-    err_msg = "This example can only be ran on an HDAWG."
     # Call a zhinst utility function that returns:
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.
     # - the device's discovery properties.
     (daq, device, _) = zhinst.utils.create_api_session(
-        device_id, apilevel_example, required_devtype="HDAWG", required_err_msg=err_msg
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
     zhinst.utils.api_server_version_check(daq)
 
