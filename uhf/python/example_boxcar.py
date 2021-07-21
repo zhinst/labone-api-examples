@@ -32,11 +32,8 @@ Raises:
     Exception     If the specified device does not match the requirements.
     RuntimeError  If the device is not "discoverable" from the API.
 
-See the "LabOne Programming Manual" for further help, available:
-    - On Windows via the Start-Menu:
-      Programs -> Zurich Instruments -> Documentation
-    - On Linux in the LabOne .tar.gz archive in the "Documentation"
-      sub-folder.
+See the LabOne Programming Manual for further help:
+https://docs.zhinst.com/labone_programming_manual/
 """
 
 import time
