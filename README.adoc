@@ -5,12 +5,11 @@ image:https://img.shields.io/badge/License-MIT-yellow.svg[link="https://opensour
 image:https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=social&label=Follow%20%40zhinst[link="https://twitter.com/zhinst"]
 
 
-= Zurich Instruments LabOne API Examples
+= Zurich Instruments LabOne API examples
 
-The `LabOne API examples` are a collection of various examples for the different APIs that LabOne supports.
-Right now only examples for the python api are inside this project.
-Other will follow soon.
-In the mean time all examples not in this project are documented in the https://docs.zhinst.com/labone_api/index.html[LabOne API documentation].
+This repository contains various examples for controlling Zurich Instruments devices through the LabOne APIs.
+
+Only Python examples can be found in this repository right now. Examples for other APIs will move here soon. Until then, you can find examples for C, MATLAB, .NET, and LabVIEW in the https://docs.zhinst.com/labone_api/index.html[LabOne API documentation] or inside your LabOne installation.
 
 == Project structure
 
@@ -32,13 +31,12 @@ In the mean time all examples not in this project are documented in the https://
 
 == Python API
 
-In order to run the python examples you need to have the latest https://pypi.org/project/zhinst/[`zhinst`] package installed and https://www.zhinst.com/others/instruments/labone/labone-all-in-one[LabOne] up and running. (please refer to the https://docs.zhinst.com/labone_programming_manual/overview.html[LabOne user manual] for further information)
+In order to run the Python examples, you need to have the latest https://pypi.org/project/zhinst/[`zhinst`] package installed and https://www.zhinst.com/others/instruments/labone/labone-all-in-one[LabOne] up and running. (Please refer to the https://docs.zhinst.com/labone_programming_manual/overview.html[LabOne User Manual] for further information.)
 
-The python examples are designed in a way that they can be run from the command line. 
-
+The Python examples are designed in a way that they can be run from the command line:
 ....
 $ python path/to/example.py --help
 ....
 
-Each example has a run_example function that contains the example source.
+Each example has a `run_example` function that contains the example source.
 Feel free to experiment, change or copy parts of the examples.
