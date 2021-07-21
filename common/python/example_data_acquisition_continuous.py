@@ -29,7 +29,7 @@ Options:
     -h --help           Show this screen.
     -a --filename FILE  If specified, additionally save the data to a directory
                         structure/filename specified by filename. [default: None]
-    -p --plot           Plot the recorded data.
+    --no-plot           Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -49,7 +49,7 @@ from zhinst.ziPython import ziListEnum
 import matplotlib.pyplot as plt
 
 
-def run_example(device_id: str, plot: bool = False, filename: str = ""):
+def run_example(device_id: str, plot: bool = True, filename: str = ""):
     """run the example."""
 
     apilevel_example = 6  # The API level supported by this example.

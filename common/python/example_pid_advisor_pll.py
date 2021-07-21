@@ -24,7 +24,7 @@ Arguments:
 
 Options:
     -h --help  Show this screen.
-    -p --plot  Create a plot.
+    --no-plot  Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -43,7 +43,7 @@ import zhinst.utils
 import matplotlib.pyplot as plt
 
 
-def run_example(device_id: str, plot: bool = False):
+def run_example(device_id: str, plot: bool = True):
     """run the example."""
 
     apilevel_example = 6  # The API level supported by this example.

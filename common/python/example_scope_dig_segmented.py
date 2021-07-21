@@ -41,7 +41,7 @@ Arguments:
 
 Options:
     -h --help                    Show this screen.
-    -p --plot                    create a plot.
+    --no-plot                    Hide plot of the recorded data.
     -s --scope_length LENGTH     The length of the scope segment(s) to record
                                  (/dev..../scopes/0/length). [default: 8192]
     -l --historylength LENGTH    Value to use for the historylength parameter.
@@ -66,7 +66,7 @@ from matplotlib import cm
 
 
 def run_example(
-    device_id: str, plot: bool = False, scope_length: int = 8192, historylength: int = 1
+    device_id: str, plot: bool = True, scope_length: int = 8192, historylength: int = 1
 ):
     """run the example."""
 

@@ -29,7 +29,7 @@ Arguments:
 
 Options:
     -h --help               Show this screen.
-    -p --plot               create a plot.
+    --no-plot               Hide plot of the recorded data.
     -r --stream_rate RATE   The rate of the scope streaming data, the data will be
                             set at a rate of clockbase/2**rate.
                             For example:
@@ -68,7 +68,7 @@ import matplotlib.pyplot as plt
 
 def run_example(
     device_id: str,
-    plot: bool = False,
+    plot: bool = True,
     stream_rate: int = 12,
     inputselect_1: int = 16,
     inputselect_2: int = 32,

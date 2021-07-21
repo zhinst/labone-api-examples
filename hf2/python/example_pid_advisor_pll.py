@@ -24,7 +24,7 @@ Arguments:
 
 Options:
     -h --help                 Show this screen.
-    -p --plot                 create a plot.
+    --no-plot                 Hide plot of the recorded data.
 
 Returns:
       result (dict): A dictionary containing the PID Advisor result.
@@ -46,7 +46,7 @@ import zhinst.utils
 import matplotlib.pyplot as plt
 
 
-def run_example(device_id: str, plot: bool = False):
+def run_example(device_id: str, plot: bool = True):
     """run the example."""
 
     # The API level supported by this example. Note, the HF2 data server
@@ -219,7 +219,7 @@ def run_example(device_id: str, plot: bool = False):
             % (p_advisor, i_advisor, d_advisor, bw_advisor * 1e-3)
         )
         axes[0].set_ylabel("Bode Gain (dB)")
-        axes[0].autoscale(enable=True, axes="x", tight=True)
+        axes[0].autoscale(enable=True, axis="x", tight=True)
 
         axes[1].plot(bode_grid, np.angle(bode_complex_data) / np.pi * 180)
         axes[1].set_xscale("log")

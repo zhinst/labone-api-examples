@@ -28,7 +28,7 @@ Arguments:
 
 Options:
     -h --help                 Show this screen.
-    -p --plot                 create a plot.
+    --no-plot                 Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified device does not match the requirements.

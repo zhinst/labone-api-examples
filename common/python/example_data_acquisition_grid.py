@@ -43,7 +43,7 @@ Options:
     -h --help                 Show this screen.
     -a --amplitude AMPLITUDE  The amplitude to set on the signal output. [default: 0.25]
     -r --num_grids NUM        The number of grids to record. [default: 3]
-    -p --plot                 create a plot.
+    --no-plot                 Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -63,7 +63,7 @@ import matplotlib.pyplot as plt
 
 
 def run_example(
-    device_id: str, amplitude: float = 0.25, num_grids: int = 3, plot: bool = False
+    device_id: str, amplitude: float = 0.25, num_grids: int = 3, plot: bool = True
 ):
     """run the example."""
 

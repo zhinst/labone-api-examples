@@ -22,8 +22,8 @@ Arguments:
     <device_id>  The ID of the device [device_type: MF*(IA)]
 
 Options:
-    -h --help                 Show this screen.
-    -p --plot                 create a plot.
+    -h --help  Show this screen.
+    --no-plot  Hide plot of the recorded data.
 
 Returns:
     sample  The impedance sample dictionary as returned by poll.
@@ -46,7 +46,7 @@ import numpy as np
 import example_autoranging_impedance
 
 
-def run_example(device_id: str, plot: bool = False):
+def run_example(device_id: str, plot: bool = True):
     """run the example."""
 
     apilevel_example = 6  # The API level supported by this example.

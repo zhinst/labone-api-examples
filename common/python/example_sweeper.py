@@ -23,7 +23,7 @@ Options:
     -h --help                 Show this screen.
     -a --amplitude AMPLITUDE  The amplitude to set on the signal output. [default: 0.1]
     -s --save                 saves the data to file.
-    -p --plot                 create a plot.
+    --no-plot                 Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -43,7 +43,7 @@ import matplotlib.pyplot as plt
 
 
 def run_example(
-    device_id: str, amplitude: float = 0.1, plot: bool = False, save: bool = False
+    device_id: str, amplitude: float = 0.1, plot: bool = True, save: bool = False
 ):
     """run the example."""
 

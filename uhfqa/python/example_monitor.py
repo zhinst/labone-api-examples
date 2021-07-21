@@ -24,7 +24,7 @@ Arguments:
 
 Options:
     -h --help                   Show this screen.
-    -p --plot                   create a plot.
+    --no-plot                   Hide plot of the recorded data.
     -v --vector_length LENGTH   Length of the output waveform. [default: 4000]
     -l --monitor_length LENGTH  Number of monitor samples to obtain. [default: 4000]
     -a --num_averages VAL       Number of averages per measurement.  [default: 256]

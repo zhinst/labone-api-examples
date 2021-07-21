@@ -33,7 +33,7 @@ Arguments:
 
 Options:
     -h --help                   Show this screen.
-    -p --plot                   create a plot.
+    --no-plot                   Hide plot of the recorded data.
     -l --result_length LENGTH   Number of measurements. [default: 2600]
     -a --num_averages VAL       Number of averages per measurement. [default: 1]
 
@@ -60,7 +60,7 @@ import common_uhfqa
 
 
 def run_example(
-    device_id: str, result_length: int = 2600, num_averages: int = 1, plot: bool = False
+    device_id: str, result_length: int = 2600, num_averages: int = 1, plot: bool = True
 ):
     """run the example."""
 

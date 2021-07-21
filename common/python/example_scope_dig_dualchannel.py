@@ -28,7 +28,7 @@ Arguments:
 
 Options:
     -h --help                    Show this screen.
-    -p --plot                    create a plot.
+    --no-plot                    Hide plot of the recorded data.
     -s --scope_length LENGTH     The length of the scope segment(s) to record
                                  (/dev..../scopes/0/length). [default: 4096]
     -t --scope_trigholdoff TIME  The scope hold-off time (s). [default: 0.050]
@@ -62,7 +62,7 @@ from matplotlib import cm
 
 def run_example(
     device_id: str,
-    plot: bool = False,
+    plot: bool = True,
     scope_length: int = 2 ** 12,
     scope_trigholdoff: float = 0.050,
     averager_weight: int = 1,

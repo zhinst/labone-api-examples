@@ -32,7 +32,7 @@ Arguments:
 
 Options:
     -h --help                   Show this screen.
-    -p --plot                   create a plot.
+    --no-plot                   Hide plot of the recorded data.
     -l --monitor_length LENGTH  Number of monitor samples to obtain. [default: 4000]
     -a --num_averages VAL       Number of averages per measurement.  [default: 256]
 
@@ -63,7 +63,7 @@ def run_example(
     device_id: str,
     monitor_length: int = 4000,
     num_averages: int = 2 ** 8,
-    plot: bool = False,
+    plot: bool = True,
 ):
     """run the example."""
 

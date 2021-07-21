@@ -29,7 +29,7 @@ Options:
     -h --help         Show this screen.
     -s --synchronize  Multi-device synchronization will be started and
                       stopped before and after the data acquisition
-    -p --plot         create a plot.
+    --no-plot         Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -51,7 +51,7 @@ import matplotlib.pyplot as plt
 def run_example(
     device_id_master: str,
     device_ids_slave: list,
-    plot: bool = False,
+    plot: bool = True,
     synchronize: bool = True,
 ):
     """run the example."""

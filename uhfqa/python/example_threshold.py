@@ -33,7 +33,7 @@ Arguments:
 
 Options:
     -h --help                   Show this screen.
-    -p --plot                   create a plot.
+    --no-plot                   Hide plot of the recorded data.
     -t --threshold VAL          Quantization threshold. [default: 500]
     -l --result_length LENGTH   Number of measurements. [default: 2600]
     -a --num_averages VAL       Number of averages per measurement. [default: 1]
@@ -65,7 +65,7 @@ def run_example(
     threshold: int = 500,
     result_length: int = 1500,
     num_averages: int = 1,
-    plot: bool = False,
+    plot: bool = True,
 ):
     """run the example."""
 

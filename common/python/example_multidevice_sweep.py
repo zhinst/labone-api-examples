@@ -33,7 +33,7 @@ Options:
     -a --amplitude AMPLITUDE  The amplitude to set on the signal output. [default: 0.1]
     -s --synchronize         Multi-device synchronization will be started and
                              stopped before and after the sweep
-    -p --plot                create a plot.
+    --no-plot                Hide plot of the recorded data.
     --save                   Saves the data to file.
 
 Raises:
@@ -56,7 +56,7 @@ def run_example(
     device_id_master: str,
     device_ids_slave: list,
     amplitude: float = 0.1,
-    plot: bool = False,
+    plot: bool = True,
     synchronize: bool = True,
     save: bool = False,
 ):

@@ -20,8 +20,8 @@ Arguments:
     <device_id>  The ID of the device to run the example with. [device_type: UHF(AWG)]
 
 Options:
-    -h --help                 Show this screen.
-    -p --plot                 create a plot.
+    -h --help  Show this screen.
+    --no-plot  Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified device does not match the requirements.
@@ -42,7 +42,7 @@ import zhinst.utils
 import matplotlib.pyplot as plt
 
 
-def run_example(device_id: str, plot: bool = False):
+def run_example(device_id: str, plot: bool = True):
     """run the example."""
 
     # Settings

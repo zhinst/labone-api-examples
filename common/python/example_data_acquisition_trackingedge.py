@@ -34,7 +34,7 @@ Arguments:
 Options:
     -h --help                 Show this screen.
     -a --amplitude AMPLITUDE  The amplitude to set on the signal output. [default: 0.25]
-    -p --plot                 create a plot.
+    --no-plot                 Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -54,7 +54,7 @@ from matplotlib import pyplot
 from matplotlib import cm
 
 
-def run_example(device_id: str, amplitude: float = 0.25, plot: bool = False):
+def run_example(device_id: str, amplitude: float = 0.25, plot: bool = True):
     """run the example."""
 
     apilevel_example = 6  # The API level supported by this example.

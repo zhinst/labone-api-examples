@@ -27,7 +27,7 @@ Arguments:
 
 Options:
     -h --help                   Show this screen.
-    -p --plot                   create a plot.
+    --no-plot                   Hide plot of the recorded data.
     -i --inputselect INPUT      The input signal to measure with the
                                 scope (/dev..../scopes/0/channels/0/inputselect):
                                     0 - signal input 0,
@@ -72,7 +72,7 @@ from matplotlib import cm
 
 def run_example(
     device_id: str,
-    plot: bool = False,
+    plot: bool = True,
     inputselect: int = 0,
     scope_length: int = 2 ** 12,
     trigholdoff: float = 0.050,

@@ -38,7 +38,7 @@ Options:
                               if repetitions=n is greater than 1, the data is averaged
                               n times. [default: 1]
     -s --save                 saves the data to file
-    -p --plot                 create a plot.
+    --no-plot                 Hide plot of the recorded data.
 
 Raises:
     Exception     If the specified devices do not match the requirements.
@@ -62,7 +62,7 @@ def run_example(
     amplitude: float = 0.25,
     repetitions: int = 1,
     save: bool = False,
-    plot: bool = False,
+    plot: bool = True,
 ):
     """run the example."""
 
