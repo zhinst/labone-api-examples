@@ -177,17 +177,12 @@ def run_commandline(func, doc):
         if arg_new in hints:
             args[arg_new] = hints[arg_new](raw_args[arg])
         elif arg_new.startswith("no-"):
-            print(arg_new)
             invert_arg = arg_new.lstrip("no-")
-            print(hints[invert_arg])
             if invert_arg in hints and hints[invert_arg] == bool:
-                print(invert_arg)
                 args[invert_arg] = not bool(raw_args[arg])
         else:
             args[arg_new] = raw_args[arg]
     args.pop("help")
-
-    print(args)
 
     check_version(doc)
     check_devices(doc, args)
