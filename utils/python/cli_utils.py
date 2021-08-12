@@ -60,9 +60,9 @@ def check_version(doc):
     installed_version = zhinst.ziPython.__version__
     major, minor, build = map(int, installed_version.split("."))
 
-    if (min_major, min_minor, min_build) >= (major, minor, build):
+    if (min_major, min_minor, min_build) > (major, minor, build):
         raise Exception(
-            f"Example requires ziPython version"
+            f"Example requires ziPython version "
             f"{min_major}.{min_minor}.{min_build} or greater (installed: {installed_version})."
             f"Please visit the Zurich Instruments website to update."
         )
