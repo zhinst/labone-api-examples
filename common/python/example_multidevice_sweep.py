@@ -14,11 +14,10 @@ before stopping the synchronization.
 Requirements:
     * LabOne Version >= 20.02
     * Instruments:
-        2+ x Lock-in Instrument
+        2+ x Lock-in Instruments of the same type
     * The cabling of the instruments must follow the MDS cabling depicted in the
       MDS tab of LabOne.
-    * Signal Out 1 of the master device is split into Signal In 1 of the master
-      and slave.
+    * Signal Out 1 of the master device is split into Signal In 1 of all devices.
 
 Usage:
     example_multidevice_sweep.py [options] <device_id_master> <device_ids_slave>...
@@ -59,30 +58,44 @@ def run_example(
 ):
     """run the example."""
 
-    # Call a zhinst utility function that returns:
-    # - an API session `daq` in order to communicate with devices via the data server.
-    # - the device ID string that specifies the device branch in the server's node hierarchy.
-    # - the device's discovery properties.
-    # This example can't run with HF2 Instruments or instruments without the DIG option.
-    apilevel_example = 6  # The API level supported by this example.
-    required_devtype = r"UHFLI|MF|HF2"  # Regular expression of supported instruments.
-    required_options = {}  # No special options required.
-    required_err_msg = "This example requires HF2, UHFLI or MF instruments."
-    (daq, device, _) = zhinst.utils.create_api_session(
-        device_id_master,
-        apilevel_example,
-        required_devtype=required_devtype,
-        required_options=required_options,
-        required_err_msg=required_err_msg,
-    )
-
     device_ids = [device_id_master] + device_ids_slave
-
     print(device_ids)
 
-    for device in device_ids:
-        daq.connectDevice(device, "1GbE")
-    daq.sync()
+    discovery = zhinst.ziPython.ziDiscovery()
+
+    props = []
+    # Master ID
+    device_serial = discovery.find(device_id_master).lower()
+    props.append(discovery.get(device_serial))
+    # Slave IDs
+    for device_id in device_ids_slave:
+        device_serial = discovery.find(device_id).lower()
+        props.append(discovery.get(device_serial))
+    devices = props[0]["deviceid"]
+    # prepare a string to tell the sync module which devices should be synchronized (should not contain spaces)
+    for prop in props[1:]:
+        devices += "," + prop["deviceid"]
+    # Switching between MFLI, HF2LI, and UHFLI
+    device_type = props[0]["devicetype"]
+    for prop in props[1:]:
+        if prop["devicetype"] != device_type:
+            raise Exception(
+                "This example needs 2 or more MFLI instruments, or 2 or more HF2LI instruments, or 2 or more UHFLI instruments."
+                "Mixing device types is not possible"
+            )
+
+    if device_type == "HF2LI":
+        daq = zhinst.ziPython.ziDAQServer("localhost", 8005, 1)
+    else:
+        daq = zhinst.ziPython.ziDAQServer("localhost", 8004, 6)
+
+    for prop in props:
+        if prop["devicetype"] == "UHFLI":
+            daq.connectDevice(prop["deviceid"], prop["interfaces"][0])
+        elif prop["devicetype"] == "HF2LI":
+            daq.connectDevice(prop["deviceid"], "USB")
+        else:
+            daq.connectDevice(prop["deviceid"], "1GbE")
 
     zhinst.utils.api_server_version_check(daq)
 
@@ -129,15 +142,9 @@ def run_example(
     # the poll() command and 2. clear the API's data buffers.
     daq.sync()
 
-    # prepare devices string to tell the sync module which devices should be synchronized
-    # (should not contain spaces)
-    devices = device_ids[0]
-    for device in device_ids[1:]:
-        devices += "," + device
-
     # Here we synchronize all the devices as defined in the comma separated string "devices"
     if synchronize:
-        print("Synchronizing")
+        print("Synchronizing devices %s ...\n" % devices)
         md_sync_module = daq.multiDeviceSyncModule()
         md_sync_module.set("start", 0)
         md_sync_module.set("group", 0)
@@ -145,7 +152,7 @@ def run_example(
         md_sync_module.set("devices", devices)
         md_sync_module.set("start", 1)
 
-        timeout = 10
+        timeout = 20
         tstart = time.time()
         while True:
             time.sleep(0.2)
