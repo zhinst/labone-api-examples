@@ -78,7 +78,7 @@ def run_example(
     # Check the device has demodulators.
     flags = ziListEnum.recursive | ziListEnum.absolute | ziListEnum.streamingonly
     streaming_nodes = daq.listNodes(f"/{device}", flags)
-    if demod_path.upper() not in streaming_nodes:
+    if demod_path.lower() not in streaming_nodes:
         print(
             f"Device {device} does not have demodulators. Please modify the example to specify",
             "a valid signal_path based on one or more of the following streaming nodes: ",

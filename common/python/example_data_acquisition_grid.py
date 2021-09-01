@@ -272,7 +272,7 @@ def run_example(
     # If this node is present, then the instrument has the PID Option. In this
     # case additionally subscribe to a PID's error. Note, PID streaming nodes
     # not available on HF2 instruments.
-    if pid_error_stream_path.upper() in node_paths:
+    if pid_error_stream_path.lower() in node_paths:
         daq_module.subscribe(pid_error_stream_path)
         daq.setDouble("/%s/pids/0/stream/rate" % device, 30e3)
         data[pid_error_stream_path] = []
