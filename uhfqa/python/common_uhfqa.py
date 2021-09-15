@@ -92,8 +92,8 @@ def acquisition_poll(daq, paths, num_samples, timeout=10.0):
         num_samples (int): expected number of samples
         timeout (float): time in seconds before timeout Error is raised.
     """
-    poll_length = 0.001  # s
-    poll_timeout = 500  # ms
+    poll_length = 1  # s
+    poll_timeout = 5000  # ms
     poll_flags = 0
     poll_return_flat_dict = True
 
