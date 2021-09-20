@@ -14,16 +14,16 @@ Requirements:
         2+ x Lock-in Instrument
     * The cabling of the instruments must follow the MDS cabling depicted in the
       MDS tab of LabOne.
-    * Signal Out 1 of the master device is split into Signal In 1 of the master
-      and slave.
+    * Signal Out 1 of the leader device is split into Signal In 1 of the leader
+      and follower.
 
 Usage:
-    example_multidevice_data_acquisition.py [options] <device_id_master> <device_ids_slave>...
+    example_multidevice_data_acquisition.py [options] <device_id_leader> <device_ids_follower>...
     example_multidevice_data_acquisition.py -h | --help
 
 Arguments:
-    <device_id_master>  The ID of the master device [device_type: .*LI]
-    <device_ids_slave>  The IDs of the slave devices [device_type: .*LI]
+    <device_id_leader>  The ID of the leader device [device_type: .*LI]
+    <device_ids_follower>  The IDs of the follower devices [device_type: .*LI]
 
 Options:
     -h --help              Show this screen.
@@ -48,8 +48,8 @@ import matplotlib.pyplot as plt
 
 
 def run_example(
-    device_id_master: str,
-    device_ids_slave: list,
+    device_id_leader: str,
+    device_ids_follower: list,
     server_host: str = "localhost",
     server_port: int = 8004,
     plot: bool = True,
@@ -64,11 +64,11 @@ def run_example(
     discovery = zhinst.ziPython.ziDiscovery()
 
     props = []
-    # Master ID
-    device_serial = discovery.find(device_id_master).lower()
+    # Leader ID
+    device_serial = discovery.find(device_id_leader).lower()
     props.append(discovery.get(device_serial))
-    # Slave IDs
-    for device_id in device_ids_slave:
+    # Follower IDs
+    for device_id in device_ids_follower:
         device_serial = discovery.find(device_id).lower()
         props.append(discovery.get(device_serial))
     devices = props[0]["deviceid"]
@@ -131,41 +131,41 @@ def run_example(
     osc_freq = 1e3  # [Hz]
     out_amp = 0.600  # [V]
 
-    # Master device settings
-    master = props[0]["deviceid"].lower()
-    daq.setInt("/%s/sigouts/%d/on" % (master, out_c), 1)
-    daq.setDouble("/%s/sigouts/%d/range" % (master, out_c), 1)
+    # Leader device settings
+    leader = props[0]["deviceid"].lower()
+    daq.setInt("/%s/sigouts/%d/on" % (leader, out_c), 1)
+    daq.setDouble("/%s/sigouts/%d/range" % (leader, out_c), 1)
     daq.setDouble(
-        "/%s/sigouts/%d/amplitudes/%d" % (master, out_c, out_mixer_c), out_amp
+        "/%s/sigouts/%d/amplitudes/%d" % (leader, out_c, out_mixer_c), out_amp
     )
-    daq.setDouble("/%s/demods/%d/phaseshift" % (master, demod_c), 0)
-    daq.setInt("/%s/demods/%d/order" % (master, demod_c), filter_order)
-    daq.setDouble("/%s/demods/%d/rate" % (master, demod_c), demod_rate)
-    daq.setInt("/%s/demods/%d/harmonic" % (master, demod_c), 1)
-    daq.setInt("/%s/demods/%d/enable" % (master, demod_c), 1)
-    daq.setInt("/%s/demods/%d/oscselect" % (master, demod_c), osc_c)
-    daq.setInt("/%s/demods/%d/adcselect" % (master, demod_c), in_c)
-    daq.setDouble("/%s/demods/%d/timeconstant" % (master, demod_c), time_constant)
-    daq.setDouble("/%s/oscs/%d/freq" % (master, osc_c), osc_freq)
-    daq.setInt("/%s/sigins/%d/imp50" % (master, in_c), 1)
-    daq.setInt("/%s/sigins/%d/ac" % (master, in_c), 0)
-    daq.setDouble("/%s/sigins/%d/range" % (master, in_c), out_amp / 2)
-    daq.setDouble("/%s/sigouts/%d/enables/%d" % (master, out_c, out_mixer_c), 0)
-    # Slave device settings
+    daq.setDouble("/%s/demods/%d/phaseshift" % (leader, demod_c), 0)
+    daq.setInt("/%s/demods/%d/order" % (leader, demod_c), filter_order)
+    daq.setDouble("/%s/demods/%d/rate" % (leader, demod_c), demod_rate)
+    daq.setInt("/%s/demods/%d/harmonic" % (leader, demod_c), 1)
+    daq.setInt("/%s/demods/%d/enable" % (leader, demod_c), 1)
+    daq.setInt("/%s/demods/%d/oscselect" % (leader, demod_c), osc_c)
+    daq.setInt("/%s/demods/%d/adcselect" % (leader, demod_c), in_c)
+    daq.setDouble("/%s/demods/%d/timeconstant" % (leader, demod_c), time_constant)
+    daq.setDouble("/%s/oscs/%d/freq" % (leader, osc_c), osc_freq)
+    daq.setInt("/%s/sigins/%d/imp50" % (leader, in_c), 1)
+    daq.setInt("/%s/sigins/%d/ac" % (leader, in_c), 0)
+    daq.setDouble("/%s/sigins/%d/range" % (leader, in_c), out_amp / 2)
+    daq.setDouble("/%s/sigouts/%d/enables/%d" % (leader, out_c, out_mixer_c), 0)
+    # Follower device settings
     for prop in props[1:]:
-        slave = prop["deviceid"].lower()
-        daq.setDouble("/%s/demods/%d/phaseshift" % (slave, demod_c), 0)
-        daq.setInt("/%s/demods/%d/order" % (slave, demod_c), filter_order)
-        daq.setDouble("/%s/demods/%d/rate" % (slave, demod_c), demod_rate)
-        daq.setInt("/%s/demods/%d/harmonic" % (slave, demod_c), 1)
-        daq.setInt("/%s/demods/%d/enable" % (slave, demod_c), 1)
-        daq.setInt("/%s/demods/%d/oscselect" % (slave, demod_c), osc_c)
-        daq.setInt("/%s/demods/%d/adcselect" % (slave, demod_c), in_c)
-        daq.setDouble("/%s/demods/%d/timeconstant" % (slave, demod_c), time_constant)
-        daq.setDouble("/%s/oscs/%d/freq" % (slave, osc_c), osc_freq)
-        daq.setInt("/%s/sigins/%d/imp50" % (slave, in_c), 1)
-        daq.setInt("/%s/sigins/%d/ac" % (slave, in_c), 0)
-        daq.setDouble("/%s/sigins/%d/range" % (slave, in_c), out_amp / 2)
+        follower = prop["deviceid"].lower()
+        daq.setDouble("/%s/demods/%d/phaseshift" % (follower, demod_c), 0)
+        daq.setInt("/%s/demods/%d/order" % (follower, demod_c), filter_order)
+        daq.setDouble("/%s/demods/%d/rate" % (follower, demod_c), demod_rate)
+        daq.setInt("/%s/demods/%d/harmonic" % (follower, demod_c), 1)
+        daq.setInt("/%s/demods/%d/enable" % (follower, demod_c), 1)
+        daq.setInt("/%s/demods/%d/oscselect" % (follower, demod_c), osc_c)
+        daq.setInt("/%s/demods/%d/adcselect" % (follower, demod_c), in_c)
+        daq.setDouble("/%s/demods/%d/timeconstant" % (follower, demod_c), time_constant)
+        daq.setDouble("/%s/oscs/%d/freq" % (follower, osc_c), osc_freq)
+        daq.setInt("/%s/sigins/%d/imp50" % (follower, in_c), 1)
+        daq.setInt("/%s/sigins/%d/ac" % (follower, in_c), 0)
+        daq.setDouble("/%s/sigins/%d/range" % (follower, in_c), out_amp / 2)
     # Synchronization
     daq.sync()
     time.sleep(1)
@@ -177,7 +177,7 @@ def run_example(
     daq_module = daq.dataAcquisitionModule()
     # Configure the Data Acquisition Module
     # Device on which trigger will be performed
-    daq_module.set("device", master)
+    daq_module.set("device", leader)
     # The number of triggers to capture (if not running in endless mode).
     daq_module.set("count", 1)
     daq_module.set("endless", 0)
@@ -219,14 +219,14 @@ def run_example(
     #     SAMPLE.AUXIN0 = Auxilliary input 1 value
     #     SAMPLE.AUXIN1 = Auxilliary input 2 value
     #     SAMPLE.DIO = Digital I/O value
-    triggernode = "/%s/demods/%d/sample.r" % (master, demod_c)
+    triggernode = "/%s/demods/%d/sample.r" % (leader, demod_c)
     daq_module.set("triggernode", triggernode)
     #   edge:
     #     POS_EDGE = 1
     #     NEG_EDGE = 2
     #     BOTH_EDGE = 3
     daq_module.set("edge", 1)
-    demod_rate = daq.getDouble("/%s/demods/%d/rate" % (master, demod_c))
+    demod_rate = daq.getDouble("/%s/demods/%d/rate" % (leader, demod_c))
     # Exact mode: To preserve our desired trigger duration, we have to set
     # the number of grid columns to exactly match.
     trigger_duration = time_constant * 30
@@ -251,16 +251,16 @@ def run_example(
 
     # Subscribe to the demodulators
     daq_module.unsubscribe("*")
-    master_subscribe_node = "/%s/demods/%d/sample.r" % (master, demod_c)
-    daq_module.subscribe(master_subscribe_node)
+    leader_subscribe_node = "/%s/demods/%d/sample.r" % (leader, demod_c)
+    daq_module.subscribe(leader_subscribe_node)
     for prop in props[1:]:
-        slave_subscribe_node = "/%s/demods/%d/sample.r" % (prop["deviceid"], demod_c)
-        daq_module.subscribe(slave_subscribe_node)
+        follower_subscribe_node = "/%s/demods/%d/sample.r" % (prop["deviceid"], demod_c)
+        daq_module.subscribe(follower_subscribe_node)
 
     # Execute the module
     daq_module.execute()
     # Send a trigger
-    daq.setDouble("/%s/sigouts/%d/enables/%d" % (master, out_c, out_mixer_c), 1)
+    daq.setDouble("/%s/sigouts/%d/enables/%d" % (leader, out_c, out_mixer_c), 1)
 
     # wait for the acquisition to be finished
     timeout = 20
@@ -279,7 +279,7 @@ def run_example(
     result = daq_module.read(True)
 
     # Turn off the trigger
-    daq.setDouble("/%s/sigouts/%d/enables/%d" % (master, out_c, out_mixer_c), 0)
+    daq.setDouble("/%s/sigouts/%d/enables/%d" % (leader, out_c, out_mixer_c), 0)
     # Finish the DAQ module
     daq_module.finish()
 
@@ -287,67 +287,67 @@ def run_example(
 
     if plot:
 
-        # Master data
-        master_clockbase = daq.getDouble("/%s/clockbase" % master)
-        timestamp = result[master_subscribe_node][0]["timestamp"]
-        master_time = (timestamp[0] - float(timestamp[0][0])) / master_clockbase
-        demod_r_master = result[master_subscribe_node][0]["value"][0]
+        # Leader data
+        leader_clockbase = daq.getDouble("/%s/clockbase" % leader)
+        timestamp = result[leader_subscribe_node][0]["timestamp"]
+        leader_time = (timestamp[0] - float(timestamp[0][0])) / leader_clockbase
+        demod_r_leader = result[leader_subscribe_node][0]["value"][0]
         # Plotting
         _, (axis1, axis2) = plt.subplots(2)
-        axis1.plot(master_time * 1e3, demod_r_master * 1e3, color="blue")
+        axis1.plot(leader_time * 1e3, demod_r_leader * 1e3, color="blue")
         axis1.set_ylabel("Amplitude [mV]", fontsize=12, color="k")
-        axis1.legend(["Master"])
+        axis1.legend(["Leader"])
         axis1.set_title("Transient Measurement by DAQ Module")
         axis1.grid(True)
 
-        # Slave data
+        # Follower data
         for prop in props[1:]:
-            slave = prop["deviceid"].lower()
-            slave_subscribe_node = "/%s/demods/%d/sample.r" % (slave, demod_c)
-            slave_clockbase = daq.getDouble("/%s/clockbase" % slave)
-            slave_timestamp = result[slave_subscribe_node][0]["timestamp"]
-            slave_time = (
-                slave_timestamp[0] - float(slave_timestamp[0][0])
-            ) / slave_clockbase
-            slave_demod_r = result[slave_subscribe_node][0]["value"][0]
+            follower = prop["deviceid"].lower()
+            follower_subscribe_node = "/%s/demods/%d/sample.r" % (follower, demod_c)
+            follower_clockbase = daq.getDouble("/%s/clockbase" % follower)
+            follower_timestamp = result[follower_subscribe_node][0]["timestamp"]
+            follower_time = (
+                follower_timestamp[0] - float(follower_timestamp[0][0])
+            ) / follower_clockbase
+            follower_demod_r = result[follower_subscribe_node][0]["value"][0]
 
             axis2 = plt.subplot(2, 1, 2)
-            axis2.plot(slave_time * 1e3, slave_demod_r * 1e3, color="red")
-            axis2.legend(["Slaves"])
+            axis2.plot(follower_time * 1e3, follower_demod_r * 1e3, color="red")
+            axis2.legend(["Followers"])
             axis2.set_xlabel("Time [ms]", fontsize=12, color="k")
             axis2.set_ylabel("Amplitude [mV]", fontsize=12, color="k")
             axis2.grid(True)
 
         fig, (axis1, axis2) = plt.subplots(2)
-        axis1.plot(master_time * 1e3, demod_r_master * 1e3, color="blue")
+        axis1.plot(leader_time * 1e3, demod_r_leader * 1e3, color="blue")
 
         for prop in props[1:]:
-            slave = prop["deviceid"].lower()
-            slave_subscribe_node = "/%s/demods/%d/sample.r" % (slave, demod_c)
-            slave_clockbase = daq.getDouble("/%s/clockbase" % slave)
-            slave_timestamp = result[slave_subscribe_node][0]["timestamp"]
-            slave_time = (
-                slave_timestamp[0] - float(slave_timestamp[0][0])
-            ) / slave_clockbase
-            slave_demod_r = result[slave_subscribe_node][0]["value"][0]
-            axis1.plot(slave_time * 1e3, slave_demod_r * 1e3, color="red")
+            follower = prop["deviceid"].lower()
+            follower_subscribe_node = "/%s/demods/%d/sample.r" % (follower, demod_c)
+            follower_clockbase = daq.getDouble("/%s/clockbase" % follower)
+            follower_timestamp = result[follower_subscribe_node][0]["timestamp"]
+            follower_time = (
+                follower_timestamp[0] - float(follower_timestamp[0][0])
+            ) / follower_clockbase
+            follower_demod_r = result[follower_subscribe_node][0]["value"][0]
+            axis1.plot(follower_time * 1e3, follower_demod_r * 1e3, color="red")
         axis1.set_ylabel("Amplitude [mV]", fontsize=12, color="k")
-        axis1.legend(["Master", "Slaves"])
+        axis1.legend(["Leader", "Followers"])
         axis1.set_title("Transient Measurement by DAQ Module")
         axis1.grid(True)
 
         for prop in props[1:]:
-            slave = prop["deviceid"].lower()
-            slave_subscribe_node = "/%s/demods/%d/sample.r" % (slave, demod_c)
-            slave_clockbase = daq.getDouble("/%s/clockbase" % slave)
-            slave_timestamp = result[slave_subscribe_node][0]["timestamp"]
-            slave_time = (
-                slave_timestamp[0] - float(slave_timestamp[0][0])
-            ) / slave_clockbase
+            follower = prop["deviceid"].lower()
+            follower_subscribe_node = "/%s/demods/%d/sample.r" % (follower, demod_c)
+            follower_clockbase = daq.getDouble("/%s/clockbase" % follower)
+            follower_timestamp = result[follower_subscribe_node][0]["timestamp"]
+            follower_time = (
+                follower_timestamp[0] - float(follower_timestamp[0][0])
+            ) / follower_clockbase
             axis2.plot(
-                slave_time * 1e3, (master_time - slave_time) * 1e3, color="green"
+                follower_time * 1e3, (leader_time - follower_time) * 1e3, color="green"
             )
-        axis2.set_title("Time Difference between Master and Slaves")
+        axis2.set_title("Time Difference between Leader and Followers")
         axis2.set_xlabel("Time [ms]", fontsize=12, color="k")
         axis2.set_ylabel("Time difference [ms]", fontsize=12, color="k")
         axis2.grid(True)

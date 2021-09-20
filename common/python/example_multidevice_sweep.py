@@ -17,15 +17,15 @@ Requirements:
         2+ x Lock-in Instruments of the same type
     * The cabling of the instruments must follow the MDS cabling depicted in the
       MDS tab of LabOne.
-    * Signal Out 1 of the master device is split into Signal In 1 of all devices.
+    * Signal Out 1 of the leader device is split into Signal In 1 of all devices.
 
 Usage:
-    example_multidevice_sweep.py [options] <device_id_master> <device_ids_slave>...
+    example_multidevice_sweep.py [options] <device_id_leader> <device_ids_follower>...
     example_multidevice_sweep.py -h | --help
 
 Arguments:
-    <device_id_master>  The ID of the master device [device_type: UHFLI|MF|HF2]
-    <device_ids_slave>  The IDs of the slave devices [device_type: UHFLI|MF|HF2]
+    <device_id_leader>  The ID of the leader device [device_type: UHFLI|MF|HF2]
+    <device_ids_follower>  The IDs of the follower devices [device_type: UHFLI|MF|HF2]
 
 Options:
     -h --help                 Show this screen.
@@ -50,8 +50,8 @@ import matplotlib.pyplot as plt
 
 
 def run_example(
-    device_id_master: str,
-    device_ids_slave: list,
+    device_id_leader: str,
+    device_ids_follower: list,
     server_host: str = "localhost",
     amplitude: float = 0.1,
     plot: bool = True,
@@ -60,17 +60,17 @@ def run_example(
 ):
     """run the example."""
 
-    device_ids = [device_id_master] + device_ids_slave
+    device_ids = [device_id_leader] + device_ids_follower
     print(device_ids)
 
     discovery = zhinst.ziPython.ziDiscovery()
 
     props = []
-    # Master ID
-    device_serial = discovery.find(device_id_master).lower()
+    # Leader ID
+    device_serial = discovery.find(device_id_leader).lower()
     props.append(discovery.get(device_serial))
-    # Slave IDs
-    for device_id in device_ids_slave:
+    # Follower IDs
+    for device_id in device_ids_follower:
         device_serial = discovery.find(device_id).lower()
         props.append(discovery.get(device_serial))
     devices = props[0]["deviceid"]
