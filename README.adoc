@@ -9,7 +9,12 @@ image:https://img.shields.io/twitter/url/https/twitter.com/fold_left.svg?style=s
 
 This repository contains various examples for controlling Zurich Instruments devices through the LabOne APIs.
 
-Only Python examples can be found in this repository right now. Examples for other APIs will move here soon. Until then, you can find examples for C, MATLAB, .NET, and LabVIEW in the https://docs.zhinst.com/labone_api/index.html[LabOne API documentation] or inside your LabOne installation.
+Only Python and Matlab examples can be found in this repository right now. Examples for other APIs will move here soon. Until then, the examples for C, .NET, and LabVIEW can be found in the https://docs.zhinst.com/labone_api/index.html[LabOne API documentation] or inside the LabOne installation.
+
+See the following sections for a detailed description on how to use the examples:
+
+* <<python_api,Python API>>
+* <<matlab_api,Matlab API>>
 
 == Project structure
 
@@ -29,14 +34,55 @@ Only Python examples can be found in this repository right now. Examples for oth
 <3> Each directory is separated into the different APIs (e.g. python)
 <4> General helper functions are located in the `utils` directory
 
+[[python_api]]
 == Python API
 
-In order to run the Python examples, you need to have the latest https://pypi.org/project/zhinst/[`zhinst`] package installed and https://www.zhinst.com/others/instruments/labone/labone-all-in-one[LabOne] up and running. (Please refer to the https://docs.zhinst.com/labone_programming_manual/overview.html[LabOne User Manual] for further information.)
+In order to run the Python examples, one needs to have the latest https://pypi.org/project/zhinst/[`zhinst`] package installed and https://www.zhinst.com/others/instruments/labone/labone-all-in-one[LabOne] up and running.
+(Please refer to the https://docs.zhinst.com/labone_programming_manual/overview.html[LabOne User Manual] for further information.)
 
 The Python examples are designed in a way that they can be run from the command line:
-....
+
+[source,bash]
+----
 $ python path/to/example.py --help
-....
+----
 
 Each example has a `run_example` function that contains the example source.
 Feel free to experiment, change or copy parts of the examples.
+
+[[matlab_api]]
+== Matlab API
+
+In order to run the Matlab examples, one needs to have the latest https://www.zhinst.com/others/instruments/labone/labone-all-in-one[LabOne] version installed and running.
+For more information to setup the Matlab API see the https://docs.zhinst.com/labone_programming_manual/matlab.html[online documentation].
+
+To easily access the examples from within Matlab, the function `ziAddExamplePath`, located in the root of this project, adds all example subdirectories to the Matlab's path for this session.
+
+[source,matlab]
+----
+>> ziAddPath
+----
+
+To see all examples available run
+[source,matlab]
+----
+>> ziListExamples
+----
+
+In order to run one of the examples please perform the following steps:
+
+* Start the instrument and make sure that the correct Data Server is running
+  (task manager on windows)
+* On the Instrument, connect Signal Output1 to the Signal Input1 by means of a
+  BNC cable
+* Start MATLAB
+* Setup the LabOne in Matlab (see. https://docs.zhinst.com/labone_programming_manual/matlab.html[online documentation].)
+* Navigate to this folder in MATLAB
+* Run the MATLAB function `ziAddExamplePath.m` with the call `ziAddExamplePath`
+* Start an example by calling the example by name in MATLAB with your device
+  ID as the only input argument, e.g.,
++
+[source,matlab]
+----
+>> example_poll('dev123')
+----
