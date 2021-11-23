@@ -67,6 +67,8 @@ def run_example(
     )
     zhinst.utils.api_server_version_check(daq)
 
+    daq.set(f"/{device}/demods/0/enable", 1)
+
     # The list of signal paths that we would like to record in the module.
     demod_path = f"/{device}/demods/0/sample"
     signal_paths = []
