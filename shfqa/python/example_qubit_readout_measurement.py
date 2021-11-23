@@ -42,7 +42,7 @@ See the "LabOne Programming Manual" for further help, available:
       sub-folder.
 """
 import numpy as np
-import shf_utils
+from zhinst.deviceutils import SHFQA
 import helper_qubit_readout as helper
 import helper_commons
 from zhinst.ziPython import ziDAQServer
@@ -61,7 +61,7 @@ def run_example(
     daq = ziDAQServer(server_host, server_port, api_level)
     daq.connectDevice(device_id, interface)
 
-    shfqa = shf_utils.Shfqa(device_id, daq)
+    shfqa = SHFQA(device_id, daq)
 
     # define parameters
     channel_index = 0
@@ -83,7 +83,7 @@ def run_example(
         frequencies=np.linspace(32e6, 230e6, num_qubits),
         pulse_duration=500e-9,
         rise_fall_time=10e-9,
-        sampling_rate=shf_utils.Shfqa.SAMPLING_FREQUENCY,
+        sampling_rate=SHFQA.SAMPLING_FREQUENCY,
         scaling=scaling,
     )
     shfqa.write_to_waveform_memory(channel_index, waveforms=readout_pulses)

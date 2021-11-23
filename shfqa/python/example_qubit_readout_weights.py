@@ -44,7 +44,7 @@ See the "LabOne Programming Manual" for further help, available:
 """
 
 import numpy as np
-import shf_utils
+from zhinst.deviceutils import SHFQA
 import helper_qubit_readout as helper
 import helper_commons
 from zhinst.ziPython import ziDAQServer
@@ -63,7 +63,7 @@ def run_example(
     daq = ziDAQServer(server_host, server_port, api_level)
     daq.connectDevice(device_id, interface)
 
-    shfqa = shf_utils.Shfqa(device_id, daq)
+    shfqa = SHFQA(device_id, daq)
 
     # define parameters
     channel_index = 0
@@ -86,7 +86,7 @@ def run_example(
     # configure scope
     shfqa.configure_scope(
         input_select={scope_channel: f"channel{channel_index}_signal_input"},
-        num_samples=int(readout_duration * shf_utils.Shfqa.SAMPLING_FREQUENCY),
+        num_samples=int(readout_duration * SHFQA.SAMPLING_FREQUENCY),
         trigger_input=f"channel{channel_index}_sequencer_monitor0",
         num_segments=num_segments,
         num_averages=num_averages,
@@ -99,7 +99,7 @@ def run_example(
         frequencies=np.linspace(2e6, 32e6, num_qubits),
         pulse_duration=500e-9,
         rise_fall_time=10e-9,
-        sampling_rate=shf_utils.Shfqa.SAMPLING_FREQUENCY,
+        sampling_rate=SHFQA.SAMPLING_FREQUENCY,
     )
     shfqa.write_to_waveform_memory(channel_index, waveforms=excitation_pulses)
 
@@ -135,10 +135,10 @@ def run_example(
         if plot:
             helper.plot_scope_data_for_weights(
                 scope_data[scope_channel],
-                sampling_rate=shf_utils.Shfqa.SAMPLING_FREQUENCY,
+                sampling_rate=SHFQA.SAMPLING_FREQUENCY,
             )
             helper.plot_readout_weights(
-                weights[i], sampling_rate=shf_utils.Shfqa.SAMPLING_FREQUENCY
+                weights[i], sampling_rate=SHFQA.SAMPLING_FREQUENCY
             )
 
     return weights

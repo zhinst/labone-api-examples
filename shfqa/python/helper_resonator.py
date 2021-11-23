@@ -6,7 +6,7 @@
 import time
 import numpy as np
 
-from shf_utils import Shfqa
+from zhinst.deviceutils import SHFQA
 
 
 def set_trigger_loopback(daq, dev):
@@ -72,10 +72,10 @@ def measure_resonator_pulse_with_scope(
     scope_channel = 0
     print("Measure the generated pulse with the SHFQA scope.")
     segment_duration = pulse_length_seconds + margin_seconds
-    shfqa = Shfqa(device_id, daq)
+    shfqa = SHFQA(device_id, daq)
     shfqa.configure_scope(
         input_select={scope_channel: f"channel{channel}_signal_input"},
-        num_samples=int(segment_duration * Shfqa.SAMPLING_FREQUENCY),
+        num_samples=int(segment_duration * SHFQA.SAMPLING_FREQUENCY),
         trigger_input=trigger_input,
         num_segments=1,
         num_averages=1,
@@ -107,7 +107,7 @@ def plot_resonator_pulse_scope_trace(scope_trace):
 
     import matplotlib.pyplot as plt
 
-    time_ticks_us = 1.0e6 * np.array(range(len(scope_trace))) / Shfqa.SAMPLING_FREQUENCY
+    time_ticks_us = 1.0e6 * np.array(range(len(scope_trace))) / SHFQA.SAMPLING_FREQUENCY
     plt.plot(time_ticks_us, np.real(scope_trace))
     plt.plot(time_ticks_us, np.imag(scope_trace))
     plt.title("Resonator probe pulse")
