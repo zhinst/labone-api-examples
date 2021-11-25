@@ -23,10 +23,6 @@ Options:
     -h --help                 Show this screen.
     -s --server_host IP       Hostname or IP address of the dataserver [default: localhost]
     -p --server_port PORT     Port number of the data server [default: 8004]
-    -a --api_level  LEVEL     api level of the API session to be instantiated in this example.
-                              [default: 6]
-    -i --interface INTERFACE  interface through which the device is connected to the host, can be
-                              "1gbe" or "usb"str="1gbe". [default: 1gbe]
     --no-plot                 Hide plot of the recorded data.
 
 Returns:
@@ -44,24 +40,25 @@ See the "LabOne Programming Manual" for further help, available:
 """
 
 import numpy as np
+import zhinst.utils
 from zhinst.deviceutils import SHFQA
 import helper_qubit_readout as helper
 import helper_commons
-from zhinst.ziPython import ziDAQServer
 
 
 def run_example(
     device_id: str,
     server_host: str = "localhost",
     server_port: int = 8004,
-    api_level: int = 6,
-    interface: str = "1gbe",
     plot: bool = True,
 ):
     """run the example."""
 
-    daq = ziDAQServer(server_host, server_port, api_level)
-    daq.connectDevice(device_id, interface)
+    # connect device
+    apilevel_example = 6
+    (daq, _, _) = zhinst.utils.create_api_session(
+        device_id, apilevel_example, server_host=server_host, server_port=server_port
+    )
 
     shfqa = SHFQA(device_id, daq)
 
