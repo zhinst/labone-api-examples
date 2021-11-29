@@ -62,7 +62,7 @@ from zhinst.utils.shf_sweeper import (
 
 import helper_resonator
 import helper_commons
-from zhinst.deviceutils import SHFQA
+import zhinst.deviceutils.shfqa as shfqa_utils
 
 
 def run_example(
@@ -103,7 +103,7 @@ def run_example(
         envelope_frequencies,
         envelope_duration,
         envelope_rise_fall_time,
-        SHFQA.SAMPLING_FREQUENCY,
+        shfqa_utils.SHFQA_SAMPLING_FREQUENCY,
         scaling=1,
     )
     flat_top_gaussians_key = 0
@@ -171,7 +171,9 @@ def run_example(
         )
         sync_tack = np.argmax(scope_diff)
 
-        delay_in_ns = 1.0e9 * (sync_tack - sync_tick) / SHFQA.SAMPLING_FREQUENCY
+        delay_in_ns = (
+            1.0e9 * (sync_tack - sync_tick) / shfqa_utils.SHFQA_SAMPLING_FREQUENCY
+        )
         delay_in_ns = 2 * ((delay_in_ns + 1) // 2)  # round up to the 2ns resolution
         print(f"delay between generator and monitor: {delay_in_ns} ns")
         print(f"Envelope delay: {envelope_delay * 1e9:.0f} ns")
@@ -185,10 +187,14 @@ def run_example(
 
         if plot:
             time_ticks_scope = (
-                1.0e6 * np.array(range(len(scope_diff))) / SHFQA.SAMPLING_FREQUENCY
+                1.0e6
+                * np.array(range(len(scope_diff)))
+                / shfqa_utils.SHFQA_SAMPLING_FREQUENCY
             )
             time_ticks_pulse = (
-                1.0e6 * np.array(range(len(pulse_diff))) / SHFQA.SAMPLING_FREQUENCY
+                1.0e6
+                * np.array(range(len(pulse_diff)))
+                / shfqa_utils.SHFQA_SAMPLING_FREQUENCY
             )
             plt.plot(time_ticks_scope, scope_diff)
             plt.plot(time_ticks_pulse, pulse_diff)

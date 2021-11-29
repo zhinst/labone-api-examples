@@ -39,7 +39,7 @@ See the "LabOne Programming Manual" for further help, available:
 """
 import numpy as np
 import zhinst.utils
-from zhinst.deviceutils import SHFQA
+import zhinst.deviceutils.shfqa as shfqa_utils
 import helper_qubit_readout as helper
 import helper_commons
 
@@ -58,21 +58,25 @@ def run_example(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
 
-    shfqa = SHFQA(device_id, daq)
-
     # define parameters
     channel_index = 0
     num_qubits = 8
     num_readouts = 100
 
     # configure inputs and outputs
-    shfqa.configure_channel(
+    shfqa_utils.configure_channel(
+        daq,
+        device_id,
         channel_index,
         center_frequency=5e9,
         input_range=0,
         output_range=-5,
         mode="readout",
     )
+    # enable qachannel
+    path = f"/{device_id}/qachannels/{channel_index}/"
+    daq.setInt(path + "input/on", 1)
+    daq.setInt(path + "output/on", 1)
 
     # generate and upload waveforms
     scaling = 0.9 / num_qubits
@@ -80,35 +84,53 @@ def run_example(
         frequencies=np.linspace(32e6, 230e6, num_qubits),
         pulse_duration=500e-9,
         rise_fall_time=10e-9,
-        sampling_rate=SHFQA.SAMPLING_FREQUENCY,
+        sampling_rate=shfqa_utils.SHFQA_SAMPLING_FREQUENCY,
         scaling=scaling,
     )
-    shfqa.write_to_waveform_memory(channel_index, waveforms=readout_pulses)
+    shfqa_utils.write_to_waveform_memory(
+        daq, device_id, channel_index, waveforms=readout_pulses
+    )
 
     # configure result logger and weighted integration
     weights = helper.generate_integration_weights(readout_pulses)
-    shfqa.configure_weighted_integration(
+    shfqa_utils.configure_weighted_integration(
+        daq,
+        device_id,
         channel_index,
         weights,
         # compensation for the delay between generator output and input of the integration unit
         integration_delay=200e-9,
     )
-    shfqa.configure_result_logger(channel_index, result_length=num_readouts)
+    shfqa_utils.configure_result_logger_for_readout(
+        daq,
+        device_id,
+        channel_index,
+        result_source="result_of_integration",
+        result_length=num_readouts,
+    )
 
     # configure sequencer
-    shfqa.configure_sequencer_triggering(channel_index, aux_trigger="software_trigger0")
+    shfqa_utils.configure_sequencer_triggering(
+        daq, device_id, channel_index, aux_trigger="software_trigger0"
+    )
     seqc_program = helper.generate_sequencer_program(
         num_measurements=num_readouts, task="dig_trigger_play_all"
     )
-    shfqa.load_sequencer_program(channel_index, sequencer_program=seqc_program)
+    shfqa_utils.load_sequencer_program(
+        daq, device_id, channel_index, sequencer_program=seqc_program
+    )
 
     # run experiment
-    shfqa.enable_result_logger(channel_index)
-    shfqa.enable_sequencer(channel_index)
-    shfqa.start_continuous_sw_trigger(num_triggers=num_readouts, wait_time=2e-3)
+    shfqa_utils.enable_result_logger(daq, device_id, channel_index, mode="readout")
+    shfqa_utils.enable_sequencer(daq, device_id, channel_index, single=1)
+    shfqa_utils.start_continuous_sw_trigger(
+        daq, device_id, num_triggers=num_readouts, wait_time=2e-3
+    )
 
     # get and plot results
-    readout_results = shfqa.get_result_logger_data(channel_index)
+    readout_results = shfqa_utils.get_result_logger_data(
+        daq, device_id, channel_index, mode="readout"
+    )
 
     if plot:
         helper.plot_readout_results(readout_results[:num_qubits])

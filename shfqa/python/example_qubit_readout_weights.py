@@ -41,7 +41,7 @@ See the "LabOne Programming Manual" for further help, available:
 
 import numpy as np
 import zhinst.utils
-from zhinst.deviceutils import SHFQA
+import zhinst.deviceutils.shfqa as shfqa_utils
 import helper_qubit_readout as helper
 import helper_commons
 
@@ -60,8 +60,6 @@ def run_example(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
 
-    shfqa = SHFQA(device_id, daq)
-
     # define parameters
     channel_index = 0
     num_qubits = 8
@@ -72,18 +70,26 @@ def run_example(
     scope_channel = 0
 
     # configure inputs and outputs
-    shfqa.configure_channel(
+    shfqa_utils.configure_channel(
+        daq,
+        device_id,
         channel_index,
         center_frequency=5e9,
         input_range=0,
         output_range=-5,
         mode="readout",
     )
+    # enable qachannel
+    path = f"/{device_id}/qachannels/{channel_index}/"
+    daq.setInt(path + "input/on", 1)
+    daq.setInt(path + "output/on", 1)
 
     # configure scope
-    shfqa.configure_scope(
+    shfqa_utils.configure_scope(
+        daq,
+        device_id,
         input_select={scope_channel: f"channel{channel_index}_signal_input"},
-        num_samples=int(readout_duration * SHFQA.SAMPLING_FREQUENCY),
+        num_samples=int(readout_duration * shfqa_utils.SHFQA_SAMPLING_FREQUENCY),
         trigger_input=f"channel{channel_index}_sequencer_monitor0",
         num_segments=num_segments,
         num_averages=num_averages,
@@ -96,12 +102,16 @@ def run_example(
         frequencies=np.linspace(2e6, 32e6, num_qubits),
         pulse_duration=500e-9,
         rise_fall_time=10e-9,
-        sampling_rate=SHFQA.SAMPLING_FREQUENCY,
+        sampling_rate=shfqa_utils.SHFQA_SAMPLING_FREQUENCY,
     )
-    shfqa.write_to_waveform_memory(channel_index, waveforms=excitation_pulses)
+    shfqa_utils.write_to_waveform_memory(
+        daq, device_id, channel_index, waveforms=excitation_pulses
+    )
 
     # configure sequencer
-    shfqa.configure_sequencer_triggering(channel_index, aux_trigger="software_trigger0")
+    shfqa_utils.configure_sequencer_triggering(
+        daq, device_id, channel_index, aux_trigger="software_trigger0"
+    )
 
     # run experiment measurement loop
     weights = {}
@@ -115,27 +125,29 @@ def run_example(
             task="dig_trigger_play_single",
             waveform_slot=i,
         )
-        shfqa.load_sequencer_program(channel_index, sequencer_program=seqc_program)
+        shfqa_utils.load_sequencer_program(
+            daq, device_id, channel_index, sequencer_program=seqc_program
+        )
 
         # start a measurement
-        shfqa.enable_scope()
-        shfqa.enable_sequencer(channel_index)
-        shfqa.start_continuous_sw_trigger(
-            num_triggers=num_measurements, wait_time=readout_duration
+        shfqa_utils.enable_scope(daq, device_id, single=1)
+        shfqa_utils.enable_sequencer(daq, device_id, channel_index, single=1)
+        shfqa_utils.start_continuous_sw_trigger(
+            daq, device_id, num_triggers=num_measurements, wait_time=readout_duration
         )
 
         # get results to calculate weights and plot data
-        scope_data, *_ = shfqa.get_scope_data(time_out=5)
+        scope_data, *_ = shfqa_utils.get_scope_data(daq, device_id, time_out=5)
 
         weights[i] = helper.calculate_readout_weights(scope_data[scope_channel])
 
         if plot:
             helper.plot_scope_data_for_weights(
                 scope_data[scope_channel],
-                sampling_rate=SHFQA.SAMPLING_FREQUENCY,
+                sampling_rate=shfqa_utils.SHFQA_SAMPLING_FREQUENCY,
             )
             helper.plot_readout_weights(
-                weights[i], sampling_rate=SHFQA.SAMPLING_FREQUENCY
+                weights[i], sampling_rate=shfqa_utils.SHFQA_SAMPLING_FREQUENCY
             )
 
     return weights
