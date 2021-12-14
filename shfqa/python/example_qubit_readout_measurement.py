@@ -123,6 +123,8 @@ def run_example(
     # run experiment
     shfqa_utils.enable_result_logger(daq, device_id, channel_index, mode="readout")
     shfqa_utils.enable_sequencer(daq, device_id, channel_index, single=1)
+    # Note: software triggering is used for illustration purposes only. Use a real
+    # trigger source for actual experiments
     shfqa_utils.start_continuous_sw_trigger(
         daq, device_id, num_triggers=num_readouts, wait_time=2e-3
     )

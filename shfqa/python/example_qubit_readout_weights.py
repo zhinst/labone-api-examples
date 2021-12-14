@@ -132,6 +132,8 @@ def run_example(
         # start a measurement
         shfqa_utils.enable_scope(daq, device_id, single=1)
         shfqa_utils.enable_sequencer(daq, device_id, channel_index, single=1)
+        # Note: software triggering is used for illustration purposes only. Use a real
+        # trigger source for actual experiments
         shfqa_utils.start_continuous_sw_trigger(
             daq, device_id, num_triggers=num_measurements, wait_time=readout_duration
         )
