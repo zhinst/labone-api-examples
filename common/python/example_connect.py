@@ -23,7 +23,7 @@ Requirements:
     * Signal output 1 connected to signal input 1 with a BNC cable.
 
 Usage:
-    example_connect.py <device_id>
+    example_connect.py [options] <device_id>
     example_connect.py -h | --help
 
 Arguments:

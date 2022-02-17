@@ -14,7 +14,7 @@ Requirements:
     * Connect Impedance Testfixture and attach a 1kOhm resistor
 
 Usage:
-    example_autoranging_impedance.py <device_id>
+    example_autoranging_impedance.py [options] <device_id>
     example_autoranging_impedance.py -h | --help
 
 Arguments:
