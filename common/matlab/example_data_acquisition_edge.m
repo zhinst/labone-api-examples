@@ -76,7 +76,7 @@ required_err_msg = ['This example requires either an HF2/UHF Instrument ' ...
 ziApiServerVersionCheck();
 
 branches = ziDAQ('listNodes', ['/' device ], 0);
-if ~any(strcmp([branches], 'DEMODS'))
+if ~any(strcmpi([branches], 'DEMODS'))
   data = []; config = [];
   fprintf('\nThis example requires lock-in functionality which is not available on %s.\n', device);
   return

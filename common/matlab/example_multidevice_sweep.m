@@ -87,7 +87,7 @@ deviceProps = cellfun(@(devSer) ziDAQ('discoveryGet', devSer), deviceSerials);
 % Switching between MFLI, HF2LI, and UHFLI
 leaderDeviceType = deviceProps(1).devicetype;
 
-if all(arrayfun(@(prop) isequal(leaderDeviceType, prop.devicetype) && strcmp(leaderDeviceType, 'UHFLI'), deviceProps))
+if all(arrayfun(@(prop) isequal(leaderDeviceType, prop.devicetype) && strcmpi(leaderDeviceType, 'UHFLI'), deviceProps))
     ziDAQ('connect', server_address', 8004, 6);
     arrayfun(@(prop) ziDAQ('connectDevice', lower(prop.deviceid), prop.interfaces{1}), deviceProps);
 elseif all(arrayfun(@(prop) ~isempty(strfind(prop.devicetype, 'MF')), deviceProps))
@@ -100,7 +100,7 @@ else
     error('This example needs at least 2 MFLI instruments, or 2 HF2LI instruments, or 2 UHFLI instruments');
 end
 
-% Check version compatibility between Data Server and API 
+% Check version compatibility between Data Server and API
 ziApiServerVersionCheck();
 
 % Create a base configuration on all devices: Disable all available outputs, awgs, demods, scopes,...

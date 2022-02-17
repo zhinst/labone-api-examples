@@ -91,11 +91,11 @@ ziDAQ('setDouble', ['/' device '/sigouts/' out_channel '/enables/' out_mixer_cha
 ziDAQ('setDouble', ['/' device '/oscs/' osc_c '/freq'], frequency); % [Hz]
 
 branches = ziDAQ('listNodes', ['/' device ], 0);
-if any(strcmp([branches], 'DEMODS'))
+if any(strcmpi([branches], 'DEMODS'))
   % NOTE we don't need any demodulator data for this example, here we
   % configure the frequency of the output signal on out_mixer_channel (Lock-in only).
   ziDAQ('setInt', ['/' device '/demods/' out_mixer_channel '/oscselect'], str2double(osc_c));
-elseif any(strcmp([branches], 'EXTREFS'))
+elseif any(strcmpi([branches], 'EXTREFS'))
   % For AWG without any lock-in functionality.
   ziDAQ('setInt', ['/' device '/extrefs/' out_channel '/adcselect'], str2double(in_channel));
 end

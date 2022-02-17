@@ -55,7 +55,7 @@ apilevel_example = 6;
 ziApiServerVersionCheck();
 
 branches = ziDAQ('listNodes', ['/' device ], 0);
-if ~any(strcmp([branches], 'DEMODS'))
+if ~any(strcmpi([branches], 'DEMODS'))
   r = nan;
   fprintf('\nThis example requires lock-in functionality which is not available on %s.\n', device);
   return

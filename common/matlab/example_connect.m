@@ -53,7 +53,7 @@ ziApiServerVersionCheck();
 
 branches = ziDAQ('listNodes', ['/' device ], 0);
 % Only configure if we have lock-in functionality available.
-if any(strcmp([branches], 'DEMODS'))
+if any(strcmpi([branches], 'DEMODS'))
   % Enable the demodulator and set a reasonable rate, otherwise the getSample
   % command below will timeout as it won't receive any demodulator data.
   ziDAQ('setInt', ['/' device '/demods/0/enable'], 1);

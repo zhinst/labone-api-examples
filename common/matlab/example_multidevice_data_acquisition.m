@@ -90,7 +90,7 @@ deviceProps = cellfun(@(devSer) ziDAQ('discoveryGet', devSer), deviceSerials);
 devices = strjoin(deviceSerials, ',');
 % Switching between MFLI and UHFLI
 leaderDeviceType = deviceProps(1).devicetype;
-if all(arrayfun(@(prop) isequal(leaderDeviceType, prop.devicetype) && strcmp(leaderDeviceType, 'UHFLI'), deviceProps));
+if all(arrayfun(@(prop) isequal(leaderDeviceType, prop.devicetype) && strcmpi(leaderDeviceType, 'UHFLI'), deviceProps));
   arrayfun(@(prop) ziDAQ('connectDevice', lower(prop.deviceid), prop.interfaces{1}), deviceProps);
 elseif all(arrayfun(@(prop) ~isempty(strfind(prop.devicetype, 'MF')), deviceProps));
   arrayfun(@(prop) ziDAQ('connectDevice', lower(prop.deviceid), '1GbE'), deviceProps);
