@@ -97,7 +97,7 @@ def run_example(
         daq,
         device_id,
         channel_index,
-        weights,
+        weights=weights,
         # compensation for the delay between generator output and input of the integration unit
         integration_delay=200e-9,
     )

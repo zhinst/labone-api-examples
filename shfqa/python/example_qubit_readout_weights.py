@@ -139,7 +139,7 @@ def run_example(
         )
 
         # get results to calculate weights and plot data
-        scope_data, *_ = shfqa_utils.get_scope_data(daq, device_id, time_out=5)
+        scope_data, *_ = shfqa_utils.get_scope_data(daq, device_id, timeout=5)
 
         weights[i] = helper.calculate_readout_weights(scope_data[scope_channel])
 

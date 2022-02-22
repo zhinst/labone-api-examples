@@ -94,7 +94,7 @@ def measure_resonator_pulse_with_scope(
         # issue a signle trigger trigger
         daq.setInt(f"/{device_id}/SYSTEM/SWTRIGGERS/0/SINGLE", 1)
 
-    scope_trace, *_ = shfqa_utils.get_scope_data(daq, device_id, time_out=5)
+    scope_trace, *_ = shfqa_utils.get_scope_data(daq, device_id, timeout=5)
     return scope_trace[scope_channel]
 
 
