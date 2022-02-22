@@ -316,7 +316,7 @@ def run_example(
     wave_nodepath = f"/{device}/scopes/0/wave"
     assert (
         wave_nodepath in data_read
-    ), f"Error: The subscribed data `{wave_nodepath}` was returned."
+    ), f"Error: The subscribed data `{wave_nodepath}` was not returned."
     data = data_read[wave_nodepath][0][0]
 
     f_s = 1.8e9  # sampling rate of scope and AWG
