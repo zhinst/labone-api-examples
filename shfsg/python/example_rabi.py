@@ -6,7 +6,7 @@ Zurich Instruments LabOne Python API Example
 Generate a Rabi sequence with the SHFSG Instrument.
 
 Requirements:
-    * LabOne Version >= 21.08
+    * LabOne Version >= 22.02
     * Instruments:
         1 x SHFSG Instrument
 
@@ -24,8 +24,13 @@ Options:
     -i --interface INTERFACE  Interface between the data server and the Instrument [default: 1GbE]
     -c --channel ID           Signal Channel. (indexed from 0) [default: 0]
     -r --rf_frequency FREQ    Center Frequency of the synthesizer in GHz. [default: 1]
+    -l --rflf_path VALUE      Use RF (value 1) or LF (value 0) path. [default: 1]
+    -n --osc_index ID         Digital oscillator to use [default: 0]
     -o --osc_frequency FREQ   Frequency of digital sine generator in MHz. [default: 100]
+    -a --phase VALUE          Phase of sine generator. [default: 0]
     -w --output_power POWER   Output power in dBm, in steps of 5dBm. [default: 0]
+    -b --global_amp VALUE     Dimensionless amplitude for scaling AWG outputs. [default: 0.5]
+    -g --gains TUPLE          Gains for sine generation. [default: (1.0, -1.0, 1.0, 1.0)]
 
 Raises:
     Exception     If the specified device does not match the requirements.
@@ -40,7 +45,7 @@ See the "LabOne Programming Manual" for further help, available:
 import os
 import zhinst.ziPython
 import zhinst.utils
-import common_shfsg
+import zhinst.deviceutils.shfsg as shfsg_utils
 
 
 def run_example(
@@ -50,8 +55,13 @@ def run_example(
     interface: str = "1GbE",
     channel: int = 0,
     rf_frequency: float = 1,
+    rflf_path: int = 1,
+    osc_index: int = 0,
     osc_frequency: float = 100,
+    phase: float = 0.0,
     output_power: float = 0,
+    global_amp: float = 0.5,
+    gains: float = (1.0, -1.0, 1.0, 1.0),
 ):
     """run the example."""
 
@@ -60,29 +70,24 @@ def run_example(
     daq.connectDevice(device_id, interface)
     zhinst.utils.api_server_version_check(daq)
 
-    # Set RF center frequency
-    synth_nmbr = daq.getInt(f"/{device_id}/SGCHANNELS/{channel}/SYNTHESIZER")
-    daq.setDouble(
-        f"/{device_id}/SYNTHESIZERS/{synth_nmbr}/CENTERFREQ", rf_frequency * 1e9
+    # Set analog RF center frequencies, output power, RF or LF path, enable outputs
+    enable = 1
+    shfsg_utils.configure_channel(
+        daq, device_id, channel, enable, output_power, rf_frequency * 1e9, rflf_path
     )
-    # Turn on output
-    daq.setInt(f"/{device_id}/SGCHANNELS/{channel}/OUTPUT/ON", 1)
-    # Set power in dBm, in steps of 5dBm
-    daq.setDouble(f"/{device_id}/SGCHANNELS/{channel}/OUTPUT/RANGE", output_power)
-    # Set SHFSG to use RF path (in case LF path was enabled earlier)
-    daq.setDouble(f"/{device_id}/SGCHANNELS/{channel}/OUTPUT/RFLFPATH", 1)
 
-    ## Configure digital modulation
-    # Set modulation frequency
-    daq.setDouble(f"/{device_id}/SGCHANNELS/{channel}/OSCS/0/FREQ", osc_frequency * 1e6)
-    # Set sine generator
-    daq.setInt(f"/{device_id}/SGCHANNELS/{channel}/SINES/0/OSCSELECT", 0)
-    # Set harmonic of sine generator
-    daq.setDouble(f"/{device_id}/SGCHANNELS/{channel}/SINES/0/HARMONIC", 1)
-    # Set phase of sine generator
-    daq.setDouble(f"/{device_id}/SGCHANNELS/{channel}/SINES/0/PHASESHIFT", 0)
-    # Enable digital modulation
-    daq.setInt(f"/{device_id}/SGCHANNELS/{channel}/AWG/MODULATION/ENABLE", 1)
+    # Configure digital modulation of AWG signals
+    shfsg_utils.configure_pulse_modulation(
+        daq,
+        device_id,
+        channel,
+        enable,
+        osc_index,
+        osc_frequency * 1e6,
+        phase,
+        global_amp,
+        gains,
+    )
 
     # Set marker source
     daq.setInt(f"/{device_id}/SGCHANNELS/{channel}/MARKER/SOURCE", 0)
@@ -90,16 +95,16 @@ def run_example(
     # Upload sequencer programm to AWG Module
     with open(os.path.join(os.path.dirname(__file__), "Rabi.seq")) as f:
         awg_seqc = f.read()
-    common_shfsg.load_sequencer_program(daq, device_id, channel, awg_seqc)
+    shfsg_utils.load_sequencer_program(daq, device_id, channel, awg_seqc)
 
     # Upload command table to instrument
     with open(os.path.join(os.path.dirname(__file__), "Rabi_command_table.json")) as f:
         ct_str = f.read()
     daq.setVector(f"/{device_id}/SGCHANNELS/{channel}/AWG/COMMANDTABLE/DATA", ct_str)
 
-    # Configure single mode
-    daq.setInt(f"/{device_id}/SGCHANNELS/{channel}/AWG/SINGLE", 1)
-    daq.setInt(f"/{device_id}/SGCHANNELS/{channel}/AWG/ENABLE", 1)
+    # Enable sequencer with single mode
+    single = 1
+    shfsg_utils.enable_sequencer(daq, device_id, channel, single)
 
     print(
         f"Rabi sequence with frequency {osc_frequency} MHz, center frequency {rf_frequency} GHz "

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json-schema.org/draft-04/schema#",
+  "$schema": "https://docs.zhinst.com/shfsg/commandtable/v1_0/schema#",
   "header": {
     "version": "1.0"
   },

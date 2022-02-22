@@ -20,7 +20,7 @@ assignWaveIndex(1,2,w,1,2,w,0);
 resetOscPhase();
 setTrigger(1);
 setTrigger(0);
-  
+
 //First Rabi amplitude and readout
 executeTableEntry(0);
 playZero(s_readout);
