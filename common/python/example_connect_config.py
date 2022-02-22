@@ -32,7 +32,10 @@ Arguments:
 Options:
     -h --help                 Show this screen.
     -s --server_host IP       Hostname or IP address of the dataserver [default: localhost]
-    -p --server_port PORT     Port number of the data server [default: 8004]
+    -p --server_port PORT     Port number of the data server [default: None]
+    --hf2                     Flag if the used device is an HF2 instrument. (Since the HF2 uses
+                              a different data server and support only API level 1
+                              it requires minor tweaking) [default = False]
     -a --amplitude AMPLITUDE  The amplitude to set on the signal output. [default: 0.100]
 
 Raises:
@@ -51,12 +54,15 @@ import zhinst.utils
 def run_example(
     device_id: str,
     server_host: str = "localhost",
-    server_port: int = 8004,
+    server_port: int = None,
+    hf2: bool = False,
     amplitude: float = 0.100,
 ):
     """run the example."""
 
-    apilevel_example = 6  # The API level supported by this example.
+    apilevel_example = 1 if hf2 else 6  # The API level supported by this example.
+    if not server_port:
+        server_port = 8005 if hf2 else 8004
     # Call a zhinst utility function that returns:
     # - an API session `daq` in order to communicate with devices via the data server.
     # - the device ID string that specifies the device branch in the server's node hierarchy.

@@ -28,7 +28,10 @@ Arguments:
 Options:
     -h --help              Show this screen.
     -s --server_host IP    Hostname or IP address of the dataserver [default: localhost]
-    -p --server_port PORT  Port number of the data server [default: 8004]
+    -p --server_port PORT  Port number of the data server [default: None]
+    --hf2                  Flag if the used device is an HF2 instrument. (Since the HF2 uses
+                           a different data server and support only API level 1
+                           it requires minor tweaking) [default = False]
     --synchronize          Multi-device synchronization will be started and
                            stopped before and after the data acquisition
     --no-plot              Hide plot of the recorded data.
@@ -51,16 +54,17 @@ def run_example(
     device_id_leader: str,
     device_ids_follower: list,
     server_host: str = "localhost",
-    server_port: int = 8004,
+    server_port: int = None,
+    hf2: bool = False,
     plot: bool = True,
     synchronize: bool = True,
 ):
     """run the example."""
 
-    # Connection to the data server and devices
-    # Connection to the local server 'localhost' ^= '127.0.0.1'
-    apilevel = 6
-    daq = zhinst.ziPython.ziDAQServer(server_host, server_port, apilevel)
+    apilevel_example = 1 if hf2 else 6  # The API level supported by this example.
+    if not server_port:
+        server_port = 8005 if hf2 else 8004
+    daq = zhinst.ziPython.ziDAQServer(server_host, server_port, apilevel_example)
     discovery = zhinst.ziPython.ziDiscovery()
 
     props = []

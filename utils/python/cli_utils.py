@@ -175,7 +175,10 @@ def run_commandline(func, doc):
     for arg in raw_args:
         arg_new = arg.strip("-").strip("<").strip(">")
         if arg_new in hints:
-            args[arg_new] = hints[arg_new](raw_args[arg])
+            if raw_args[arg] == "None":
+                args[arg_new] = None
+            else:
+                args[arg_new] = hints[arg_new](raw_args[arg])
         elif arg_new.startswith("no-"):
             invert_arg = arg_new.lstrip("no-")
             if invert_arg in hints and hints[invert_arg] == bool:
