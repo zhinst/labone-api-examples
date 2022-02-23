@@ -109,7 +109,7 @@ def run_example(
 
     # Enable sequencer with single mode
     single = 1
-    shfsg_utils.enable_sequencer(daq, device_id, channel, single)
+    shfsg_utils.enable_sequencer(daq, device_id, channel, single=single)
 
     print(
         f"Rabi sequence with frequency {osc_frequency} MHz, center frequency {rf_frequency} GHz "

@@ -112,7 +112,7 @@ def run_example(
 
     # Enable sequencer with single mode
     single = 1
-    shfsg_utils.enable_sequencer(daq, device_id, channel, single)
+    shfsg_utils.enable_sequencer(daq, device_id, channel, single=single)
 
     print(
         f"Ramsey sequence with modulation frequency {osc_frequency} MHz, "
