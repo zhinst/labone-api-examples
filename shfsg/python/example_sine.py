@@ -71,7 +71,13 @@ def run_example(
     # Set analog RF center frequencies, output power, RF or LF path, enable outputs
     enable = 1
     shfsg_utils.configure_channel(
-        daq, device_id, channel, enable, output_power, rf_frequency * 1e9, rflf_path
+        daq,
+        device_id,
+        channel,
+        enable=1,
+        output_range=output_power,
+        center_frequency=rf_frequency * 1e9,
+        rflf_path=rflf_path,
     )
 
     # Disable AWG modulation
@@ -82,11 +88,11 @@ def run_example(
         daq,
         device_id,
         channel,
-        enable,
-        osc_index,
-        osc_frequency * 1e6,
-        phase,
-        gains,
+        enable=enable,
+        osc_index=osc_index,
+        osc_frequency=osc_frequency * 1e6,
+        phase=phase,
+        gains=gains,
     )
 
     print(

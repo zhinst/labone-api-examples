@@ -72,9 +72,14 @@ def run_example(
     zhinst.utils.api_server_version_check(daq)
 
     # Set analog RF center frequencies, output power, RF or LF path, enable outputs
-    enable = 1
     shfsg_utils.configure_channel(
-        daq, device_id, channel, enable, output_power, rf_frequency * 1e9, rflf_path
+        daq,
+        device_id,
+        channel,
+        enable=1,
+        output_range=output_power,
+        center_frequency=rf_frequency * 1e9,
+        rflf_path=rflf_path,
     )
 
     # Configure digital modulation of AWG signals
@@ -82,12 +87,12 @@ def run_example(
         daq,
         device_id,
         channel,
-        enable,
-        osc_index,
-        osc_frequency * 1e6,
-        phase,
-        global_amp,
-        gains,
+        enable=1,
+        osc_index=osc_index,
+        osc_frequency=osc_frequency * 1e6,
+        phase=phase,
+        global_amp=global_amp,
+        gains=gains,
     )
 
     # Set marker source
