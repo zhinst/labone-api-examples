@@ -8,14 +8,14 @@ Generate a Rabi sequence with the SHFSG Instrument.
 Requirements:
     * LabOne Version >= 22.02
     * Instruments:
-        1 x SHFSG Instrument
+        1 x SHFSG or SHFQC Instrument
 
 Usage:
     example_rabi.py [options] <device_id>
     example_rabi.py -h | --help
 
 Arguments:
-    <device_id>  The ID of the device to run the example with. [device_type: SHFSG]
+    <device_id>  The ID of the device to run the example with. [device_type: SHFSG | SHFQC]
 
 Options:
     -h --help                 Show this screen.

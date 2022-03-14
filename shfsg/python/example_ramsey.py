@@ -8,7 +8,7 @@ Generate a Ramsey sequence with the SHFSG Instrument.
 Requirements:
     * LabOne Version >= 22.02
     * Instruments:
-        1 x SHFSG Instrument
+        1 x SHFSG or SHFQC Instrument
 
 Usage:
     example_ramsey.py [options] <device_id>

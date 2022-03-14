@@ -8,7 +8,7 @@ Does a parallel read-out of 8 qubits.
 Requirements:
     * LabOne Version >= 22.02
     * Instruments:
-        1 x SHFQA Instrument
+        1 x SHFQA or SHFQC Instrument
     * Loopback configuration between input and output of channel 0
 
 Usage:
@@ -16,7 +16,7 @@ Usage:
     example_qubit_readout_measurement.py -h | --help
 
 Arguments:
-    <device_id>  The ID of the device to run the example with. [device_type: SHFQA]
+    <device_id>  The ID of the device to run the example with. [device_type: SHFQA | SHFQC]
 
 Options:
     -h --help                 Show this screen.

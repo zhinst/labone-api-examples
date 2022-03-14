@@ -8,7 +8,7 @@ Run a frequency sweep with a SHFQA
 Requirements:
     * LabOne Version >= 21.08
     * Instruments:
-        1 x SHFQA Instrument
+        1 x SHFQA or SHFQC Instrument
     * Signal output 0 connected to signal input 0 with a BNC cable.
 
 Usage:
@@ -16,7 +16,7 @@ Usage:
     example_resonator.py -h | --help
 
 Arguments:
-    <device_id>  The ID of the device to run the example with. [device_type: SHFQA]
+    <device_id>  The ID of the device to run the example with. [device_type: SHFQA | SHFQC]
 
 Options:
     -h --help              Show this screen.
