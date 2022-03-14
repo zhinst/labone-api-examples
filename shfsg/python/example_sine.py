@@ -59,7 +59,7 @@ def run_example(
     osc_frequency: float = 100,
     phase: float = 0.0,
     output_power: float = 0,
-    gains: float = (0.0, 1.0, 1.0, 0.0),
+    gains: tuple = (0.0, 1.0, 1.0, 0.0),
 ):
     """run the example."""
 

@@ -61,7 +61,7 @@ def run_example(
     phase: float = 0.0,
     output_power: float = 0,
     global_amp: float = 0.5,
-    gains: float = (1.0, -1.0, 1.0, 1.0),
+    gains: tuple = (1.0, -1.0, 1.0, 1.0),
 ):
     """run the example."""
 
