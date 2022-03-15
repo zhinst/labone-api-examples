@@ -6,7 +6,7 @@ Zurich Instruments LabOne Python API Example
 Run a frequency sweep with a SHFQA using an external trigger (trigger in 1 A)
 
 Requirements:
-    * LabOne Version >= 21.08
+    * LabOne Version >= 22.02
     * Instruments:
         1 x SHFQA Instrument
     * Signal output 0 connected to signal input 0 with a BNC cable.

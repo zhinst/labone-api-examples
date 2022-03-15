@@ -7,7 +7,7 @@ Measures the integration weights for a qubit readout assuming 8 qubits and using
 top pulses.
 
 Requirements:
-    * LabOne Version >= 21.08
+    * LabOne Version >= 22.02
     * Instruments:
         1 x SHFQA Instrument
     * Loopback configuration between input and output of channel 0

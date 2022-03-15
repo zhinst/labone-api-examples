@@ -6,7 +6,7 @@ Zurich Instruments LabOne Python API Example
 Does a parallel read-out of 8 qubits.
 
 Requirements:
-    * LabOne Version >= 21.08
+    * LabOne Version >= 22.02
     * Instruments:
         1 x SHFQA Instrument
     * Loopback configuration between input and output of channel 0
