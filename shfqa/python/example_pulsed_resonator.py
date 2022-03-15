@@ -126,7 +126,6 @@ def run_example(
     rf_config = RfConfig(channel=0, input_range=0, output_range=0, center_freq=4e9)
     trig_config = TriggerConfig(source=trigger_source, level=0)
     envelope_config = EnvelopeConfig(waveform=pulse_envelope, delay=envelope_delay)
-
     sweeper.configure(sweep_config, avg_config, rf_config, trig_config, envelope_config)
 
     # set to device, can also be ignored but is needed to verify envelope before sweep
@@ -138,6 +137,19 @@ def run_example(
     daq.sync()
 
     if scope:
+        # Upload sequencer programm to trigger the scope and spectroscopy envelope
+        sequence = """
+        while(1) {
+            playZero(100000);
+            setTrigger(1);
+            setTrigger(0);
+        }
+        """
+        shfqa_utils.load_sequencer_program(daq, device_id, rf_config.channel, sequence)
+
+        # enable the sequencer
+        shfqa_utils.enable_sequencer(daq, device_id, rf_config.channel, single=0)
+
         # verify the spectroscopy pulse using the SHFQA scope before starting the sweep
         # NOTE: this only works if the device under test transmits the signal at the
         # selected center frequency. To obtain the actual pulse shape, the user must
@@ -147,7 +159,7 @@ def run_example(
             daq,
             dev,
             channel=rf_config.channel,
-            trigger_input=trig_config.source,
+            trigger_input="channel0_sequencer_trigger0",
             pulse_length_seconds=envelope_duration,
             envelope_delay=envelope_delay,
         )
@@ -191,9 +203,12 @@ def run_example(
                 * np.array(range(len(scope_diff)))
                 / shfqa_utils.SHFQA_SAMPLING_FREQUENCY
             )
+
+            # align the scope and pulse waves in time for the plot
+            offset = sync_tack - sync_tick
             time_ticks_pulse = (
                 1.0e6
-                * np.array(range(len(pulse_diff)))
+                * np.array(range(offset, offset + len(pulse_diff)))
                 / shfqa_utils.SHFQA_SAMPLING_FREQUENCY
             )
             plt.plot(time_ticks_scope, scope_diff)
