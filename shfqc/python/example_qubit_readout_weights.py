@@ -1,0 +1,1 @@
+../../shfqa/python/example_qubit_readout_weights.py

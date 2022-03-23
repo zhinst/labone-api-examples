@@ -15,7 +15,7 @@ Usage:
     example_ramsey.py -h | --help
 
 Arguments:
-    <device_id>  The ID of the device to run the example with. [device_type: SHFSG]
+    <device_id>  The ID of the device to run the example with. [device_type: SHFSG | SHFQC]
 
 Options:
     -h --help                 Show this screen.
