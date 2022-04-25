@@ -1,7 +1,6 @@
 numpy
 zhinst
-# TODO: replace link below with zhinst-deviceutils once the latter has been published to PyPy
-http://git2tar.zhinst.com/zhinst-deviceutils/sdist/main
+zhinst-deviceutils
 scipy
 lmfit
 matplotlib
