@@ -166,7 +166,7 @@ def run_example(
     data = {}
     # A dictionary to store all the acquired data.
     for signal_path in signal_paths:
-        print("Subscribing to", signal_path)
+        print("Subscribing to ", signal_path)
         daq_module.subscribe(signal_path)
         data[signal_path] = []
 
