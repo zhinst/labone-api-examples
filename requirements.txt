@@ -4,3 +4,4 @@ zhinst-deviceutils
 scipy
 lmfit
 matplotlib
+jupytext
