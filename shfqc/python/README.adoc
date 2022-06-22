@@ -1,0 +1,16 @@
+= SHFQC examples
+
+In addition to the examples in this directory the following examples from the
+SHFSG and SHFQA directory also apply to the SHFQC:
+
+== SHFSG
+* link:../../shfsg/python/example_cpmg.py[shfsg/python/example_cpmg.py]
+* link:../../shfsg/python/example_rabi.py[shfsg/python/example_rabi.py]
+* link:../../shfsg/python/example_ramsey.py[shfsg/python/example_ramsey.py]
+* link:../../shfsg/python/example_sine.py[shfsg/python/example_sine.py]
+
+== SHFQA
+* link:../../shfqa/python/example_resonator.py[shfsg/python/example_sine.py]
+* link:../../shfqa/python/example_qubit_readout_weights.py[shfsg/python/example_qubit_readout_weights.py]
+* link:../../shfqa/python/example_qubit_readout_measurement.py[shfsg/python/example_qubit_readout_measurement.py]
+* link:../../shfqa/python/example_qubit_readout_weights.py[shfsg/python/example_qubit_readout_weights.py]
