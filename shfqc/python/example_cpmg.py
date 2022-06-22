@@ -1,1 +1,0 @@
-../../shfsg/python/example_cpmg.py
