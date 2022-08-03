@@ -118,7 +118,7 @@ def run_example(
     # data directory.
     if not awg_sourcefile:
         # Write an AWG source file to disk that we can compile in this example.
-        awg_sourcefile = "ziPython_example_awg_sourcefile.seqc"
+        awg_sourcefile = "python_example_awg_sourcefile.seqc"
         with open(os.path.join(src_dir, awg_sourcefile), "w") as f:
             f.write(SOURCE)
     else:

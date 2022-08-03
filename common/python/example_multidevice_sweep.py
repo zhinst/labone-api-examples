@@ -7,7 +7,7 @@ Demonstrate how to perform a frequency sweep on two synchronized devices using
 the MultiDeviceSync Module and ziDAQSweeper class/Sweeper Module.
 
 Perform a frequency sweep on two devices and record
-demodulator data using ziPython's ziDAQSweeper module. The devices are first
+demodulator data using the LabOne ziDAQSweeper module. The devices are first
 synchronized using the MultiDeviceSync Module, then the sweep is executed
 before stopping the synchronization.
 
@@ -63,7 +63,7 @@ def run_example(
     device_ids = [device_id_leader] + device_ids_follower
     print(device_ids)
 
-    discovery = zhinst.ziPython.ziDiscovery()
+    discovery = zhinst.core.ziDiscovery()
 
     props = []
     # Leader ID
@@ -87,9 +87,9 @@ def run_example(
             )
 
     if device_type == "HF2LI":
-        daq = zhinst.ziPython.ziDAQServer(server_host, 8005, 1)
+        daq = zhinst.core.ziDAQServer(server_host, 8005, 1)
     else:
-        daq = zhinst.ziPython.ziDAQServer(server_host, 8004, 6)
+        daq = zhinst.core.ziDAQServer(server_host, 8004, 6)
 
     for prop in props:
         if prop["devicetype"] == "UHFLI":

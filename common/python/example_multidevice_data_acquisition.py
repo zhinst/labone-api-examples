@@ -46,7 +46,7 @@ https://docs.zhinst.com/labone_programming_manual/
 
 import time
 import zhinst.utils
-import zhinst.ziPython
+import zhinst.core
 import matplotlib.pyplot as plt
 
 
@@ -64,8 +64,8 @@ def run_example(
     apilevel_example = 1 if hf2 else 6  # The API level supported by this example.
     if not server_port:
         server_port = 8005 if hf2 else 8004
-    daq = zhinst.ziPython.ziDAQServer(server_host, server_port, apilevel_example)
-    discovery = zhinst.ziPython.ziDiscovery()
+    daq = zhinst.core.ziDAQServer(server_host, server_port, apilevel_example)
+    discovery = zhinst.core.ziDiscovery()
 
     props = []
     # Leader ID

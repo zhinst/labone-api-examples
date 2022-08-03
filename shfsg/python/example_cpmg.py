@@ -44,7 +44,7 @@ See the "LabOne Programming Manual" for further help, available:
 """
 
 import os
-import zhinst.ziPython
+import zhinst.core
 import zhinst.utils
 import zhinst.deviceutils.shfsg as shfsg_utils
 
@@ -67,7 +67,7 @@ def run_example(
     """run the example."""
 
     # connect device
-    daq = zhinst.ziPython.ziDAQServer(host=server_host, port=server_port, api_level=6)
+    daq = zhinst.core.ziDAQServer(host=server_host, port=server_port, api_level=6)
     daq.connectDevice(device_id, interface)
     zhinst.utils.api_server_version_check(daq)
 

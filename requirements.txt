@@ -1,6 +1,5 @@
 numpy
 zhinst
-zhinst-deviceutils
 scipy
 lmfit
 matplotlib
