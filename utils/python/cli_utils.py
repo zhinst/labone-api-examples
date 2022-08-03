@@ -5,7 +5,7 @@ It uses docopt to generate the commandline and does the following tests befor ca
     - checks if the device(s) match(s) the required one(s) in the examples.
 """
 import re
-import zhinst.ziPython
+import zhinst.core
 
 
 def extract_version(doc):
@@ -40,7 +40,7 @@ def extract_version(doc):
         min_major, min_minor, min_build = map(int, version.split("."))
     else:
         raise Exception(
-            f"Wrong ziPython version format: {version}. Supported format: MAJOR.MINOR or \
+            f"Wrong zhinst.core version format: {version}. Supported format: MAJOR.MINOR or \
                 MAJOR.MINOR.BUILD"
         )
 
@@ -57,12 +57,12 @@ def check_version(doc):
         Exception if the LabOne version is not matched.
     """
     (min_major, min_minor, min_build) = extract_version(doc)
-    installed_version = zhinst.ziPython.__version__
+    installed_version = zhinst.core.__version__
     major, minor, build = map(int, installed_version.split("."))
 
     if (min_major, min_minor, min_build) > (major, minor, build):
         raise Exception(
-            f"Example requires ziPython version "
+            f"Example requires zhinst.core version "
             f"{min_major}.{min_minor}.{min_build} or greater (installed: {installed_version})."
             f"Please visit the Zurich Instruments website to update."
         )
@@ -107,7 +107,7 @@ def check_single_device(device_id, dev_types, device_variable):
         Exception if a specified device does not match the requirements.
     """
 
-    discovery = zhinst.ziPython.ziDiscovery()
+    discovery = zhinst.core.ziDiscovery()
     device_disc = discovery.find(device_id).lower()
     props = discovery.get(device_disc)
     if props["devicetype"] == "":

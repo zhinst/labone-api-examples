@@ -42,7 +42,7 @@ https://docs.zhinst.com/labone_programming_manual/
 
 import time
 import numpy as np
-import zhinst.ziPython
+import zhinst.core
 import zhinst.utils
 from scipy import signal
 from lmfit import Model

@@ -12,7 +12,7 @@ the ``sample`` dictionary and return that dictionary.
 
 Note:
   This is intended to be a simple example demonstrating how to connect to a
-  Zurich Instruments device from ziPython. In most cases, data acquisition
+  Zurich Instruments device from Python. In most cases, data acquisition
   should use either ziDAQServer's poll() method or an instance of the
   ziDAQRecorder class, not the getSample() method.
 

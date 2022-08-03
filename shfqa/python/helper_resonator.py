@@ -47,7 +47,7 @@ def measure_resonator_pulse_with_scope(
     a loopback cable.
 
     Arguments:
-      daq (ziDAQServer): an instance of the ziPython.ziDAQServer class
+      daq (ziDAQServer): an instance of the zhinst.core.ziDAQServer class
         (representing an API session connected to a Data Server).
 
       device_id (str): the device's ID, this is the string that specifies the

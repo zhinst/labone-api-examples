@@ -3,7 +3,7 @@
 """
 Demonstrate how to perform a simple frequency sweep using the ziDAQSweeper
 class/Sweeper Module.
-Perform a frequency sweep and record demodulator data using ziPython's
+Perform a frequency sweep and record demodulator data using the LabOne
 ziDAQSweeper module.
 
 Requirements:
