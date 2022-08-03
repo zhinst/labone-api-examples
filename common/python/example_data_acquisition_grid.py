@@ -88,7 +88,7 @@ def run_example(
     )
     zhinst.utils.api_server_version_check(daq)
 
-    # Enable ziPython's log, the lower the level the more verbose.
+    # Enable Client log, the lower the level the more verbose.
     daq.setDebugLevel(3)
 
     # Create a base configuration: Disable all available outputs, awgs, demods, scopes,...

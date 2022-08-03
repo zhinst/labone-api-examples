@@ -47,7 +47,7 @@ https://docs.zhinst.com/labone_programming_manual/
 import time
 import numpy as np
 import zhinst.utils
-from zhinst.ziPython import ziListEnum
+from zhinst.core import ziListEnum
 import matplotlib.pyplot as plt
 
 
