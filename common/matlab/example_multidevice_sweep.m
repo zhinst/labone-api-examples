@@ -113,13 +113,13 @@ end
 % changed if the instrument has multiple input/output channels and/or either
 % the Multifrequency or Multidemodulator options installed.
 out_channel = 0;
-out_mixer_channel = 0;
 in_channel = 0;
 demod_index = 0;
 osc_index = 0;
 demod_rate = 10e3;
 time_constant = 0.01;
 for i = 1:length(device_ids)
+    out_mixer_channel = str2double(ziGetDefaultSigoutMixerChannel(deviceProps(i), out_channel));
     ziDAQ('setInt', sprintf('/%s/sigins/%d/ac', device_ids{i}, in_channel), 0);
     ziDAQ('setDouble', sprintf('/%s/sigins/%d/range', device_ids{i}, in_channel), 2*amplitude);
     ziDAQ('setInt', sprintf('/%s/demods/%d/enable', device_ids{i}, demod_index), 1);
