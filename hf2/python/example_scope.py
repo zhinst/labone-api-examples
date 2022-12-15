@@ -170,7 +170,7 @@ def run_example(
         scope_time = 15
         warnings.warn(
             "Can't not obtain scope durations of %.3f s, scope record duration will be %.3f."
-            % (desired_t_shot, 2048.0 * 2 ** scope_time / clockbase)
+            % (desired_t_shot, 2048.0 * 2**scope_time / clockbase)
         )
     print("Will set /%s/scopes/0/time to %d." % (device, scope_time))
 
@@ -322,7 +322,7 @@ def run_example(
                     axis.plot(1e6 * t, wave, color=colors[index])
                 elif record[0]["channelmath"][scope_input_channel] & 2:
                     # We're in FFT mode.
-                    scope_rate = clockbase / 2 ** scope_time
+                    scope_rate = clockbase / 2**scope_time
                     f = np.linspace(0, scope_rate / 2, totalsamples)
                     axis.semilogy(f / 1e6, wave, color=colors[index])
             plt.draw()

@@ -135,7 +135,7 @@ def run_example(
     # Redefine the wave w1 in Python for later use in the plot
     width = AWG_N / 20
     waveform_1 = np.exp(
-        -((np.linspace(-AWG_N / 2, AWG_N / 2, AWG_N)) ** 2) / (2 * width ** 2)
+        -((np.linspace(-AWG_N / 2, AWG_N / 2, AWG_N)) ** 2) / (2 * width**2)
     )
 
     # Define an array of values that are used to generate wave w2
@@ -369,7 +369,7 @@ def run_example(
     # Normalize the correlation coefficient by the two waveforms and check they
     # agree to 95%.
     norm_correlation_coeff = corr_meas_expect[index_match] / np.sqrt(
-        sum(y_measured ** 2) * sum(y_expected ** 2)
+        sum(y_measured**2) * sum(y_expected**2)
     )
     assert norm_correlation_coeff > 0.95, (
         "Detected a disagreement between the measured and expected signals, "
