@@ -75,7 +75,7 @@ def run_example(
     server_port: int = 8004,
     plot: bool = True,
     inputselect: int = 0,
-    scope_length: int = 2 ** 12,
+    scope_length: int = 2**12,
     trigholdoff: float = 0.050,
     amplitude: float = 0.5,
     output_range: float = 1.5,
@@ -387,7 +387,7 @@ def run_example(
                     axis.plot(1e6 * t, wave, color=colors[index])
                 elif record[0]["channelmath"][scope_input_channel] & 2:
                     # We're in FFT mode.
-                    scope_rate = clockbase / 2 ** scope_time
+                    scope_rate = clockbase / 2**scope_time
                     freq = np.linspace(0, scope_rate / 2, totalsamples)
                     axis.semilogy(freq / 1e6, wave, color=colors[index])
             plt.draw()

@@ -63,7 +63,7 @@ def run_example(
     server_host: str = "localhost",
     server_port: int = 8004,
     monitor_length: int = 4000,
-    num_averages: int = 2 ** 8,
+    num_averages: int = 2**8,
     plot: bool = True,
 ):
     """run the example."""

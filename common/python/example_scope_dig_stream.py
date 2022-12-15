@@ -95,7 +95,7 @@ def run_example(
 
     # The value of the instrument's ADC sampling rate.
     clockbase = daq.getInt(f"/{device}/clockbase")
-    rate = clockbase / 2 ** stream_rate
+    rate = clockbase / 2**stream_rate
 
     # Now configure the instrument for this experiment.
     auxout_channel = 0
@@ -289,7 +289,7 @@ def run_example(
     print()
     print(f"Total blocks processed {num_blocks}, samples acquired {num_scope}.")
 
-    expected_ts_delta = 2 ** stream_rate
+    expected_ts_delta = 2**stream_rate
     for num_scope, channel_samples in enumerate(scope_samples):
         # Check for sampleloss
         nan_count = np.sum(np.isnan(scope_samples[num_scope]["value"]))
