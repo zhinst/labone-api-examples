@@ -65,7 +65,7 @@ ziDAQ('connect', server_host, server_port, apilevel_example)
 ziDAQ('connectDevice', device_id, interface)
 
 % Create a base configuration: Disable all available outputs, awgs,...
-ziDAQ('setInt',['/' device_id '/system/preset/load'], 1);
+ziDAQ('syncSetInt',['/' device_id '/system/preset/load'], 1);
 % Wait for preset application to be finished
 timeout = 10.0;
 time_start = tic;
