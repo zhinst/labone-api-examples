@@ -94,9 +94,9 @@ def run_example(
     actual_signal = generate_actual_signal(target_signal, sampling_rate=sampling_rate)
 
     # prepare the precompensationAdvisor module
+    pre.set("device", device_id)
     pre.set("exponentials/0/enable", 1)
     pre.set("wave/input/source", 3)
-    pre.set("device", device_id)
     daq.setDouble("/" + device_id + "/system/clocks/sampleclock/freq", sampling_rate)
     # a short pause is needed for the precompensationAdvisor module to read
     # the updated the sampling rate from the device node
