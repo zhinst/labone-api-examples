@@ -39,7 +39,7 @@ See the "LabOne Programming Manual" for further help, available:
 """
 import numpy as np
 import zhinst.utils
-import zhinst.deviceutils.shfqa as shfqa_utils
+import zhinst.utils.shfqa as shfqa_utils
 import helper_qubit_readout as helper
 import helper_commons
 
