@@ -62,7 +62,7 @@ from zhinst.utils.shf_sweeper import (
 
 import helper_resonator
 import helper_commons
-import zhinst.deviceutils.shfqa as shfqa_utils
+import zhinst.utils.shfqa as shfqa_utils
 
 
 def run_example(

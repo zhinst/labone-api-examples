@@ -44,7 +44,7 @@ See the "LabOne Programming Manual" for further help, available:
 
 import zhinst.core
 import zhinst.utils
-import zhinst.deviceutils.shfsg as shfsg_utils
+import zhinst.utils.shfsg as shfsg_utils
 
 
 def run_example(
