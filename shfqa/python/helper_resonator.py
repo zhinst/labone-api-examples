@@ -6,7 +6,7 @@
 import time
 import numpy as np
 
-import zhinst.deviceutils.shfqa as shfqa_utils
+import zhinst.utils.shfqa as shfqa_utils
 
 
 def set_trigger_loopback(daq, dev):
