@@ -1,19 +1,19 @@
 # Copyright 2023 Zurich Instruments AG
 
 """
-Demonstrate how to perform a multiband frequency sweep using the Sweeper Module.
+Demonstrate how to perform a frequency sweep using the Sweeper Module.
 
 Requirements:
-    * LabOne Version >= 23.02
+    * LabOne Version >= 23.06
     * Instruments:
-        1 SHFLI Instrument
+        1 GHFLI Instrument
 
 Usage:
     example_sweeper.py [options] <device_id>
     example_sweeper.py -h | --help
 
 Arguments:
-    <device_id>  The ID of the device [device_type: SHFLI]
+    <device_id>  The ID of the device [device_type: GHFLI]
 
 Options:
     -h --help                 Show this screen.
@@ -67,9 +67,8 @@ def run_example(
     sweeper = daq.sweep()
 
     # Sweep parameters:
-    start_frequency = 0  # [Hz]
-    stop_frequency = 8.5e9  # [Hz]
-    channel_index = 0
+    start_frequency = 0.1e9  # [Hz]
+    stop_frequency = 1.5e9  # [Hz]
     osc_index = 0
     # The minimum number of samples to accumulate per sweep point.
     num_samples = 100
@@ -79,10 +78,8 @@ def run_example(
     # Configure the Sweeper Module's parameters.
     # Set the device that will be used for the sweep - this parameter must be set first.
     sweeper.set("device", device)
-    # Specify that a multiband sweep of the specified channel and oscillator should be performed.
-    sweeper.set(
-        "gridnode", f"/{device}/multiband/sigins/{channel_index}/oscs/{osc_index}"
-    )
+    # Specify the frequency of the oscillator `osc_index` should be swept.
+    sweeper.set("gridnode", f"/{device}/oscs/{osc_index}/freq")
     # Set the `start` and `stop` values of the gridnode value interval we will use in the sweep.
     sweeper.set("start", start_frequency)
     sweeper.set("stop", stop_frequency)
