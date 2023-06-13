@@ -135,7 +135,6 @@ def run_example(
     samples = data[path]
 
     if plot:
-        # TODO(TP): are these indices names correct?
         row_index = 0
         col_index = 0
         plot_measured_data(samples[row_index][col_index])
