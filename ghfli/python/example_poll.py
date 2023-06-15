@@ -57,6 +57,9 @@ def run_example(
     # Enable the data transfer from demodulator 1 to data server
     daq.setInt(f"/{device}/demods/0/enable", 1)
 
+    # Enable the continuous acquisition of demodulator 1 data
+    daq.setInt(f"/{device}/demods/0/trigger/triggeracq", 0)
+
     # Time difference (s) between two consecutive timestamp ticks
     dt_device = daq.getDouble(f"/{device}/system/properties/timebase")
 
@@ -81,7 +84,8 @@ def run_example(
 
     # The data returned is a dictionary that reflects the node's path.
     # Note, the data could be empty if no data had arrived, e.g., if the demods
-    # were disabled, had demod rate 0 or no subscription were issued.
+    # were disabled, configured in triggered mode, had demod rate 0 or no
+    # subscription were issued.
     assert path in data, f"The data dictionary returned by poll has no key {path}."
 
     # Access the demodulator sample using the node's path.
@@ -94,35 +98,35 @@ def run_example(
         plot_amp_phase(demod_data, start_timestamp, dt_device)
 
 
-def are_contiguous(bursts):
-    """Check whether the bursts are contiguous
+def are_contiguous(vectors):
+    """Check whether the vectors are contiguous
 
     Args:
-      bursts (list): list of demodulator bursts as returned by poll()
+      vectors (list): list of demodulator vectors as returned by poll()
 
     Returns:
-        True if the bursts are contiguous, False otherwise.
+        True if the vectors are contiguous, False otherwise.
     """
     expected_next_timestamp = None
-    for burst in bursts:
-        burst_props = burst["properties"]
+    for vector in vectors:
+        vector_props = vector["properties"]
         if (
             expected_next_timestamp is not None
-            and burst_props["timestamp"] != expected_next_timestamp
+            and vector_props["timestamp"] != expected_next_timestamp
         ):
             return False
-        burst_len = len(burst["vector"]["x"])
+        vector_len = len(vector["vector"]["x"])
         expected_next_timestamp = (
-            burst_props["timestamp"] + burst_len * burst_props["dt"]
+            vector_props["timestamp"] + vector_len * vector_props["dt"]
         )
     return True
 
 
-def concatenate(bursts):
-    """Concatenate demodulator bursts
+def concatenate(vectors):
+    """Concatenate demodulator vectors
 
     Args:
-      bursts (list): list of demodulator bursts as returned by poll()
+      vectors (list): list of demodulator vectors as returned by poll()
 
     Returns:
         x, y, timestamp (np.array, np.array, np.array): the concatenated measurements
@@ -131,21 +135,21 @@ def concatenate(bursts):
     x = np.array([])
     y = np.array([])
     timestamp = np.array([])
-    for burst in bursts:
-        burst_x = burst["vector"]["x"]
-        burst_y = burst["vector"]["y"]
-        burst_props = burst["properties"]
-        burst_timestamp = (
-            burst_props["timestamp"] + np.arange(len(burst_x)) * burst_props["dt"]
+    for vector in vectors:
+        vector_x = vector["vector"]["x"]
+        vector_y = vector["vector"]["y"]
+        vector_props = vector["properties"]
+        vector_timestamp = (
+            vector_props["timestamp"] + np.arange(len(vector_x)) * vector_props["dt"]
         )
-        x = np.append(x, burst_x)
-        y = np.append(y, burst_y)
-        timestamp = np.append(timestamp, burst_timestamp)
+        x = np.append(x, vector_x)
+        y = np.append(y, vector_y)
+        timestamp = np.append(timestamp, vector_timestamp)
     return x, y, timestamp
 
 
-def plot_amp_phase(bursts, start_timestamp, dt_device):
-    x, y, timestamp = concatenate(bursts)
+def plot_amp_phase(vectors, start_timestamp, dt_device):
+    x, y, timestamp = concatenate(vectors)
     start_mask = timestamp >= start_timestamp
     x = x[start_mask]
     y = y[start_mask]
