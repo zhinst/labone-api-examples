@@ -338,7 +338,7 @@ title('\bf FFT of Scope records (triggering enabled)');
 grid on;
 box on;
 xlabel('Frequency (MHz)');
-fprintf('Number of scope records with triggering disabled (and FFT''d): %d.\n', length(records_fft));
+fprintf('Number of scope records with triggering disabled (and FFT''d): %d.\n', num_records_fft);
 
 end
 
