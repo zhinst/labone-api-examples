@@ -8,14 +8,14 @@ Demonstrate how to acquired triggered demodulator data.
 Requirements:
     * LabOne Version >= 23.06
     * Instruments:
-        1 x SHFLI
+        1 x GHFLI
 
 Usage:
     example_triggered_data_acquisition.py [options] <device_id>
     example_triggered_data_acquisition.py -h | --help
 
 Arguments:
-    <device_id>  The ID of the device [device_type: SHFLI]
+    <device_id>  The ID of the device [device_type: GHFLI]
 
 Options:
     -h --help                 Show this screen.
