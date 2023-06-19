@@ -11,8 +11,8 @@ Requirements:
         1 x SHFLI
 
 Usage:
-    example_poll.py [options] <device_id>
-    example_poll.py -h | --help
+    example_triggered_data_acquisition.py [options] <device_id>
+    example_triggered_data_acquisition.py -h | --help
 
 Arguments:
     <device_id>  The ID of the device [device_type: SHFLI]
