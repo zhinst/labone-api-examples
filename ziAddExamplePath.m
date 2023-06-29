@@ -7,7 +7,7 @@ function ziAddExamplePath
 % Get the name of the current function complete with full path
 mfile = which(mfilename);
 [pathstr, name] = fileparts(mfile);
-dirs = {'common' 'hdawg' 'hf2' 'mf' 'uhf'};
+dirs = {'common' 'hdawg' 'hf2' 'mf' 'uhf' 'shfli'};
 for dir = dirs
     driverPath = [pathstr filesep string(dir) filesep 'matlab'];
     addpath(char(strjoin(driverPath,'')))
