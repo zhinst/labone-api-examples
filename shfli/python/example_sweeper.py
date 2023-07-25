@@ -129,6 +129,8 @@ def run_example(
 
     sweeper.unsubscribe(path)
 
+    daq.disconnectDevice(device)
+
     # Note: data could be empty if no data arrived, e.g., if the demods were
     # disabled or had rate 0.
     assert path in data, f"No sweep data in data dictionary: it has no key {path}"
