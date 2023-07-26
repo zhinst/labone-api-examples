@@ -62,6 +62,8 @@ def run_example(
     daq.setDouble(f"/{device}/demods/{demod_index}/rate", data_rate)
     # Enable the data transfer from demodulator 1 to data server
     daq.setInt(f"/{device}/demods/{demod_index}/enable", 1)
+    # Enable the continuous acquisition of demodulator 1 data
+    daq.setInt(f"/{device}/demods/0/trigger/triggeracq", 0)
 
     # Create an instance of the Sweeper Module (SweeperModule class).
     sweeper = daq.sweep()
