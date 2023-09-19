@@ -6,7 +6,7 @@ Zurich Instruments LabOne Python API Example
 Demonstrate how to acquired triggered demodulator data.
 
 Requirements:
-    * LabOne Version >= 23.06
+    * LabOne Version >= 23.10
     * Instruments:
         1 x GHFLI
 
@@ -129,12 +129,12 @@ def assemble_bursts(vectors):
     """
 
     bursts = []
-    get_trigger_tag = lambda vector: vector["properties"]["triggertag"]
-    current_trigger_tag = None
+    get_trigger_index = lambda vector: vector["properties"]["triggerindex"]
+    current_trigger_index = None
     for vector in vectors:
-        if get_trigger_tag(vector) != current_trigger_tag:
+        if get_trigger_index(vector) != current_trigger_index:
             bursts.append(vector)
-            current_trigger_tag = get_trigger_tag(vector)
+            current_trigger_index = get_trigger_index(vector)
         else:
             vector_x = vector["vector"]["x"]
             vector_y = vector["vector"]["y"]
@@ -155,7 +155,7 @@ def is_complete(burst):
     """
 
     num_samples = len(burst["vector"]["x"])
-    expected_num_samples = burst["properties"]["triggerlength"]
+    expected_num_samples = burst["properties"]["burstlength"]
     return num_samples == expected_num_samples
 
 
