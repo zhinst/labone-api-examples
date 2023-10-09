@@ -1,6 +1,6 @@
 %% Description -----------------------------------------------------------
 % Copyright 2023 Zurich Instruments AG
-% This example demonstrates how to poll data from an SHFLI demodulator.
+% This example demonstrates how to poll data from a GHFLI demodulator.
 
 % Clear and close everything
 close all; clear; clc;
@@ -43,7 +43,7 @@ ziDAQ('setDouble', ['/' device '/demods/0/rate'], data_rate);
 % Enable continuous data streaming of demodulator 1
 ziDAQ('setInt', ['/' device '/demods/0/trigger/triggeracq'], 0);
 
-% Enable the data transfer from demodulator 1 to data server
+% Enable data transfer from demodulator 1 to data server
 ziDAQ('setInt', ['/' device '/demods/0/enable'], 1);
 
 %% Initial variables -----------------------------------------------------
