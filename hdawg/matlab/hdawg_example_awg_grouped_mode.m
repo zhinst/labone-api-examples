@@ -7,7 +7,7 @@ function hdawg_example_awg_grouped_mode(device_id)
 %
 % hdawg_example_awg_commandtable(device_id)
 %
-% device_id should be a string, e.g., 'dev8001' or 'hdawg-dev8001'.
+% device_id should be a string, e.g., 'dev1000' or 'hdawg-dev1000'.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTES
@@ -39,7 +39,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev8001'' or ''hdawg-dev8001''.'])
+           'e.g. ''dev1000'' or ''hdawg-dev1000''.'])
 end
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.
 if ~(exist('ziDAQ', 'file') == 3) && ~(exist('ziCreateAPISession', 'file') == 2)

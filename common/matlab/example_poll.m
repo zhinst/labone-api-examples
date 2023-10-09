@@ -4,8 +4,8 @@ function sample = example_poll(device_id, varargin)
 % USAGE DATA = EXAMPLE_POLL(DEVICE_ID)
 %
 % Poll demodulator sample data from the device specified by DEVICE_ID using
-% ziDAQServer's poll method. DEVICE_ID should be a string, e.g., 'dev2006' or
-% 'uhf-dev2006'.
+% ziDAQServer's poll method. DEVICE_ID should be a string, e.g., 'dev1000' or
+% 'uhf-dev1000'.
 %
 % ziDAQServer's poll method allows the user to obtain ('poll') demodulator
 % data. Data can be obtained continuously in a loop. If asynchronous data
@@ -33,7 +33,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev2006'' or ''uhf-dev2006''.'])
+           'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

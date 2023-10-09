@@ -5,7 +5,7 @@ function [data_no_trig, data_trig, data_fft] = hf2_example_scope(device_id, vara
 %
 % Get assembled scope shots from the device specified by DEVICE_ID using
 % the Scope Module. DEVICE_ID should be a string, e.g.,
-% 'dev1023' or 'uhf-dev1023'.
+% 'dev1000' or 'uhf-dev1000'.
 %
 % REQUIRES a BNC cable between the signal input and output channels the scope
 % is configured for.
@@ -41,7 +41,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev118'' or ''hf2-dev118''.'])
+           'e.g. ''dev1000'' or ''hf2-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

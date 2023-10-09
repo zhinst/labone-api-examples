@@ -5,7 +5,7 @@ function [data_no_trig, data_trig, data_fft] = example_scope(device_id)
 %
 % Get assembled scope shots from the device specified by DEVICE_ID using
 % the Scope Module. DEVICE_ID should be a string, e.g.,
-% 'dev2006' or 'uhf-dev2006'.
+% 'dev1000' or 'uhf-dev1000'.
 %
 % NOTE This example can only be ran on instruments that support API Level 5
 % and higher, e.g., UHF and MF. HF2 instruments are not supported, see the
@@ -32,7 +32,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev2006'' or ''uhf-dev2006''.'])
+           'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.
