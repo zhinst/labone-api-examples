@@ -8,9 +8,9 @@ close all; clear; clc;
 %% User settings ---------------------------------------------------------
 
 % Serial number of instrument in its rear panel.
-device = 'dev12027';
+device = 'dev10000';
 
-% Interface between the instrument and the host computer: 'USB' or '1GbE'
+% Interface between the instrument and the host computer: '1GbE'
 interface = '1GbE';
 
 % IP address of LabOne data server host, e.g., 'localhost' or '169.254.1.2'
@@ -29,7 +29,7 @@ clear ziDAQ
 
 % Create an API session to the data server
 port = 8004;        % Data server port to communicate
-api_level = 6;      % Maximum API level supported by SHFLI
+api_level = 6;      % Maximum API level supported by the instrument
 ziDAQ('connect', host, port, api_level);
 
 % Establish a connection between data server and instrument
@@ -39,6 +39,9 @@ ziDAQ('connectDevice', device, interface);
 
 % Adjust the data rate of demodulator 1
 ziDAQ('setDouble', ['/' device '/demods/0/rate'], data_rate);
+
+% Enable continuous data streaming of demodulator 1
+ziDAQ('setInt', ['/' device '/demods/0/trigger/triggeracq'], 0);
 
 % Enable the data transfer from demodulator 1 to data server
 ziDAQ('setInt', ['/' device '/demods/0/enable'], 1);
