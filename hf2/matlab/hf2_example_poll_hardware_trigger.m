@@ -6,8 +6,8 @@ function sample_segments = hf2_example_poll_hardware_trigger(device_id, varargin
 % Poll demodulator sample data from the device specified via DEVICE_ID using
 % ziDAQServer's poll method in combination with a hardware trigger, ie, only
 % send data to the PC when the DIO's 0th bit is high (configured via
-% /devN/demods/M/trigger). DEVICE_ID should be a string, e.g., 'dev118' or
-% 'hf2-dev118'.
+% /devN/demods/M/trigger). DEVICE_ID should be a string, e.g., 'dev1000' or
+% 'hf2-dev1000'.
 %
 % ziDAQServer's poll method allows the user to obtain ('poll') data he has
 % subscribed to. Data can be obtained continuously in a loop. If asynchronous
@@ -37,7 +37,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev118'' or ''hf2-dev118''.'])
+           'e.g. ''dev1000'' or ''hf2-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

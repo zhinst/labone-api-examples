@@ -5,7 +5,7 @@ function r = example_connect(device_id)
 %
 % Connect to the Zurich Instruments device specified by DEVICE_ID, obtain a
 % single demodulator sample and calculate its RMS amplitude R. DEVICE_ID
-% should be a string, e.g., 'dev2006' or 'uhf-dev2006'.
+% should be a string, e.g., 'dev1000' or 'uhf-dev1000'.
 %
 % NOTE This is intended to be a simple example demonstrating how to connect
 % to a Zurich Instruments device from ziPython. In most cases, data acquistion
@@ -32,7 +32,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev2006'' or ''uhf-dev2006''.'])
+           'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

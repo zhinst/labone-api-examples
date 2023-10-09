@@ -13,7 +13,7 @@ function [data, config] = example_data_acquisition_edge(device_id, varargin)
 %
 % Record bursts of demodulator sample data using a software trigger
 % from ziDAQ's 'Data Acquisition Module' module from the device specified by DEVICE_ID,
-% e.g., 'dev2006' or 'uhf-dev2006'.
+% e.g., 'dev1000' or 'uhf-dev1000'.
 %
 % The data acquisition module implements software triggering
 % analogously to the types of triggering found in spectroscopes.
@@ -44,7 +44,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev2006'' or ''uhf-dev2006''.'])
+           'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

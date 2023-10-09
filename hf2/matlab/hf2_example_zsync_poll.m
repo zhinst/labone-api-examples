@@ -11,7 +11,7 @@ function data = hf2_example_zsync_poll()
 % HF2s connected to the same PC via USB. This example assumes that the HF2
 % with the lowest serial number is the leader and the HF2 with the next serial
 % number is the follower. The serial number is the number contained in the
-% device's ID, e.g., 'dev123'.  In order to correctly use the ZSync
+% device's ID, e.g., 'dev1000'.  In order to correctly use the ZSync
 % functionality, these HF2s must be configured and power-cycled as following:
 %
 %   1. Power-off both follower and leader. Connect zsync cables between follower and
@@ -66,7 +66,7 @@ if server_version < 28460
   return
 end
 
-% Get the device's names (e.g. 'dev234')
+% Get the device's names (e.g. 'dev1000')
 devices = ziDevices();
 if length(devices) ~= 2
   fprintf('Detected %d devices, this example requires 2 HF2 devices connected to the same host PC.\n', length(devices));

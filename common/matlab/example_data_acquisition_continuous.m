@@ -5,7 +5,7 @@ function [data] = example_data_acquisition_continuous(device_id, varargin)
 %
 % Record demodulator sample data "continuously" (without triggering) using the a
 % Software using the Data Acquisition Module from the device specified by
-% DEVICE_ID, e.g., 'dev2006' or 'uhf-dev2006'. All acquired data is returned in
+% DEVICE_ID, e.g., 'dev1000' or 'uhf-dev1000'. All acquired data is returned in
 % DATA: Do not increase TOTAL_DURATION without removing this continuous save.
 %
 % USAGE DATA = EXAMPLE_DATA_ACQUISITION_CONTINUOUS(DEVICE_ID, 'FILENAME', FILENAME)
@@ -36,7 +36,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev2006'' or ''uhf-dev2006''.'])
+           'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.
