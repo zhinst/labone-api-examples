@@ -7,14 +7,14 @@ function example_multidevice_data_acquisition(device_ids, varargin)
 %
 % USAGE EXAMPLE_MULTIDEVICE_DATA_ACQUISITION({LEADER_ID, FOLLOWER_ID})
 %
-% LEADER_ID and FOLLOWER_ID should be a string, e.g. 'dev2006' or 'uhf-dev2006'.
+% LEADER_ID and FOLLOWER_ID should be a string, e.g. 'dev1000' or 'uhf-dev1000'.
 %
 % NOTE This example can only be run when either two or more UHF or 2 or more MF instruments
 % are available.
 %
 % Arguments:
 %   device_ids (char cell array): The IDs of the devices to run the example with. For
-%     example, {'dev3352','dev3562'}. The first device is treated as the
+%     example, {'dev1000','dev2000'}. The first device is treated as the
 %     leader device.
 %   synchronize (bool, optional): Specify if multi-device synchronization will
 %     be started and stopped before and after the data acquisition.
@@ -70,10 +70,10 @@ clear ziDAQ;
 if ~exist('device_ids', 'var')
     error(['No list of device_ids specified. The first argument to the ' ...
            'example should be the device IDs on which to run the example, ' ...
-           'e.g. {''dev2005'', ''dev2006''}. Two devices are required'])
+           'e.g. {''dev1000'', ''dev2000''}. Two devices are required'])
 end
 if length(device_ids) < 2
-    error(['Two device IDs must be specified. e.g. {''dev2005'', ''dev2006''}']);
+    error(['Two device IDs must be specified. e.g. {''dev1000'', ''dev2000''}']);
 end
 leader_id = device_ids{1};
 follower_id = device_ids{2};

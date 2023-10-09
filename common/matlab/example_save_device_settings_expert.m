@@ -5,7 +5,7 @@ function filename_full_path = example_save_device_settings_expert(device_id, var
 %
 % Demonstrate how to save and load Zurich Instruments device settings
 % asynchronously using the ziDeviceSettings class from the device specified by
-% DEVICE_ID, e.g., 'dev2006' or 'uhf-dev2006'.
+% DEVICE_ID, e.g., 'dev1000' or 'uhf-dev1000'.
 %
 % Connect to a Zurich Instruments instrument, save the instrument's settings
 % to file, toggle the signal output enable and reload the settings file.
@@ -33,7 +33,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev2006'' or ''uhf-dev2006''.'])
+           'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

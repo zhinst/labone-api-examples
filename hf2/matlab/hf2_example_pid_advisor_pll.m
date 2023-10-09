@@ -31,7 +31,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
   error(['No value for device_id specified. The first argument to the ' ...
     'example should be the device ID on which to run the example, ' ...
-    'e.g. ''dev1006'' or ''uhf-dev1006''.'])
+    'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

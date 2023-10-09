@@ -5,7 +5,7 @@ function [data] = example_data_acquisition_grid(device_id, varargin)
 %
 % Record demodulator sample data and align it in a 2D-matrix using a
 % edge trigger using ziDAQ's ' dataAcquisitionModule' from the device
-% specified by DEVICE_ID, e.g., 'dev2006' or 'uhf-dev2006'.
+% specified by DEVICE_ID, e.g., 'dev1000' or 'uhf-dev1000'.
 %
 % The Data Acquisition Module implements software triggering analogously to
 % the types of triggering found in spectroscopes. The Data Acquisition Module has
@@ -43,7 +43,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev2006'' or ''uhf-dev2006''.'])
+           'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

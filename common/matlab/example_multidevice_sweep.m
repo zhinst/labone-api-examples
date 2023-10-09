@@ -19,7 +19,7 @@ function data = example_multidevice_sweep(device_ids, varargin)
 %
 % Arguments:
 %   device_ids (char cell array): The IDs of the devices to run the example with. For
-%     example, {'dev3352','dev3562'}.
+%     example, {'dev1000','dev2000'}.
 %   amplitude (float, optional): The amplitude to set on the signal output.
 %   synchronize (bool, optional): Specify if multi-device synchronization will
 %     be started and stopped before and after the sweep
@@ -67,7 +67,7 @@ clear ziDAQ;
 if ~exist('device_ids', 'var')
     error(['No list of device_ids specified. The first argument to the ' ...
            'example should be the device IDs on which to run the example, ' ...
-           'e.g. ''dev2006'' or ''uhf-dev2006''.'])
+           'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

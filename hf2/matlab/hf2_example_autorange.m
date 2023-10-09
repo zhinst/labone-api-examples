@@ -6,7 +6,7 @@ function sigin_range_auto = hf2_example_autorange(device_id, varargin)
 % Find and set a suitable value SIGIN_RANGE for a signal input channel range
 % based on the values of the /devX/status/adc{0, 1}min and
 % /devX/status/min/adc{0, 1}max nodes. DEVICE_ID specifies the HF2 device
-% (DEVICE_ID should be a string, e.g., 'dev118' or 'hf2-dev118').
+% (DEVICE_ID should be a string, e.g., 'dev1000' or 'hf2-dev1000').
 %
 % Returns:
 %
@@ -37,7 +37,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev118'' or ''hf2-dev118''.'])
+           'e.g. ''dev1000'' or ''hf2-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

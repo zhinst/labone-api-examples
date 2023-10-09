@@ -5,7 +5,7 @@ function data = example_poll_impedance(device_id, varargin)
 % USAGE DATA = EXAMPLE_POLL_IMPEDANCE(DEVICE_ID)
 %
 % The example demonstrates how to poll impedance data.
-% DEVICE_ID should be a string, e.g., 'dev3300'.
+% DEVICE_ID should be a string, e.g., 'dev1000'.
 %
 % NOTE Additional configuration: Connect Impedance Testfixture and attach a 1kOhm
 % resistor
@@ -28,7 +28,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev3300''.'])
+           'e.g. ''dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.

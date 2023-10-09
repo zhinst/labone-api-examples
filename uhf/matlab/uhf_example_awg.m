@@ -5,7 +5,7 @@ function data = uhf_example_awg(device_id)
 %
 % USAGE DATA = UHF_EXAMPLE_AWG_SOURCEFILE(DEVICE_ID)
 %
-% DEVICE_ID should be a string, e.g., 'dev2006' or 'uhf-dev2006'.
+% DEVICE_ID should be a string, e.g., 'dev1000' or 'uhf-dev1000'.
 % DATA contains the measured scope shot of AWG signal.
 %
 % NOTE This example can only be ran on UHF instruments with the AWG option
@@ -32,7 +32,7 @@ clear ziDAQ;
 if ~exist('device_id', 'var')
     error(['No value for device_id specified. The first argument to the ' ...
            'example should be the device ID on which to run the example, ' ...
-           'e.g. ''dev2006'' or ''uhf-dev2006''.'])
+           'e.g. ''dev1000'' or ''uhf-dev1000''.'])
 end
 
 % Check the ziDAQ MEX (DLL) and Utility functions can be found in Matlab's path.
