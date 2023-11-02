@@ -196,7 +196,7 @@ fclose(fid);
 ziDAQ('set', h, 'compiler/sourcestring', awg_program);
 % Note: when using an AWG program from a source file (and only then), the compiler needs to
 % be started explicitly with awgModule.set('compiler/start', 1)
-timeout = 5;
+timeout = 10;
 time_start = tic;
 while ziDAQ('getInt', h, 'compiler/status') == -1
     pause(0.1);
@@ -220,7 +220,7 @@ else
         disp(['Compiler warning: ' char(compilerString)]);
     end
     % Wait for waveform upload to finish
-    timeout = 5;
+    timeout = 10;
     while ziDAQ('getDouble', h, 'progress') < 1
         pause(0.1);
         fprintf('Uploading waveform, progress: %.1f%%.\n', 100*ziDAQ('getDouble', h, 'progress'));

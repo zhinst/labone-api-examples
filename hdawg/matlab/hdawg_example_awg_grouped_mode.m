@@ -163,7 +163,7 @@ disp('Starting compilation of the AWG sequence.');
 ziDAQ('set', awgModule, 'compiler/sourcestring', awg_program);
 
 % Wait until compilation is done
-timeout = 10;
+timeout = 20;
 time_start = tic;
 while ziDAQ('getInt', awgModule, 'compiler/status') == -1
     if toc(time_start) > timeout
@@ -189,7 +189,7 @@ if compilerStatus == 2
 end
 
 % Wait for sequence upload to finish
-timeout = 10;
+timeout = 20;
 start_time = tic;
 for awg_core = awg_cores
     awg_c_s = num2str(awg_core);
@@ -247,7 +247,7 @@ for awg_core = awg_cores
         if ct_status == 1
             % Upload successful
             break
-        elseif status == 8
+        elseif ct_status == 8
             % Error in command table
             error('The upload of the command table failed.')
         end
