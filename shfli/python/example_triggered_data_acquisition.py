@@ -6,7 +6,7 @@ Zurich Instruments LabOne Python API Example
 Demonstrate how to acquired triggered demodulator data.
 
 Requirements:
-    * LabOne Version >= 23.10
+    * LabOne Version >= 24.01
     * Instruments:
         1 x SHFLI
 
@@ -35,6 +35,8 @@ import time
 import numpy as np
 import zhinst.utils
 import matplotlib.pyplot as plt
+from timeit import default_timer as timer
+import importlib.util
 
 
 def run_example(
@@ -50,146 +52,147 @@ def run_example(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
 
+    """ Configure the device """
+    demod_index = 0
+
     # Use a software trigger for the sake of the example
     software_trigger = 1024
-    daq.setInt(f"/{device}/demods/0/trigger/source", software_trigger)
+    daq.setInt(f"/{device}/demods/{demod_index}/trigger/source", software_trigger)
 
     # Enable the triggered acquisition
-    daq.setInt(f"/{device}/demods/0/trigger/triggeracq", 1)
+    daq.setInt(f"/{device}/demods/{demod_index}/trigger/triggeracq", 1)
 
     # Set the number of samples to be measured following a trigger event
     burst_length = 256
-    daq.setInt(f"/{device}/demods/0/burstlen", burst_length)
+    daq.setInt(f"/{device}/demods/{demod_index}/burstlen", burst_length)
 
     # Adjust the data rate of demodulator 1
     data_rate = 2048  # [Sa/s]
-    daq.setDouble(f"/{device}/demods/0/rate", data_rate)
+    daq.setDouble(f"/{device}/demods/{demod_index}/rate", data_rate)
 
     # Enable the data transfer from demodulator 1 to data server
-    daq.setInt(f"/{device}/demods/0/enable", 1)
+    daq.setInt(f"/{device}/demods/{demod_index}/enable", 1)
 
     # Time difference (s) between two consecutive timestamp ticks
     dt_device = daq.getDouble(f"/{device}/system/properties/timebase")
 
+    """ Configure the DAQ Module """
+    daq_module = daq.dataAcquisitionModule()
+    # Set the device that will be used for the trigger - this parameter must be set.
+    daq_module.set("device", device)
+    # Configure the daq module to look out for bursts coming from the device (triggering is handled by the device)
+    # The option can either be `burst_trigger` or 9
+    daq_module.set("type", "burst_trigger")
+    # No offset for the trigger position
+    daq_module.set("delay", 0.0)
+    # Set grid mode to be 'exact' or 4, meaning no interpolation from the daq module
+    daq_module.set("grid/mode", "exact")
+    # Set the grid columns to be equal to the burst length, given that the grid/mode is exact
+    daq_module.set("grid/cols", burst_length)
+    # Set the number of expected triggers to be acquired
+    trigger_count = 3
+    daq_module.set("count", trigger_count)
+
     # Subscribe to the signal path of demodulator 1 for acquisition
-    path = f"/{device}/demods/0/sample"
-    daq.subscribe(path)
+    trigger_signal_path = f"/{device}/demods/{demod_index}/sample.r"
+    daq_module.set("triggernode", trigger_signal_path)
+    daq_module.subscribe(trigger_signal_path)
+    daq_module.execute()
 
-    # Issue a first software trigger
-    daq.setInt(f"/{device}/system/swtriggers/0/single", 1)
+    # Issue multiple triggers according to trigger_count value
+    for _ in range(trigger_count):
+        # Issue the software trigger
+        daq.setInt(f"/{device}/system/swtriggers/0/single", 1)
 
-    # Let the device process the trigger before triggering again
-    time.sleep(1)
+        # Let the device process the trigger before triggering again
+        time.sleep(1)
 
-    # Issue a second software trigger
-    daq.setInt(f"/{device}/system/swtriggers/0/single", 1)
+        # Note: Certain triggers could be missed depending on circumstances such as the pause between issuing new triggers.
+        # As a result the number of triggers retrieved might be less than the trigger_count
 
-    # Poll the subscribed data from the data server. Poll will block and record
-    # for poll_duration seconds.
-    poll_duration = 1  # [s]
-    poll_timeout = 500  # [ms]
-    data = daq.poll(poll_duration, poll_timeout, flat=True)
+    start = timer()
+    while daq_module.progress()[0] < 1.0 and not daq_module.finished():
+        time.sleep(1)
+        print(f"Progress {float(daq_module.progress()[0]) * 100:.2f} %\r")
+        now = timer()
+        if now - start > 60:  # timeout is 60 seconds
+            print("The DAQ module did not finish in the required time!")
+            return
 
-    # Unsubscribe from all paths
-    daq.unsubscribe("*")
+    # Retrieve the data processed by the daq module
+    data = daq_module.read(flat=True)
 
-    # Disconnect the device from data server
-    daq.disconnectDevice(device)
+    # Clear the session
+    daq_module.clear()
+
+    # Disconnects from the data server
+    daq.disconnect()
 
     # The data returned is a dictionary that reflects the node's path.
     # Note, the data could be empty if no data had arrived, e.g., if the demods
     # were disabled, had demod rate 0, in the absence of trigger or no subscription
     # were issued.
-    assert path in data, f"The data dictionary returned by poll has no key {path}."
+    assert (
+        trigger_signal_path in data
+    ), f"The data dictionary returned by poll has no key {trigger_signal_path}."
 
     # Access the demodulator sample using the node's path
-    demod_data = data[path]
+    demod_data = data[trigger_signal_path]
 
-    # Assemble the demodulator vectors into bursts (one burst corresponds to one trigger)
-    bursts = assemble_bursts(demod_data)
-
-    for burst in bursts:
-        if not is_complete(burst):
-            print(
-                "Warning: A burst is not complete, is the data rate too high or the poll duration too short?"
-            )
+    # Check that each burst has the expected size based on the grid columns
+    for burst in demod_data:
+        grid_cols = burst["header"]["gridcols"][0]
+        if burst["value"].shape[1] != grid_cols:
+            print("Warning: A burst is not complete")
 
     if plot:
-        plot_amp_phase(bursts, dt_device)
-
-
-def assemble_bursts(vectors):
-    """Assemble bursts from demodulator vector data returned by poll()
-
-    Args:
-      vectors (list): list of demodulator vectors as returned by poll()
-
-    Returns:
-       bursts (list): list of assembled demodulator bursts
-    """
-
-    bursts = []
-    get_trigger_index = lambda vector: vector["properties"]["triggerindex"]
-    current_trigger_index = None
-    for vector in vectors:
-        if get_trigger_index(vector) != current_trigger_index:
-            bursts.append(vector)
-            current_trigger_index = get_trigger_index(vector)
+        # check if plotly library is installed, otherwise use matplotlib
+        plotly_check = importlib.util.find_spec("plotly")
+        if plotly_check:
+            plot_plotly(demod_data, dt_device)
         else:
-            vector_x = vector["vector"]["x"]
-            vector_y = vector["vector"]["y"]
-            current_burst_vector = bursts[-1]["vector"]
-            current_burst_vector["x"] = np.append(current_burst_vector["x"], vector_x)
-            current_burst_vector["y"] = np.append(current_burst_vector["y"], vector_y)
-    return bursts
+            plot_matplotlib(demod_data, dt_device)
 
 
-def is_complete(burst):
-    """Check whether the burst is complete
-
-    Args:
-      bursts (list): a demodulator burst as returned by assemble_bursts()
-
-    Returns:
-        True if the burst is complete, False otherwise.
-    """
-
-    num_samples = len(burst["vector"]["x"])
-    expected_num_samples = burst["properties"]["burstlength"]
-    return num_samples == expected_num_samples
+def filter_data(burst, dt_device):
+    nonzero_indices = np.nonzero(burst["timestamp"])
+    times = burst["timestamp"][nonzero_indices]
+    times = (times - times[0]) * dt_device
+    return times, burst["value"][nonzero_indices]
 
 
-def plot_amp_phase(bursts, dt_device):
-    """Plot demodulator bursts
-
-    Args:
-      bursts (list): list of demodulator bursts as returned by assemble_bursts()
-    """
-
-    _, (ax1, ax2) = plt.subplots(2, 1)
-
-    for burst in bursts:
-        x = burst["vector"]["x"]
-        y = burst["vector"]["y"]
-        props = burst["properties"]
-        timestamps = props["timestamp"] + np.arange(len(x)) * props["dt"]
-
-        initial_timestamp = bursts[0]["properties"]["timestamp"]
-        time = dt_device * (timestamps - initial_timestamp)
-        r = np.abs(x + 1j * y)
-        phi = np.angle(x + 1j * y)
-
-        ax1.plot(time, r)
-        ax2.plot(time, phi)
-
-    ax1.grid()
-    ax1.set_ylabel(r"Demodulator R ($V_\mathrm{RMS}$)")
-
-    ax2.grid()
-    ax2.set_xlabel("Time ($s$)")
-    ax2.set_ylabel(r"Demodulator Phi (radians)")
-
+def plot_matplotlib(demod_data, dt_device):
+    for idx, burst in enumerate(demod_data):
+        times, values = filter_data(burst, dt_device)
+        plt.plot(times, values, label="Burst " + str(idx + 1))
+    plt.legend(loc="upper left")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Signal (V)")
     plt.show()
+
+
+def plot_plotly(demod_data, dt_device):
+    try:
+        import plotly.graph_objects as go
+    except ImportError:
+        print(
+            "'plotly' module was not found! Check that the module is installed in your python environment!"
+        )
+        return
+    fig = go.Figure()
+    for idx, burst in enumerate(demod_data):
+        times, values = filter_data(burst, dt_device)
+        fig.add_trace(
+            go.Scatter(
+                x=times,
+                y=values,
+                name="Burst " + str(idx + 1),
+                visible=True,
+            )
+        )
+    fig.update_xaxes(title_text="Time (s)")
+    fig.update_yaxes(title_text="Signal (V)")
+    fig.show()
 
 
 if __name__ == "__main__":
