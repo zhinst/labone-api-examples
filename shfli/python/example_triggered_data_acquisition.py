@@ -92,10 +92,12 @@ def run_example(
     # Set the number of expected triggers to be acquired
     trigger_count = 3
     daq_module.set("count", trigger_count)
+    # Set the DAQ module to trigger on a change of trigger index, i.e. on HW triggers.
+    triggernode_path = f"/{device}/demods/{demod_index}/sample.trigindex"
+    daq_module.set("triggernode", triggernode_path)
 
     # Subscribe to the signal path of demodulator 1 for acquisition
     trigger_signal_path = f"/{device}/demods/{demod_index}/sample.r"
-    daq_module.set("triggernode", trigger_signal_path)
     daq_module.subscribe(trigger_signal_path)
     daq_module.execute()
 
