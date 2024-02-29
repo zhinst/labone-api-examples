@@ -80,7 +80,7 @@ def run_example(
     daq.unsubscribe("*")
 
     # Disconnect the device from data server
-    daq.disconnectDevice(device)
+    # daq.disconnectDevice(device)
 
     # The data returned is a dictionary that reflects the node's path.
     # Note, the data could be empty if no data had arrived, e.g., if the demods

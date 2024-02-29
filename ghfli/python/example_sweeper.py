@@ -128,7 +128,8 @@ def run_example(
 
     sweeper.unsubscribe(path)
 
-    daq.disconnectDevice(device)
+    # Disconnect the device from data server
+    # daq.disconnectDevice(device)
 
     # Note: data could be empty if no data arrived, e.g., if the demods were
     # disabled or had rate 0.
