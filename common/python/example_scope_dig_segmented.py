@@ -256,14 +256,23 @@ def run_example(
     scopeModule = daq.scopeModule()
     # 'mode' : Scope data processing mode.
     # 0 - Pass through scope segments assembled, returned unprocessed, non-interleaved.
-    # 1 - Moving average, scope recording assembled, scaling applied, averaged, if averaging is
-    #     enabled.
+    # 1 - Time domain with averaging, scope recording assembled, scaling applied, averaged, if averaging is
+    #     enabled, using the method set by 'averager/method'.
     # 2 - Not yet supported.
     # 3 - As for mode 1, except an FFT is applied to every segment of the scope recording.
     scopeModule.set("mode", 1)
-    # 'averager/weight' : Average the scope shots using an exponentially weighted moving average of
-    # the previous 'weight' shots.
-    scopeModule.set("averager/weight", 1)
+    # 'averager/method' : Averaging method to use.
+    #   0 - exponential averaging using the weight specified by 'averager/weight'.
+    #   1 - uniform averaging. The 'averager/weight' value has no effect but must be greater than 1 to enable everaging.
+    scopeModule.set("averager/method", 0)
+    # 'averager/weight' : Averager behaviour for exponential averaging method.
+    #   weight=1 - don't average.
+    #   weight>1 - average the scope record shots using weight value. Applies only to the exponential averaging methood.
+    scopeModule.set("averager/weight", 10)
+    # 'averager/enable' : Activate averaging
+    #   0 - disabled
+    #   1 - enabled
+    scopeModule.set("averager/enable", 0)
     # 'historylength' : The number of scope records to keep in the Scope Module's memory, when more
     #  records arrive in the Module from the device the oldest records are overwritten.
     scopeModule.set("historylength", historylength)

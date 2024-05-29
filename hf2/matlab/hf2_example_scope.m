@@ -189,16 +189,24 @@ scopeModule = ziDAQ('scopeModule');
 % 'mode' : Scope data processing mode.
 % 0 - Pass through scope segments assembled, returned unprocessed,
 %     non-interleaved.
-% 1 - Moving average, scope recording assembled, scaling applied, averaged,
-%     if averaging is enabled.
+% 1 - Time domain with averaging, scope recording assembled, scaling applied, averaged, if averaging is
+%     enabled, using the method set by 'averager/method'.
 % 2 - Not yet supported.
 % 3 - As for mode 1, except an FFT is applied to every segment of the scope
 %     recording.
 ziDAQ('set', scopeModule, 'mode', 1);
-% 'averager/weight' : Averager behaviour.
+% 'averager/method' : Averaging method to use.
+%   0 - exponential averaging using the weight specified by 'averager/weight'.
+%   1 - uniform averaging. The 'averager/weight' value has no effect but must be greater than 1 to enable everaging.
+ziDAQ('set', scopeModule, 'averager/method', 0)
+% 'averager/weight' : Averager behaviour for exponential averaging method.
 %   weight=1 - don't average.
 %   weight>1 - average the scope record segments using an exponentially weighted moving average.
-ziDAQ('set', scopeModule, 'averager/weight', 1);
+ziDAQ('set', scopeModule, 'averager/weight', 10);
+% 'averager/enable' : Activate averaging
+%   0 - disabled
+%   1 - enabled
+ziDAQ('set', scopeModule, 'averager/enable', 0);
 % 'historylength' : The number of scope records to keep in
 %   the Scope Module's memory, when more records arrive in the Module
 %   from the device the oldest records are overwritten.

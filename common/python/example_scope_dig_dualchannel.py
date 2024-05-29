@@ -34,6 +34,14 @@ Options:
     --scope_length LENGTH        The length of the scope segment(s) to record
                                  (/dev..../scopes/0/length). [default: 4096]
     -t --scope_trigholdoff TIME  The scope hold-off time (s). [default: 0.050]
+    --enable_averaging VALUE     Enable averaging:
+                                    0 - disabled, 
+                                    1 - enabled.
+                                 [default: 0]
+    --averaging_method VALUE     Select the averaging method:
+                                    0 - exponential averaging,
+                                    1 - uniform averaging.
+                                 [default: 0]
     -a --averager_weight VALUE   Value to use for the averager/weight parameter.
                                  [default: 1]
     -l --historylength LENGTH    Value to use for the historylength parameter.
@@ -66,7 +74,9 @@ def run_example(
     plot: bool = True,
     scope_length: int = 2**12,
     scope_trigholdoff: float = 0.050,
-    averager_weight: int = 1,
+    enable_averaging: int = 0,
+    averaging_method: int = 0,
+    averager_weight: int = 10,
     historylength: int = 20,
     min_num_records: int = 20,
 ):
@@ -210,15 +220,23 @@ def run_example(
     scopeModule = daq.scopeModule()
     # 'mode' : Scope data processing mode.
     # 0 - Pass through scope segments assembled, returned unprocessed, non-interleaved.
-    # 1 - Moving average, scope recording assembled, scaling applied, averaged,
-    #     if averaging is enabled.
+    # 1 - Time domain with averaging, scope recording assembled, scaling applied, averaged, if averaging is
+    #     enabled, using the method set by 'averager/method'.
     # 2 - Not yet supported.
     # 3 - As for mode 1, except an FFT is applied to every segment of the scope recording.
     scopeModule.set("mode", 1)
-    # 'averager/weight' : Averager behaviour.
+    # 'averager/method' : Averaging method to use.
+    #   0 - exponential averaging using the weight specified by 'averager/weight'.
+    #   1 - uniform averaging. The 'averager/weight' value has no effect but must be greater than 1 to enable everaging.
+    scopeModule.set("averager/method", averaging_method)
+    # 'averager/weight' : Averager behaviour for exponential averaging method.
     #   weight=1 - don't average.
-    #   weight>1 - average the scope record shots using an exponentially weighted moving average.
+    #   weight>1 - average the scope record shots using weight value. Applies only to the exponential averaging methood.
     scopeModule.set("averager/weight", averager_weight)
+    # 'averager/enable' : Activate averaging
+    #   0 - disabled
+    #   1 - enabled
+    scopeModule.set("averager/enable", enable_averaging)
     # 'historylength' : The number of scope records to keep in the Scope Module's memory,
     #                   when more records arrive in the Module from the device the oldest records
     #                   are overwritten.
