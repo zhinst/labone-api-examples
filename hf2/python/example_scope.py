@@ -219,7 +219,7 @@ def run_example(
     # 'averager/weight' : Averager behaviour for exponential averaging method.
     #   weight=1 - don't average.
     #   weight>1 - average the scope record shots using weight value. Applies only to the exponential averaging methood.
-    scopeModule.set("averager/weight", averager_weight)
+    scopeModule.set("averager/weight", averaging_weight)
     # 'averager/enable' : Activate averaging
     #   0 - disabled
     #   1 - enabled
