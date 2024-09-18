@@ -20,7 +20,7 @@ See the following sections for a detailed description on how to use the examples
 
 ----
 📒 repository
-  📂 common <1>
+  📂 hf2-mf-uhf <1>
     📂 <api> <3>
       📄 example_*
   📂 <instrument> <2>
@@ -29,7 +29,7 @@ See the following sections for a detailed description on how to use the examples
   📂 utils <4>
     📂 <api> <3>
 ----
-<1> The `common` directory contains examples valid for all instruments.
+<1> The `hf2-mf-uhf` directory contains examples valid for HF2, MF and UHF instruments.
 <2> Instrument specific examples are located in the respective directory
 <3> Each directory is separated into the different APIs (e.g. python)
 <4> General helper functions are located in the `utils` directory
