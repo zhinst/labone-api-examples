@@ -37,14 +37,18 @@ ziDAQ('connectDevice', device, interface);
 
 %% Instrument settings ---------------------------------------------------
 
-% Adjust the data rate of demodulator 1
-ziDAQ('setDouble', ['/' device '/demods/0/rate'], data_rate);
+% Define all the settings in a cell
+device_settings = {
+    % Adjust the data rate of demodulator 1
+    ['/' device '/demods/0/rate'], data_rate
+    % Enable continuous data streaming of demodulator 1
+    ['/' device '/demods/0/trigger/triggeracq'], 0
+    % Enable the data transfer from demodulator 1 to data server
+    ['/' device '/demods/0/enable'], 1
+};
 
-% Enable continuous data streaming of demodulator 1
-ziDAQ('setInt', ['/' device '/demods/0/trigger/triggeracq'], 0);
-
-% Enable the data transfer from demodulator 1 to data server
-ziDAQ('setInt', ['/' device '/demods/0/enable'], 1);
+% Apply all the settings to the device via a transaction
+ziDAQ('set', device_settings);
 
 %% Initial variables -----------------------------------------------------
 
@@ -120,7 +124,7 @@ ziDAQ('unsubscribe', '*');
 %% Disconnection ---------------------------------------------------------
 
 % Disconnect the device from data server
-ziDAQ('disconnectDevice', device);
+% ziDAQ('disconnectDevice', device);
 
 % Destroy the API session
 clear ziDAQ
