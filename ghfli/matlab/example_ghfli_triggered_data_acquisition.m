@@ -38,20 +38,22 @@ ziDAQ('connectDevice', device, interface);
 
 %% Instrument settings ---------------------------------------------------
 
-% Use software enabled trigger acquisition for the example
-ziDAQ('setInt', ['/' device '/demods/0/trigger/source'], 1024);
+% Define all the settings in a cell
+device_settings = {
+    % Use software enabled trigger acquisition for the example
+    ['/' device '/demods/0/trigger/source'], 1024
+    % Adjust the data rate of demodulator 1
+    ['/' device '/demods/0/rate'], 2048
+    % Set the number of samples to be measured following a trigger event
+    ['/' device '/demods/0/burstlen'], burst_length
+    % Enable the triggered data acquisition of demodulator 1
+    ['/' device '/demods/0/trigger/triggeracq'], 1
+    % Enable data transfer from demodulator 1 to data server
+    ['/' device '/demods/0/enable'], 1
+};
 
-% Adjust the data rate of demodulator 1
-ziDAQ('setDouble', ['/' device '/demods/0/rate'], 2048);
-
-% Set the number of samples to be measured following a trigger event
-ziDAQ('setDouble', ['/' device '/demods/0/burstlen'], burst_length);
-
-% Enable the triggered data acquisition of demodulator 1
-ziDAQ('setInt', ['/' device '/demods/0/trigger/triggeracq'], 1);
-
-% Enable data transfer from demodulator 1 to data server
-ziDAQ('setInt', ['/' device '/demods/0/enable'], 1);
+% Apply all the settings to the device via a transaction
+ziDAQ('set', device_settings);
 
 % Time difference (s) between two consecutive timestamp ticks
 dt_device = ziDAQ('getDouble', ['/' device '/system/properties/timebase']);
@@ -131,7 +133,7 @@ ziDAQ('clear', daq_module);
 %% Disconnection ---------------------------------------------------------
 
 % Disconnect the device from data server
-ziDAQ('disconnectDevice', device);
+% ziDAQ('disconnectDevice', device);
 
 % Destroy the API session
 clear ziDAQ
