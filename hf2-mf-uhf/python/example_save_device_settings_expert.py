@@ -106,7 +106,7 @@ def run_example(
 
     # Load the settings.
     print("Loading settings...")
-    device_settings.set("command", "save")
+    device_settings.set("command", "load")
     device_settings.execute()
     while not device_settings.finished():
         time.sleep(0.2)
