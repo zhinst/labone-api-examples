@@ -52,7 +52,6 @@ required_err_msg = ['This example only runs with MF or UHF Instruments with ' ..
                                      'required_devtype', 'UHFLI|(MF.*)', ...
                                      'required_options', {'PID'}, ...
                                      'required_err_msg', required_err_msg);
-ziApiServerVersionCheck();
 
 %% Define some sensible parameters based on the device type.
 if strfind(props.devicetype, 'MF')

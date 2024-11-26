@@ -59,7 +59,6 @@ required_err_msg = ['This example is incompatible with HF2 Instruments: The ' ..
                                      'required_devtype', required_devtype, ...
                                      'required_options', required_options, ...
                                      'required_err_msg', required_err_msg);
-ziApiServerVersionCheck();
 
 % Enable the API's log.
 ziDAQ('setDebugLevel', 0);

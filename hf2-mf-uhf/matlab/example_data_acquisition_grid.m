@@ -60,7 +60,6 @@ end
 supported_apilevel = 6;
 % Create an API session; connect to the correct Data Server for the device.
 [device, props] = ziCreateAPISession(device_id, supported_apilevel);
-ziApiServerVersionCheck();
 
 branches = ziDAQ('listNodes', ['/' device ], 0);
 if ~any(strcmpi([branches], 'DEMODS'))
