@@ -53,7 +53,6 @@ end
 apilevel_example = 6;
 % Create an API session; connect to the correct Data Server for the device.
 [device, props] = ziCreateAPISession(device_id, apilevel_example);
-ziApiServerVersionCheck();
 
 % Define parameters relevant to this example. Default values specified by the
 % inputParser below are overwritten if specified as name-value pairs via the

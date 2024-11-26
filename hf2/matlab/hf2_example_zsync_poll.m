@@ -57,7 +57,6 @@ port = 8005;
 % The API level supported by this example.
 apilevel_example = 1;
 ziDAQ('connect', 'localhost', port, apilevel_example);
-ziApiServerVersionCheck();
 
 server_version = ziDAQ('getInt', '/zi/about/revision');
 if server_version < 28460

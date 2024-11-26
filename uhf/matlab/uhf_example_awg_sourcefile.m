@@ -59,7 +59,6 @@ if (strcmpi('UHFLI', props.devicetype) == 1) &&...
     error(['Required option set not satisfied. This example only ' ...
            'runs on UHFLI with the AWG Option installed.'],device)
 end
-ziApiServerVersionCheck();
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

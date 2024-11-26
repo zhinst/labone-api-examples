@@ -45,7 +45,6 @@ end
 apilevel_example = 6;
 % Create an API session; connect to the correct Data Server for the device.
 [device, props] = ziCreateAPISession(device_id, apilevel_example);
-ziApiServerVersionCheck();
 
 % This example requires an MF device with IA option.
 if ~ismember('IA', props.options)

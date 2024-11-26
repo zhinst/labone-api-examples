@@ -101,7 +101,6 @@ else
 end
 
 % Check version compatibility between Data Server and API
-ziApiServerVersionCheck();
 
 % Create a base configuration on all devices: Disable all available outputs, awgs, demods, scopes,...
 for i = 1:length(device_ids)

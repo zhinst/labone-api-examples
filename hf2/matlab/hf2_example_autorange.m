@@ -58,7 +58,6 @@ required_err_msg = 'This example only runs with HF2 Instruments.';
                                      'required_devtype', 'HF2', ...
                                      'required_options', {}, ...
                                      'required_err_msg', required_err_msg);
-ziApiServerVersionCheck();
 
 %% Define parameters relevant to this example. Default values specified by the
 % inputParser below are overwritten if specified as name-value pairs via the
