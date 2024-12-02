@@ -158,6 +158,17 @@ def check_devices(doc, args):
             check_single_device(device_id, dev_types, device_variable)
 
 
+def convertStringToValue(value: str, hint: type):
+    """
+    Convert a string value into the desired type.
+    """
+    if value == "None":
+        return None
+    if hint == tuple:
+        return tuple(map(float, value.strip("()").split(",")))
+    return hint(value)
+
+
 def run_commandline(func, doc):
     """
     create a command line interface for the give function.
@@ -175,10 +186,7 @@ def run_commandline(func, doc):
     for arg in raw_args:
         arg_new = arg.strip("-").strip("<").strip(">")
         if arg_new in hints:
-            if raw_args[arg] == "None":
-                args[arg_new] = None
-            else:
-                args[arg_new] = hints[arg_new](raw_args[arg])
+            args[arg_new] = convertStringToValue(raw_args[arg], hints.get(arg_new))
         elif arg_new.startswith("no-"):
             invert_arg = arg_new.lstrip("no-")
             if invert_arg in hints and hints[invert_arg] == bool:
