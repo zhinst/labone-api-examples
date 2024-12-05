@@ -4,6 +4,7 @@ It uses docopt to generate the commandline and does the following tests befor ca
     - checks if the LabOne version matches the required version in the example.
     - checks if the device(s) match(s) the required one(s) in the examples.
 """
+
 import re
 import zhinst.core
 
@@ -57,8 +58,17 @@ def check_version(doc):
         Exception if the LabOne version is not matched.
     """
     (min_major, min_minor, min_build) = extract_version(doc)
-    installed_version = zhinst.core.__version__
-    major, minor, build = map(int, installed_version.split("."))
+
+    installed_version = zhinst.core.__version__.split(".")
+
+    if len(installed_version) == 4:
+        major, minor, patch, build = map(int, installed_version)
+    elif len(installed_version) == 3:
+        major, minor, build = map(int, installed_version)
+    else:
+        raise Exception(
+            f"Versioning scheme not recognized {installed_version} \n is neither following major.minor.build nor major.minor.patch.build."
+        )
 
     if (min_major, min_minor, min_build) > (major, minor, build):
         raise Exception(
