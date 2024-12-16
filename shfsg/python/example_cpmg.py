@@ -69,7 +69,6 @@ def run_example(
     # connect device
     daq = zhinst.core.ziDAQServer(host=server_host, port=server_port, api_level=6)
     daq.connectDevice(device_id, interface)
-    zhinst.utils.api_server_version_check(daq)
 
     # Set analog RF center frequencies, output power, RF or LF path, enable outputs
     shfsg_utils.configure_channel(

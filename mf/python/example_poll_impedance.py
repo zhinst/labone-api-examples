@@ -37,6 +37,7 @@ Raises:
 See the LabOne Programming Manual for further help:
 https://docs.zhinst.com/labone_programming_manual/
 """
+
 import time
 import zhinst.utils
 import matplotlib.pyplot as plt
@@ -61,7 +62,6 @@ def run_example(
     (daq, device, _) = zhinst.utils.create_api_session(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
-    zhinst.utils.api_server_version_check(daq)
 
     # Create a base configuration: Disable all available outputs, awgs, demods, scopes,...
     zhinst.utils.disable_everything(daq, device)
@@ -126,7 +126,6 @@ def run_example(
     print(f"Average measured capacitance: {np.mean(impedance_sample['param1'])} F.")
 
     if plot:
-
         # Convert timestamps from ticks to seconds via clockbase.
         t = (
             impedance_sample["timestamp"] - impedance_sample["timestamp"][0]

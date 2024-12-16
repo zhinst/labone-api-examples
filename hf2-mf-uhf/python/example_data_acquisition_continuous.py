@@ -71,7 +71,6 @@ def run_example(
     (daq, device, _) = zhinst.utils.create_api_session(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
-    zhinst.utils.api_server_version_check(daq)
 
     daq.set(f"/{device}/demods/0/enable", 1)
 

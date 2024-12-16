@@ -45,7 +45,7 @@ Options:
                                  signal output. [default: 0.1]
     -r --output_range RANGE      The range to use on the signal output. [default: 1]
     --enable_averaging VALUE   Enable averaging:
-                                    0 - disabled, 
+                                    0 - disabled,
                                     1 - enabled.
                                 [default 0]
     --averaging_method VALUE   Select the averaging method:
@@ -104,7 +104,6 @@ def run_example(
     (daq, device, props) = zhinst.utils.create_api_session(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
-    zhinst.utils.api_server_version_check(daq)
 
     # Enable the API's log.
     daq.setDebugLevel(3)

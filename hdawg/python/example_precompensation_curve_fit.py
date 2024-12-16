@@ -81,7 +81,6 @@ def run_example(
     (daq, device, _) = zhinst.utils.create_api_session(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
-    zhinst.utils.api_server_version_check(daq)
 
     # Create a base configuration: Disable all available outputs, awgs, demods, scopes,...
     zhinst.utils.disable_everything(daq, device)
@@ -120,7 +119,6 @@ def run_example(
 
     print(result.fit_report())
     if plot:
-
         _, axis = plt.subplots()
         axis.plot(x_val, result.init_fit, "k", label="initial signal")
         axis.plot(x_val, result.best_fit, "r", label="fitted signal")

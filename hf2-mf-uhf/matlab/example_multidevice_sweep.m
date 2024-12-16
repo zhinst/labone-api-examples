@@ -100,8 +100,6 @@ else
     error('This example needs at least 2 MFLI instruments, or 2 HF2LI instruments, or 2 UHFLI instruments');
 end
 
-% Check version compatibility between Data Server and API
-
 % Create a base configuration on all devices: Disable all available outputs, awgs, demods, scopes,...
 for i = 1:length(device_ids)
     ziDisableEverything(device_ids{i});

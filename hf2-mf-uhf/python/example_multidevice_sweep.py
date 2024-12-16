@@ -99,8 +99,6 @@ def run_example(
         else:
             daq.connectDevice(prop["deviceid"], "1GbE")
 
-    zhinst.utils.api_server_version_check(daq)
-
     # Create a base configuration on all devices:
     # Disable all available outputs, awgs, demods, scopes,...
     for device in device_ids:
@@ -299,7 +297,6 @@ def run_example(
         )
 
     if plot:
-
         _, axis = plt.subplots()
 
         for path in paths:

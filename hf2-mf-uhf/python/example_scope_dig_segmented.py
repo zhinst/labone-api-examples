@@ -83,7 +83,6 @@ def run_example(
     (daq, device, props) = zhinst.utils.create_api_session(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
-    zhinst.utils.api_server_version_check(daq)
 
     # Enable the API's log.
     daq.setDebugLevel(3)
@@ -289,7 +288,6 @@ def run_example(
     num_measurements = 5
     segment_counts = [1, 5, 10, 15, 20]
     for index, amplitude in enumerate(np.linspace(0.2, 1.0, num_measurements)):
-
         # Use different signal output amplitudes simply to distinguish between
         # different segments in the plot.
         daq.setDouble(
@@ -343,7 +341,6 @@ def run_example(
         print("")
 
     if plot and data[wave_nodepath]:
-
         _, axis = plt.subplots()
         axis.grid(True)
 
