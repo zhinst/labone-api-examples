@@ -60,7 +60,6 @@ def run_example(
     (daq, device, props) = zhinst.utils.create_api_session(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
-    zhinst.utils.api_server_version_check(daq)
 
     # Create a base configuration: Disable all available outputs, awgs, demods, scopes,...
     zhinst.utils.disable_everything(daq, device)

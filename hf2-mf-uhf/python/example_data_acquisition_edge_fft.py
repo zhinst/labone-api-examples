@@ -74,7 +74,6 @@ def run_example(
     (daq, device, props) = zhinst.utils.create_api_session(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
-    zhinst.utils.api_server_version_check(daq)
 
     # Create a base configuration: Disable all available outputs, awgs, demods, scopes,...
     zhinst.utils.disable_everything(daq, device)
@@ -274,7 +273,6 @@ def run_example(
         Expected: `{trigger_count}`."
 
     if plot and samples:
-
         _, axs = plt.subplots(2)
         # Plot the FFT bins returned by the Data Acquisition.
         for index, sample in enumerate(samples):

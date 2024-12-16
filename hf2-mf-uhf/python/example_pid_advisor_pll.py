@@ -54,7 +54,6 @@ def run_example(
     (daq, device, props) = zhinst.utils.create_api_session(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
-    zhinst.utils.api_server_version_check(daq)
 
     # This example additionally requires two oscillators.
     if props["devicetype"].startswith("MF") and ("MD" not in props["options"]):
@@ -202,7 +201,6 @@ def run_example(
         )
 
     if plot:
-
         plt.close("all")
         bode_complex_data = result["/bode"][0]["x"] + 1j * result["/bode"][0]["y"]
         bode_grid = result["/bode"][0]["grid"]

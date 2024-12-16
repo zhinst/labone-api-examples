@@ -6,46 +6,32 @@ It uses docopt to generate the commandline and does the following tests befor ca
 """
 
 import re
+from packaging.version import Version, parse
 import zhinst.core
 
 
-def extract_version(doc):
+def extract_version(doc) -> Version:
     """
     Extracts the version from the docstring of an Example.
     The Version is specified in the following format:
-    LabOne Version >= <major>.<minor>[.<minor>]
+    LabOne Version >= <major>.<minor>[.<patch>]
 
     Returns:
-        (major, minor, build)
+        Version object
 
     Raises:
         Exception if the Version has the wrong format.
         Exception if there is no or more than one LabOne Version specified.
     """
-    results = re.findall(r"LabOne Version >= ([0-9\.]*)", doc)
+    results = re.findall(r"LabOne Version >= (\d+(\.\d+)*)", doc)
     if len(results) == 0:
-        raise Exception("No LabOne Version is defined in the docstring")
+        raise Exception("No LabOne version is defined in the docstring")
     if len(results) > 1:
         raise Exception(
             "more than one LabOne version is defined but only one is allowed"
         )
-
-    version = results[0]
-    major_minor_format = bool(re.match(r"^\d\d\.\d\d$", version))
-    major_minor_build_format = bool(re.match(r"^\d\d\.\d\d.\d+$", version))
-
-    if major_minor_format:
-        min_major, min_minor = map(int, version.split("."))
-        min_build = 0
-    elif major_minor_build_format:
-        min_major, min_minor, min_build = map(int, version.split("."))
-    else:
-        raise Exception(
-            f"Wrong zhinst.core version format: {version}. Supported format: MAJOR.MINOR or \
-                MAJOR.MINOR.BUILD"
-        )
-
-    return (min_major, min_minor, min_build)
+    assert len(results[0]) > 0
+    return parse(results[0][0])
 
 
 def check_version(doc):
@@ -57,23 +43,13 @@ def check_version(doc):
         Exception if there is no or more than one LabOne Version specified.
         Exception if the LabOne version is not matched.
     """
-    (min_major, min_minor, min_build) = extract_version(doc)
+    doc_version = extract_version(doc)
+    installed_version = parse(zhinst.core.__version__)
 
-    installed_version = zhinst.core.__version__.split(".")
-
-    if len(installed_version) == 4:
-        major, minor, patch, build = map(int, installed_version)
-    elif len(installed_version) == 3:
-        major, minor, build = map(int, installed_version)
-    else:
-        raise Exception(
-            f"Versioning scheme not recognized {installed_version} \n is neither following major.minor.build nor major.minor.patch.build."
-        )
-
-    if (min_major, min_minor, min_build) > (major, minor, build):
+    if doc_version > installed_version:
         raise Exception(
             f"Example requires zhinst.core version "
-            f"{min_major}.{min_minor}.{min_build} or greater (installed: {installed_version})."
+            f"{doc_version} or greater (installed: {installed_version})."
             f"Please visit the Zurich Instruments website to update."
         )
 

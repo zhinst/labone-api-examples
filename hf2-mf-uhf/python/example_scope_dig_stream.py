@@ -85,7 +85,6 @@ def run_example(
     (daq, device, _) = zhinst.utils.create_api_session(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
-    zhinst.utils.api_server_version_check(daq)
 
     # Enable the API's log.
     daq.setDebugLevel(0)
@@ -346,7 +345,6 @@ def run_example(
         ), "Detected an unexpected timestamp delta in the scope data."
 
     if plot:
-
         # Get the instrument's ADC sampling rate.
         clockbase = daq.getInt(f"/{device}/clockbase")
 
