@@ -278,7 +278,7 @@ def run_example(
         for index, sample in enumerate(samples):
             filter_compensation = filter_compensations[index]
             bin_count = len(sample["value"][0])
-            bin_resolution = sample["header"]["gridcoldelta"]
+            bin_resolution = sample["header"]["gridcoldelta"][0]
             frequencies = np.arange(bin_count)
             # Center frequency and bandwidth not yet implemented.
             # So we calculate from the gridcoldelta.

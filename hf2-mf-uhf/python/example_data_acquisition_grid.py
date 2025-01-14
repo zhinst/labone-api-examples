@@ -349,7 +349,7 @@ def run_example(
             # Note, if 'count' > 1 then more than one grid could be returned.
             num_grids_read = len(data_read[triggerpath])
             for i in range(num_grids_read):
-                flags = data_read[triggerpath][i]["header"]["flags"]
+                flags = data_read[triggerpath][i]["header"]["flags"][0]
                 if flags & 1:
                     # The first bit of flags is set to 1 when the grid is complete and the
                     # configured number of repetitions have completed.
@@ -363,7 +363,7 @@ def run_example(
                         )
             print(
                 f"Overall progress: {daq_module.progress()[0]}. \
-                     Grid {num_finished_grids} flags: {flags[0]}."
+                     Grid {num_finished_grids} flags: {flags}."
             )
             if plot:
                 # Visualize the last grid's demodulator data (the demodulator used as
@@ -402,7 +402,7 @@ def run_example(
         data_read = daq_module.read(return_flat_data_dict)
         num_grids_read = len(data_read[triggerpath])
         for i in range(num_grids_read):
-            flags = data_read[triggerpath][i]["header"]["flags"]
+            flags = data_read[triggerpath][i]["header"]["flags"][0]
             if flags & 1:
                 data[triggerpath].append(data_read[triggerpath][i])
                 if pid_error_stream_path in data_read:

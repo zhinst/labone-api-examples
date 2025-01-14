@@ -361,8 +361,8 @@ def run_example(
             # Note that with the new software trigger, the trigger timestamp has the trigger offset
             # added to it, so we need to subtract it to get the sample and trigger timestamps to
             # align.
-            trigger_ts = sample["header"]["changedtimestamp"] - int(
-                sample["header"]["gridcoloffset"] * clockbase
+            trigger_ts = sample["header"]["changedtimestamp"][0] - int(
+                sample["header"]["gridcoloffset"][0] * clockbase
             )
             t = (sample["timestamp"] - float(trigger_ts)) / clockbase
             axis.plot(t[0], sample["value"][0])
