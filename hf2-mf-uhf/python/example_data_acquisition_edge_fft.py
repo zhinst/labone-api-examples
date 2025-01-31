@@ -218,12 +218,12 @@ def run_example(
     # mixer's amplitude. This is for demonstration only and is not necessary to
     # configure the module, we simply generate a signal upon which we can trigger.
     for _ in range(num_pulses):
-        daq.syncSetDouble(
+        daq.set(
             "/%s/sigouts/%d/amplitudes/%d" % (device, out_channel, out_mixer_channel),
             sigouts_low * (1 + 0.05 * np.random.uniform(-1, 1, 1)[0]),
         )
         time.sleep(0.2)
-        daq.syncSetDouble(
+        daq.set(
             "/%s/sigouts/%d/amplitudes/%d" % (device, out_channel, out_mixer_channel),
             sigouts_high * (1 + 0.05 * np.random.uniform(-1, 1, 1)[0]),
         )
@@ -240,7 +240,7 @@ def run_example(
             print("\nTrigger is finished.")
             break
     print("")
-    daq.setDouble(
+    daq.set(
         "/%s/sigouts/%d/amplitudes/%d" % (device, out_channel, out_mixer_channel),
         sigouts_low,
     )

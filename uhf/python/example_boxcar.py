@@ -134,7 +134,7 @@ def run_example(
 
     for periods in periods_vals:
         time.sleep(0.5)
-        daq.setInt(boxcar_periods_path, int(periods))
+        daq.set(boxcar_periods_path, int(periods))
 
     # Poll the data
     poll_length = 0.1  # [s]

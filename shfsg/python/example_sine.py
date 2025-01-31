@@ -80,7 +80,7 @@ def run_example(
     )
 
     # Disable AWG modulation
-    daq.setInt(f"/{device_id}/SGCHANNELS/{channel}/AWG/MODULATION/ENABLE", 0)
+    daq.set(f"/{device_id}/SGCHANNELS/{channel}/AWG/MODULATION/ENABLE", 0)
 
     # Configure digital sine generator: oscillator index, oscillator frequency, phase, gains, enable paths
     shfsg_utils.configure_sine_generation(

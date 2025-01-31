@@ -132,9 +132,13 @@ def run_example(
     assert awgModule.getInt("compiler/status") != 1
 
     # Configure AWG program from registers
-    daq.setDouble(f"/{device:s}/awgs/0/userregs/0", result_length)
-    daq.setDouble(f"/{device:s}/awgs/0/userregs/1", num_averages)
-    daq.setDouble(f"/{device:s}/awgs/0/userregs/2", 1)
+    daq.set(
+        [
+            (f"/{device:s}/awgs/0/userregs/0", result_length),
+            (f"/{device:s}/awgs/0/userregs/1", num_averages),
+            (f"/{device:s}/awgs/0/userregs/2", 1),
+        ]
+    )
 
     # Configuration of weighted integration
     channels = [0, 1, 2, 3, 4, 5, 6, 7]
@@ -142,25 +146,36 @@ def run_example(
     integration_length = 4096
     for i, channel in enumerate(channels):
         weight = weights[i] * np.ones(integration_length)
-        daq.setVector(f"/{device:s}/qas/0/integration/weights/{channel}/real", weight)
-        daq.setVector(f"/{device:s}/qas/0/integration/weights/{channel}/imag", weight)
+        daq.set(
+            [
+                (f"/{device:s}/qas/0/integration/weights/{channel}/real", weight),
+                (f"/{device:s}/qas/0/integration/weights/{channel}/imag", weight),
+            ]
+        )
 
-    daq.setInt(f"/{device:s}/qas/0/integration/length", integration_length)
-    daq.setInt(f"/{device:s}/qas/0/integration/mode", 0)
-    daq.setInt(f"/{device:s}/qas/0/delay", 0)
-
-    # Enable statistics
-    daq.setInt(f"/{device:s}/qas/0/result/statistics/length", result_length)
-    daq.setInt(f"/{device:s}/qas/0/result/statistics/reset", 1)
-    daq.setInt(f"/{device:s}/qas/0/result/statistics/enable", 1)
+    daq.set(
+        [
+            (f"/{device:s}/qas/0/integration/length", integration_length),
+            (f"/{device:s}/qas/0/integration/mode", 0),
+            (f"/{device:s}/qas/0/delay", 0),
+            # Enable statistics
+            (f"/{device:s}/qas/0/result/statistics/length", result_length),
+            (f"/{device:s}/qas/0/result/statistics/reset", 1),
+            (f"/{device:s}/qas/0/result/statistics/enable", 1),
+        ]
+    )
 
     # Configure thresholds
     for channel in channels:
-        daq.setDouble(f"/{device:s}/qas/0/thresholds/{channel:d}/level", threshold)
+        daq.set(f"/{device:s}/qas/0/thresholds/{channel:d}/level", threshold)
 
     # Configure the result unit
-    daq.setInt(f"/{device:s}/qas/0/result/length", result_length)
-    daq.setInt(f"/{device:s}/qas/0/result/averages", num_averages)
+    daq.set(
+        [
+            (f"/{device:s}/qas/0/result/length", result_length),
+            (f"/{device:s}/qas/0/result/averages", num_averages),
+        ]
+    )
 
     # Subscribe to result waves
     paths = []
@@ -175,16 +190,24 @@ def run_example(
         common_uhfqa.ResultLoggingSource.TRANS,
         common_uhfqa.ResultLoggingSource.THRES,
     ):
-        daq.setInt(f"/{device:s}/qas/0/result/source", result_source)
+        daq.set(f"/{device:s}/qas/0/result/source", result_source)
 
         # Now we're ready for readout. Enable result unit and start acquisition.
-        daq.setInt(f"/{device:s}/qas/0/result/reset", 1)
-        daq.setInt(f"/{device:s}/qas/0/result/enable", 1)
+        daq.set(
+            [
+                (f"/{device:s}/qas/0/result/reset", 1),
+                (f"/{device:s}/qas/0/result/enable", 1),
+            ]
+        )
         daq.sync()
 
         # Arm the device
-        daq.asyncSetInt(f"/{device:s}/awgs/0/single", 1)
-        daq.syncSetInt(f"/{device:s}/awgs/0/enable", 1)
+        daq.set(
+            [
+                (f"/{device:s}/awgs/0/single", 1),
+                (f"/{device:s}/awgs/0/enable", 1),
+            ]
+        )
 
         # Perform acquisition
         print(f"Acquiring data for {result_source!r}...")
@@ -194,7 +217,7 @@ def run_example(
         print("Done.")
 
         # Stop result unit
-        daq.setInt(f"/{device:s}/qas/0/result/enable", 0)
+        daq.set(f"/{device:s}/qas/0/result/enable", 0)
 
         # Obtain statistics
         if result_source == common_uhfqa.ResultLoggingSource.TRANS:

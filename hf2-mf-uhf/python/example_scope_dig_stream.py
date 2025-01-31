@@ -141,34 +141,37 @@ def run_example(
     # Note: Nodes not listed below not effect the scope streaming data,
     #       e.g. (scopes/0/{time,length,trig*,...}).
     ################################################################################################
-    #
-    # 'channels/0/bwlimit' : bandwidth limit the scope data. Enabling bandwidth
-    # limiting avoids antialiasing effects due to subsampling when the scope
-    # sample rate is less than the input channel's sample rate.
-    #  Bool:
-    #   0 - do not bandwidth limit
-    #   1 - bandwidth limit
-    daq.setInt("/%s/scopes/0/channels/*/bwlimit" % device, 1)
-    # 'channel/0/channels/*/inputselect' : the input channel for the scope:
-    #   0 - signal input 1
-    #   1 - signal input 2
-    #   2, 3 - trigger 1, 2 (front)
-    #   8-9 - auxiliary inputs 1-2
-    #   The following inputs are additionally available with the DIG option:
-    #   10-11 - oscillator phase from demodulator 3-7
-    #   16-23 - demodulator 0-7 x value
-    #   32-39 - demodulator 0-7 y value
-    #   48-55 - demodulator 0-7 R value
-    #   64-71 - demodulator 0-7 Phi value
-    #   80-83 - pid 0-3 out value
-    #   96-97 - boxcar 0-1
-    #   112-113 - cartesian arithmetic unit 0-1
-    #   128-129 - polar arithmetic unit 0-1
-    #   144-147 - pid 0-3 shift value
-    # Here, we specify the demod 0 X and y values for channels 1 and 2, respectively.
-    daq.setInt("/%s/scopes/0/channels/0/inputselect" % device, inputselect_1)
+    scopes_setting = [
+        # 'channels/0/bwlimit' : bandwidth limit the scope data. Enabling bandwidth
+        # limiting avoids antialiasing effects due to subsampling when the scope
+        # sample rate is less than the input channel's sample rate.
+        #  Bool:
+        #   0 - do not bandwidth limit
+        #   1 - bandwidth limit
+        ("/%s/scopes/0/channels/*/bwlimit" % device, 1),
+        # 'channel/0/channels/*/inputselect' : the input channel for the scope:
+        #   0 - signal input 1
+        #   1 - signal input 2
+        #   2, 3 - trigger 1, 2 (front)
+        #   8-9 - auxiliary inputs 1-2
+        #   The following inputs are additionally available with the DIG option:
+        #   10-11 - oscillator phase from demodulator 3-7
+        #   16-23 - demodulator 0-7 x value
+        #   32-39 - demodulator 0-7 y value
+        #   48-55 - demodulator 0-7 R value
+        #   64-71 - demodulator 0-7 Phi value
+        #   80-83 - pid 0-3 out value
+        #   96-97 - boxcar 0-1
+        #   112-113 - cartesian arithmetic unit 0-1
+        #   128-129 - polar arithmetic unit 0-1
+        #   144-147 - pid 0-3 shift value
+        # Here, we specify the demod 0 X and y values for channels 1 and 2, respectively.
+        ("/%s/scopes/0/channels/0/inputselect" % device, inputselect_1),
+    ]
     if inputselect_2:
-        daq.setInt("/%s/scopes/0/channels/1/inputselect" % device, inputselect_2)
+        scopes_setting.append(
+            ("/%s/scopes/0/channels/1/inputselect" % device, inputselect_2)
+        )
     # 'channels/0/channels/*/limit{lower,upper}
     # Set the scope limits for the data to values far outside legal values
     # allowed by the firmware; the firmware will clamp to the smallest/largest
@@ -177,8 +180,10 @@ def run_example(
     # NOTE: In order to obtain the best possible bit resolution in the scope,
     # these values should be set according to the magnitude of the signals being
     # measured in the scope.
-    daq.setDouble("/%s/scopes/0/channels/*/limitlower" % device, -10e9)
-    daq.setDouble("/%s/scopes/0/channels/*/limitupper" % device, 10e9)
+    scopes_setting += [
+        ("/%s/scopes/0/channels/*/limitlower" % device, -10e9),
+        ("/%s/scopes/0/channels/*/limitupper" % device, 10e9),
+    ]
     # 'stream/rate' : specifies the rate of the streaming data, the data will be set at a rate of
     # clockbase/2**rate.
     #   7  - sets the samplint rate to 14.06 MHz (maximum rate supported by 1GbE)
@@ -186,16 +191,17 @@ def run_example(
     #   9  - "                          3.50 MHz
     #   ...
     #   16 - "                          27.5 kHz
-    daq.setDouble("/%s/scopes/0/stream/rate" % device, stream_rate)
+    scopes_setting.append(("/%s/scopes/0/stream/rate" % device, stream_rate))
+    daq.set(scopes_setting)
 
     # Perform a global synchronisation between the device and the data server: Ensure that the
     # settings have taken effect on the device before enabling streaming and acquiring data.
     daq.sync()
 
     # Enable the scope streaming nodes:
-    daq.setInt("/%s/scopes/0/stream/enables/0" % device, 1)
+    daq.set("/%s/scopes/0/stream/enables/0" % device, 1)
     if inputselect_2:
-        daq.setInt("/%s/scopes/0/stream/enables/1" % device, 1)
+        daq.set("/%s/scopes/0/stream/enables/1" % device, 1)
 
     # Ensure buffers are flushed before subscribing.
     daq.sync()
@@ -282,7 +288,7 @@ def run_example(
                 )
             num_scope += num_samples_block
     daq.sync()
-    daq.setInt("/%s/scopes/0/stream/enables/*" % device, 0)
+    daq.set("/%s/scopes/0/stream/enables/*" % device, 0)
     daq.unsubscribe("*")
 
     print()

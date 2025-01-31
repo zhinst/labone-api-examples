@@ -95,7 +95,7 @@ def run_example(
     ).replace("${LENGTH}", f"{vector_length:d}")
 
     # Provide number of averages in user register
-    daq.setDouble(f"/{device:s}/awgs/0/userregs/0", num_averages)
+    daq.set(f"/{device:s}/awgs/0/userregs/0", num_averages)
 
     # Create an instance of the AWG module
     awgModule = daq.awgModule()
@@ -111,17 +111,25 @@ def run_example(
     # Ensure that compilation was successful
     assert awgModule.getInt("compiler/status") != 1
 
-    # Enable outputs
-    daq.setInt(f"/{device:s}/sigouts/*/on", 1)
+    daq.set(
+        [
+            # Enable outputs
+            (f"/{device:s}/sigouts/*/on", 1),
+            # Setup monitor
+            (f"/{device:s}/qas/0/monitor/averages", num_averages),
+            (f"/{device:s}/qas/0/monitor/length", monitor_length),
+        ]
+    )
 
-    # Setup monitor
-    daq.setInt(f"/{device:s}/qas/0/monitor/averages", num_averages)
-    daq.setInt(f"/{device:s}/qas/0/monitor/length", monitor_length)
     monitor_length = daq.getInt(f"/{device:s}/qas/0/monitor/length")
 
     # Now we're ready for readout. Enable monitor and start acquisition.
-    daq.setInt(f"/{device:s}/qas/0/monitor/reset", 1)
-    daq.setInt(f"/{device:s}/qas/0/monitor/enable", 1)
+    daq.set(
+        [
+            (f"/{device:s}/qas/0/monitor/reset", 1),
+            (f"/{device:s}/qas/0/monitor/enable", 1),
+        ]
+    )
     daq.sync()
 
     # Subscribe to monitor waves
@@ -132,8 +140,12 @@ def run_example(
     daq.subscribe(paths)
 
     # Arm the device
-    daq.asyncSetInt(f"/{device:s}/awgs/0/single", 1)
-    daq.syncSetInt(f"/{device:s}/awgs/0/enable", 1)
+    daq.set(
+        [
+            (f"/{device:s}/awgs/0/single", 1),
+            (f"/{device:s}/awgs/0/enable", 1),
+        ]
+    )
 
     # Perform acquisition
     print("Acquiring data...")
@@ -142,7 +154,7 @@ def run_example(
 
     # Stop monitor
     daq.unsubscribe(paths)
-    daq.setInt(f"/{device:s}/qas/0/monitor/enable", 0)
+    daq.set(f"/{device:s}/qas/0/monitor/enable", 0)
 
     if plot:
         fig, axes = plt.subplots(figsize=(12, 4))

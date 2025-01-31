@@ -279,7 +279,7 @@ def run_example(
     # not available on HF2 instruments.
     if pid_error_stream_path.lower() in node_paths:
         daq_module.subscribe(pid_error_stream_path)
-        daq.setDouble("/%s/pids/0/stream/rate" % device, 30e3)
+        daq.set("/%s/pids/0/stream/rate" % device, 30e3)
         data[pid_error_stream_path] = []
     # Note: We subscribe to the trigger signal path last to ensure that we obtain
     # complete data on the other paths (known limitation). We must subscribe to

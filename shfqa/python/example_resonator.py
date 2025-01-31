@@ -80,8 +80,12 @@ def run_example(
     sweeper.set_to_device()
 
     # turn on the input / output channel
-    daq.setInt(f"/{dev}/qachannels/{rf_config.channel}/input/on", 1)
-    daq.setInt(f"/{dev}/qachannels/{rf_config.channel}/output/on", 1)
+    daq.set(
+        [
+            (f"/{dev}/qachannels/{rf_config.channel}/input/on", 1),
+            (f"/{dev}/qachannels/{rf_config.channel}/output/on", 1),
+        ]
+    )
     daq.sync()
 
     # start a sweep

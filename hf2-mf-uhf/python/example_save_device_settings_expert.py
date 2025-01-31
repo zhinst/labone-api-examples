@@ -122,7 +122,7 @@ def toggle_device_setting(daq, device):
     path = "/%s/sigouts/0/on" % device
     is_enabled = daq.getInt(path)
     print(f"Toggling setting '{path}'.")
-    daq.setInt(path, not is_enabled)
+    daq.set(path, not is_enabled)
     daq.sync()
 
 

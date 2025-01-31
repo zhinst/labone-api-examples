@@ -143,72 +143,76 @@ def run_example(
     # Configure the scope and obtain data with triggering disabled.
     ###############################################################################################
 
-    # Configure the instrument's scope via the /devx/scopes/0/ node tree branch.
-    # 'length' : the length of each shot in the scope record.
-    daq.setInt("/%s/scopes/0/length" % device, scope_length)
-    # 'channel' : select the scope channel(s) to enable.
-    #  Bit-encoded as following:
-    #   1 - enable scope channel 0
-    #   2 - enable scope channel 1
-    #   3 - enable both scope channels (requires DIG option)
-    daq.setInt("/%s/scopes/0/channel" % device, 3)
-    # 'channels/0/bwlimit' : bandwidth limit the scope data. Enabling bandwidth
-    # limiting avoids antialiasing effects due to subsampling when the scope
-    # sample rate is less than the input channel's sample rate.
-    #  Bool:
-    #   0 - do not bandwidth limit
-    #   1 - bandwidth limit
-    daq.setInt("/%s/scopes/0/channels/*/bwlimit" % device, 1)
-    # 'channel/0/channels/*/inputselect' : the input channel for the scope:
-    #   0 - signal input 1
-    #   1 - signal input 2
-    #   2, 3 - trigger 1, 2 (front)
-    #   8-9 - auxiliary inputs 1-2
-    #   The following inputs are additionally available with the DIG option:
-    #   10-11 - oscillator phase from demodulator 3-7
-    #   16-23 - demodulator 0-7 x value
-    #   32-39 - demodulator 0-7 y value
-    #   48-55 - demodulator 0-7 R value
-    #   64-71 - demodulator 0-7 Phi value
-    #   80-83 - pid 0-3 out value
-    #   96-97 - boxcar 0-1
-    #   112-113 - cartesian arithmetic unit 0-1
-    #   128-129 - polar arithmetic unit 0-1
-    #   144-147 - pid 0-3 shift value
-    # Here, we specify the demod 0 X and y values for channels 1 and 2, respectively.
     scope_inputselects = [16, 32]
-    daq.setInt("/%s/scopes/0/channels/0/inputselect" % device, scope_inputselects[0])
-    daq.setInt("/%s/scopes/0/channels/1/inputselect" % device, scope_inputselects[1])
-    # 'channels/0/channels/*/limit{lower,upper}
-    # Set the scope limits for the data to values far outside legal values
-    # allowed by the firmware; the firmware will clamp to the smallest/largest
-    # value of the legal lower/upper limits.
-    #
-    # NOTE: In order to obtain the best possible bit resolution in the scope,
-    # these values should be set according to the magnitude of the signals being
-    # measured in the scope.
-    daq.setDouble("/%s/scopes/0/channels/*/limitlower" % device, -10e9)
-    daq.setDouble("/%s/scopes/0/channels/*/limitupper" % device, 10e9)
-    # 'time' : timescale of the wave, sets the sampling rate to clockbase/2**time.
-    #   0 - sets the sampling rate to 1.8 GHz
-    #   1 - sets the sampling rate to 900 MHz
-    #   ...
-    #   16 - sets the samptling rate to 27.5 kHz
     scope_time = 0
-    daq.setInt("/%s/scopes/0/time" % device, scope_time)
-    # 'single' : only get a single scope record.
-    #   0 - acquire continuous records
-    #   1 - acquire a single record
-    daq.setInt("/%s/scopes/0/single" % device, 0)
-    # 'trigenable' : enable the scope's trigger (boolean).
-    #   0 - acquire continuous records
-    #   1 - only acquire a record when a trigger arrives
-    daq.setInt("/%s/scopes/0/trigenable" % device, 0)
-    # 'trigholdoff' : the scope hold off time inbetween acquiring triggers
-    # (still relevant if triggering is disabled).
-    daq.setDouble("/%s/scopes/0/trigholdoff" % device, scope_trigholdoff)
-    # Disable segmented data recording.
-    daq.setInt("/%s/scopes/0/segments/enable" % device, 0)
+    daq.set(
+        [
+            # Configure the instrument's scope via the /devx/scopes/0/ node tree branch.
+            # 'length' : the length of each shot in the scope record.
+            ("/%s/scopes/0/length" % device, scope_length),
+            # 'channel' : select the scope channel(s) to enable.
+            #  Bit-encoded as following:
+            #   1 - enable scope channel 0
+            #   2 - enable scope channel 1
+            #   3 - enable both scope channels (requires DIG option)
+            ("/%s/scopes/0/channel" % device, 3),
+            # 'channels/0/bwlimit' : bandwidth limit the scope data. Enabling bandwidth
+            # limiting avoids antialiasing effects due to subsampling when the scope
+            # sample rate is less than the input channel's sample rate.
+            #  Bool:
+            #   0 - do not bandwidth limit
+            #   1 - bandwidth limit
+            ("/%s/scopes/0/channels/*/bwlimit" % device, 1),
+            # 'channel/0/channels/*/inputselect' : the input channel for the scope:
+            #   0 - signal input 1
+            #   1 - signal input 2
+            #   2, 3 - trigger 1, 2 (front)
+            #   8-9 - auxiliary inputs 1-2
+            #   The following inputs are additionally available with the DIG option:
+            #   10-11 - oscillator phase from demodulator 3-7
+            #   16-23 - demodulator 0-7 x value
+            #   32-39 - demodulator 0-7 y value
+            #   48-55 - demodulator 0-7 R value
+            #   64-71 - demodulator 0-7 Phi value
+            #   80-83 - pid 0-3 out value
+            #   96-97 - boxcar 0-1
+            #   112-113 - cartesian arithmetic unit 0-1
+            #   128-129 - polar arithmetic unit 0-1
+            #   144-147 - pid 0-3 shift value
+            # Here, we specify the demod 0 X and y values for channels 1 and 2, respectively.
+            ("/%s/scopes/0/channels/0/inputselect" % device, scope_inputselects[0]),
+            ("/%s/scopes/0/channels/1/inputselect" % device, scope_inputselects[1]),
+            # 'channels/0/channels/*/limit{lower,upper}
+            # Set the scope limits for the data to values far outside legal values
+            # allowed by the firmware; the firmware will clamp to the smallest/largest
+            # value of the legal lower/upper limits.
+            #
+            # NOTE: In order to obtain the best possible bit resolution in the scope,
+            # these values should be set according to the magnitude of the signals being
+            # measured in the scope.
+            ("/%s/scopes/0/channels/*/limitlower" % device, -10e9),
+            ("/%s/scopes/0/channels/*/limitupper" % device, 10e9),
+            # 'time' : timescale of the wave, sets the sampling rate to clockbase/2**time.
+            #   0 - sets the sampling rate to 1.8 GHz
+            #   1 - sets the sampling rate to 900 MHz
+            #   ...
+            #   16 - sets the samptling rate to 27.5 kHz
+            ("/%s/scopes/0/time" % device, scope_time),
+            # 'single' : only get a single scope record.
+            #   0 - acquire continuous records
+            #   1 - acquire a single record
+            ("/%s/scopes/0/single" % device, 0),
+            # 'trigenable' : enable the scope's trigger (boolean).
+            #   0 - acquire continuous records
+            #   1 - only acquire a record when a trigger arrives
+            ("/%s/scopes/0/trigenable" % device, 0),
+            # 'trigholdoff' : the scope hold off time inbetween acquiring triggers
+            # (still relevant if triggering is disabled).
+            ("/%s/scopes/0/trigholdoff" % device, scope_trigholdoff),
+            # Disable segmented data recording.
+            ("/%s/scopes/0/segments/enable" % device, 0),
+        ]
+    )
 
     # Perform a global synchronisation between the device and the data server:
     # Ensure that the settings have taken effect on the device before acquiring
@@ -258,53 +262,47 @@ def run_example(
     ###############################################################################################
     # Configure the scope and obtain data with triggering enabled.
     ###############################################################################################
-
-    # Now configure the scope's trigger to get aligned data
-    # 'trigenable' : enable the scope's trigger (boolean).
-    #   0 - acquire continuous records
-    #   1 - only acquire a record when a trigger arrives
-    daq.setInt("/%s/scopes/0/trigenable" % device, 1)
-
-    # Specify the trigger channel; here we trigger on the demodulator reference
-    # oscillator's phase to get nicely aligned signals.
     trigchannel = 10
-    daq.setInt("/%s/scopes/0/trigchannel" % device, trigchannel)
-
-    # Trigger on rising edge?
-    daq.setInt("/%s/scopes/0/trigrising" % device, 1)
-
-    # Trigger on falling edge?
-    daq.setInt("/%s/scopes/0/trigfalling" % device, 0)
-
-    # Set the trigger threshold level.
-    daq.setDouble("/%s/scopes/0/triglevel" % device, 0.00)
-
-    # Set hysteresis triggering threshold to avoid triggering on noise
-    # 'trighysteresis/mode' :
-    #  0 - absolute, use an absolute value ('scopes/0/trighysteresis/absolute')
-    #  1 - relative, use a relative value ('scopes/0trighysteresis/relative') of the trigchannel's
-    #      input range
-    #      (0.1=10%).
-    daq.setDouble("/%s/scopes/0/trighysteresis/mode" % device, 1)
-    daq.setDouble("/%s/scopes/0/trighysteresis/relative" % device, 0.1)  # 0.1=10%
-
-    # Set the trigger hold-off mode of the scope. After recording a trigger event, this specifies
-    # when the scope should become re-armed and ready to trigger, 'trigholdoffmode':
-    #  0 - specify a hold-off time between triggers in seconds ('scopes/0/trigholdoff'),
-    #  1 - specify a number of trigger events before re-arming the scope ready to trigger
-    #      ('scopes/0/trigholdcount').
-    daq.setInt("/%s/scopes/0/trigholdoffmode" % device, 0)
-    daq.setDouble("/%s/scopes/0/trigholdoff" % device, scope_trigholdoff)
-
-    # The trigger reference position relative within the wave, a value of 0.5 corresponds to the
-    # center of the wave.
-    daq.setDouble("/%s/scopes/0/trigreference" % device, 0.25)
-
-    # Set trigdelay to 0.: Start recording from when the trigger is activated.
-    daq.setDouble("/%s/scopes/0/trigdelay" % device, 0.0)
-
-    # Disable trigger gating.
-    daq.setInt("/%s/scopes/0/triggate/enable" % device, 0)
+    daq.set(
+        [
+            # Now configure the scope's trigger to get aligned data
+            # 'trigenable' : enable the scope's trigger (boolean).
+            #   0 - acquire continuous records
+            #   1 - only acquire a record when a trigger arrives
+            ("/%s/scopes/0/trigenable" % device, 1),
+            # Specify the trigger channel; here we trigger on the demodulator reference
+            # oscillator's phase to get nicely aligned signals.
+            ("/%s/scopes/0/trigchannel" % device, trigchannel),
+            # Trigger on rising edge?
+            ("/%s/scopes/0/trigrising" % device, 1),
+            # Trigger on falling edge?
+            ("/%s/scopes/0/trigfalling" % device, 0),
+            # Set the trigger threshold level.
+            ("/%s/scopes/0/triglevel" % device, 0.00),
+            # Set hysteresis triggering threshold to avoid triggering on noise
+            # 'trighysteresis/mode' :
+            #  0 - absolute, use an absolute value ('scopes/0/trighysteresis/absolute')
+            #  1 - relative, use a relative value ('scopes/0trighysteresis/relative') of the trigchannel's
+            #      input range
+            #      (0.1=10%).
+            ("/%s/scopes/0/trighysteresis/mode" % device, 1),
+            ("/%s/scopes/0/trighysteresis/relative" % device, 0.1),  # 0.1=10%
+            # Set the trigger hold-off mode of the scope. After recording a trigger event, this specifies
+            # when the scope should become re-armed and ready to trigger, 'trigholdoffmode':
+            #  0 - specify a hold-off time between triggers in seconds ('scopes/0/trigholdoff'),
+            #  1 - specify a number of trigger events before re-arming the scope ready to trigger
+            #      ('scopes/0/trigholdcount').
+            ("/%s/scopes/0/trigholdoffmode" % device, 0),
+            ("/%s/scopes/0/trigholdoff" % device, scope_trigholdoff),
+            # The trigger reference position relative within the wave, a value of 0.5 corresponds to the
+            # center of the wave.
+            ("/%s/scopes/0/trigreference" % device, 0.25),
+            # Set trigdelay to 0.: Start recording from when the trigger is activated.
+            ("/%s/scopes/0/trigdelay" % device, 0.0),
+            # Disable trigger gating.
+            ("/%s/scopes/0/triggate/enable" % device, 0),
+        ]
+    )
 
     # Perform a global synchronisation between the device and the data server:
     # Ensure that the settings have taken effect on the device before acquiring
@@ -425,7 +423,7 @@ def get_scope_records(device, daq, scopeModule, num_records=1):
     scopeModule.execute()
 
     # Enable the scope: Now the scope is ready to record data upon receiving triggers.
-    daq.setInt("/%s/scopes/0/enable" % device, 1)
+    daq.set("/%s/scopes/0/enable" % device, 1)
     daq.sync()
 
     start = time.time()
@@ -462,7 +460,7 @@ def get_scope_records(device, daq, scopeModule, num_records=1):
             )
             break
     print("")
-    daq.setInt("/%s/scopes/0/enable" % device, 0)
+    daq.set("/%s/scopes/0/enable" % device, 0)
 
     # Read out the scope data from the module.
     data = scopeModule.read(True)

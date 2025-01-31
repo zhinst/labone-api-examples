@@ -96,7 +96,7 @@ def run_example(
     pre.set("device", device_id)
     pre.set("exponentials/0/enable", 1)
     pre.set("wave/input/source", 3)
-    daq.setDouble("/" + device_id + "/system/clocks/sampleclock/freq", sampling_rate)
+    daq.set("/" + device_id + "/system/clocks/sampleclock/freq", sampling_rate)
     # a short pause is needed for the precompensationAdvisor module to read
     # the updated the sampling rate from the device node
     time.sleep(0.05)

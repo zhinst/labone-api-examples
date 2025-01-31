@@ -1,5 +1,4 @@
-""" Helper functions for the SHFQA frequency sweep examples.
-"""
+"""Helper functions for the SHFQA frequency sweep examples."""
 
 # Copyright 2021 Zurich Instruments AG
 
@@ -17,18 +16,25 @@ def set_trigger_loopback(daq, dev):
     m_ch = 0
     low_trig = 2
     continuous_trig = 1
-    daq.setInt(f"/{dev}/raw/markers/*/testsource", low_trig)
-    daq.sync()
-    daq.setInt(f"/{dev}/raw/markers/{m_ch}/testsource", continuous_trig)
-    daq.setDouble(f"/{dev}/raw/markers/{m_ch}/frequency", 1e3)
-    daq.setInt(f"/{dev}/raw/triggers/{m_ch}/loopback", 1)
+    daq.set(
+        [
+            (f"/{dev}/raw/markers/*/testsource", low_trig),
+            (f"/{dev}/raw/markers/{m_ch}/testsource", continuous_trig),
+            (f"/{dev}/raw/markers/{m_ch}/frequency", 1e3),
+            (f"/{dev}/raw/triggers/{m_ch}/loopback", 1),
+        ]
+    )
     time.sleep(0.2)
 
 
 def clear_trigger_loopback(daq, dev):
     m_ch = 0
-    daq.setInt(f"/{dev}/raw/markers/*/testsource", 0)
-    daq.setInt(f"/{dev}/raw/triggers/{m_ch}/loopback", 0)
+    daq.set(
+        [
+            (f"/{dev}/raw/markers/*/testsource", 0),
+            (f"/{dev}/raw/triggers/{m_ch}/loopback", 0),
+        ]
+    )
 
 
 def measure_resonator_pulse_with_scope(
@@ -85,14 +91,14 @@ def measure_resonator_pulse_with_scope(
     )
     print("Measure the generated pulse with the SHFQA scope.")
     print(
-        f"NOTE: Envelope delay ({envelope_delay *1e9:.0f} ns) is used as scope trigger delay"
+        f"NOTE: Envelope delay ({envelope_delay * 1e9:.0f} ns) is used as scope trigger delay"
     )
 
     shfqa_utils.enable_scope(daq, device_id, single=1)
 
     if trigger_input == "software_trigger0":
         # issue a signle trigger trigger
-        daq.setInt(f"/{device_id}/SYSTEM/SWTRIGGERS/0/SINGLE", 1)
+        daq.set(f"/{device_id}/SYSTEM/SWTRIGGERS/0/SINGLE", 1)
 
     scope_trace, *_ = shfqa_utils.get_scope_data(daq, device_id, timeout=5)
     return scope_trace[scope_channel]

@@ -161,8 +161,12 @@ def run_example(
     print("Success. Enabling the AWG.")
     # This is the preferred method of using the AWG: Run in single mode continuous waveform playback
     # is best achieved by using an infinite loop (e.g., while (true)) in the sequencer program.
-    daq.setInt(f"/{device}/awgs/0/single", 1)
-    daq.setInt(f"/{device}/awgs/0/enable", 1)
+    daq.set(
+        [
+            (f"/{device}/awgs/0/single", 1),
+            (f"/{device}/awgs/0/enable", 1),
+        ]
+    )
 
 
 if __name__ == "__main__":

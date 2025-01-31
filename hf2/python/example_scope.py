@@ -381,7 +381,7 @@ def get_scope_records(device, daq, scopeModule, num_records=1):
     scopeModule.execute()
 
     # Enable the scope: Now the scope is ready to record data upon receiving triggers.
-    daq.setInt("/%s/scopes/0/enable" % device, 1)
+    daq.set("/%s/scopes/0/enable" % device, 1)
     daq.sync()
 
     start = time.time()
@@ -418,7 +418,7 @@ def get_scope_records(device, daq, scopeModule, num_records=1):
             )
             break
     print("")
-    daq.setInt("/%s/scopes/0/enable" % device, 0)
+    daq.set("/%s/scopes/0/enable" % device, 0)
 
     # Read out the scope data from the module.
     data = scopeModule.read(True)
