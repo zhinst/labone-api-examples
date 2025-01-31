@@ -132,44 +132,67 @@ def run_example(
     for i in range(4):
         weights = np.zeros(integration_length)
         weights[i] = 1
-        daq.setVector(f"/{device:s}/qas/0/integration/weights/{i}/real", weights)
-        daq.setVector(
-            f"/{device:s}/qas/0/integration/weights/{i}/imag",
-            np.zeros(integration_length),
+        daq.set(
+            [
+                (f"/{device:s}/qas/0/integration/weights/{i}/real", weights),
+                (
+                    f"/{device:s}/qas/0/integration/weights/{i}/imag",
+                    np.zeros(integration_length),
+                ),
+                (
+                    f"/{device:s}/qas/0/integration/weights/{i + 4}/real",
+                    np.zeros(integration_length),
+                ),
+                (f"/{device:s}/qas/0/integration/weights/{i + 4}/imag", weights),
+            ]
         )
-        daq.setVector(
-            f"/{device:s}/qas/0/integration/weights/{i + 4}/real",
-            np.zeros(integration_length),
-        )
-        daq.setVector(f"/{device:s}/qas/0/integration/weights/{i + 4}/imag", weights)
 
-    daq.setInt(f"/{device:s}/qas/0/integration/length", integration_length)
-    daq.setInt(f"/{device:s}/qas/0/integration/mode", 0)
-    daq.setInt(f"/{device:s}/qas/0/delay", 0)
+    daq.set(
+        [
+            (f"/{device:s}/qas/0/integration/length", integration_length),
+            (f"/{device:s}/qas/0/integration/mode", 0),
+            (f"/{device:s}/qas/0/delay", 0),
+        ]
+    )
 
     # Apply a rotation on half the channels to get the imaginary part instead
     for i in range(4):
-        daq.setComplex(f"/{device:s}/qas/0/rotations/{i:d}", 1)
-        daq.setComplex(f"/{device:s}/qas/0/rotations/{i + 4:d}", -1j)
+        daq.set(
+            [
+                (f"/{device:s}/qas/0/rotations/{i:d}", 1),
+                (f"/{device:s}/qas/0/rotations/{i + 4:d}", -1j),
+            ]
+        )
 
     #
     # First, perform a measurement with the monitor unit.
     #
 
     # Setup monitor
-    daq.setInt(f"/{device:s}/qas/0/monitor/averages", num_averages)
-    daq.setInt(f"/{device:s}/qas/0/monitor/length", monitor_length)
+    daq.set(
+        [
+            (f"/{device:s}/qas/0/monitor/averages", num_averages),
+            (f"/{device:s}/qas/0/monitor/length", monitor_length),
+        ]
+    )
 
     # Now we're ready for readout. Enable monitor and start acquisition.
-    daq.setInt(f"/{device:s}/qas/0/monitor/reset", 1)
-    daq.setInt(f"/{device:s}/qas/0/monitor/enable", 1)
+    daq.set(
+        [
+            (f"/{device:s}/qas/0/monitor/reset", 1),
+            (f"/{device:s}/qas/0/monitor/enable", 1),
+        ]
+    )
     daq.sync()
 
-    # Set number of signal repetitions in AWG program
-    daq.setDouble(f"/{device:s}/awgs/0/userregs/0", num_averages)
-
-    # Trigger monitor from within the AWG program
-    daq.setDouble(f"/{device:s}/awgs/0/userregs/1", 0)
+    daq.set(
+        [
+            # Set number of signal repetitions in AWG program
+            (f"/{device:s}/awgs/0/userregs/0", num_averages),
+            # Trigger monitor from within the AWG program
+            (f"/{device:s}/awgs/0/userregs/1", 0),
+        ]
+    )
 
     # Subscribe to monitor waves
     monitor_paths = []
@@ -179,8 +202,12 @@ def run_example(
     daq.subscribe(monitor_paths)
 
     # Arm the device
-    daq.asyncSetInt(f"/{device:s}/awgs/0/single", 1)
-    daq.syncSetInt(f"/{device:s}/awgs/0/enable", 1)
+    daq.set(
+        [
+            (f"/{device:s}/awgs/0/single", 1),
+            (f"/{device:s}/awgs/0/enable", 1),
+        ]
+    )
 
     # Perform acquisition
     print("Acquiring monitor data...")
@@ -189,26 +216,35 @@ def run_example(
 
     # Stop monitor
     daq.unsubscribe(monitor_paths)
-    daq.setInt(f"/{device:s}/qas/0/monitor/enable", 0)
+    daq.set(f"/{device:s}/qas/0/monitor/enable", 0)
 
     #
     # Next, perform the same measurement with the result unit.
     #
 
     # Trigger result unit from within the AWG program
-    daq.setDouble(f"/{device:s}/awgs/0/userregs/1", 1)
+    daq.set(f"/{device:s}/awgs/0/userregs/1", 1)
 
     # Configure the result unit
     result_length = 1
-    daq.setInt(f"/{device:s}/qas/0/result/length", result_length)
-    daq.setInt(f"/{device:s}/qas/0/result/averages", num_averages)
-    daq.setInt(
-        f"/{device:s}/qas/0/result/source", common_uhfqa.ResultLoggingSource.TRANS
+    daq.set(
+        [
+            (f"/{device:s}/qas/0/result/length", result_length),
+            (f"/{device:s}/qas/0/result/averages", num_averages),
+            (
+                f"/{device:s}/qas/0/result/source",
+                common_uhfqa.ResultLoggingSource.TRANS,
+            ),
+        ]
     )
 
     # Now we're ready for readout. Enable result unit and start acquisition.
-    daq.setInt(f"/{device:s}/qas/0/result/reset", 1)
-    daq.setInt(f"/{device:s}/qas/0/result/enable", 1)
+    daq.set(
+        [
+            (f"/{device:s}/qas/0/result/reset", 1),
+            (f"/{device:s}/qas/0/result/enable", 1),
+        ]
+    )
     daq.sync()
 
     # Subscribe to result waves
@@ -223,11 +259,15 @@ def run_example(
     for delay in range(50):
         print(".", end="")
         sys.stdout.flush()
-        daq.setInt(f"/{device:s}/qas/0/delay", 4 * delay)
+        daq.set(f"/{device:s}/qas/0/delay", 4 * delay)
 
         # Arm the device
-        daq.asyncSetInt(f"/{device:s}/awgs/0/single", 1)
-        daq.syncSetInt(f"/{device:s}/awgs/0/enable", 1)
+        daq.set(
+            [
+                (f"/{device:s}/awgs/0/single", 1),
+                (f"/{device:s}/awgs/0/enable", 1),
+            ]
+        )
 
         data = common_uhfqa.acquisition_poll(daq, result_paths, result_length)
         for path in result_paths:
@@ -236,7 +276,7 @@ def run_example(
     print("\nDone.")
 
     daq.unsubscribe(result_paths)
-    daq.setInt(f"/{device:s}/qas/0/result/enable", 0)
+    daq.set(f"/{device:s}/qas/0/result/enable", 0)
 
     def combine_results(channels):
         """Combine result waveforms into I and Q result"""

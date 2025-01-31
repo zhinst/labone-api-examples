@@ -58,12 +58,16 @@ def run_example(
     data_rate = 100e3  # [Sa/s]
 
     # Instrument settings:
-    # Adjust the data rate of the demodulator
-    daq.setDouble(f"/{device}/demods/{demod_index}/rate", data_rate)
-    # Enable the data transfer from demodulator 1 to data server
-    daq.setInt(f"/{device}/demods/{demod_index}/enable", 1)
-    # Enable the continuous acquisition of demodulator 1 data
-    daq.setInt(f"/{device}/demods/0/trigger/triggeracq", 0)
+    daq.set(
+        [
+            # Adjust the data rate of the demodulator
+            (f"/{device}/demods/{demod_index}/rate", data_rate),
+            # Enable the data transfer from demodulator 1 to data server
+            (f"/{device}/demods/{demod_index}/enable", 1),
+            # Enable the continuous acquisition of demodulator 1 data
+            (f"/{device}/demods/0/trigger/triggeracq", 0),
+        ]
+    )
 
     # Create an instance of the Sweeper Module (SweeperModule class).
     sweeper = daq.sweep()

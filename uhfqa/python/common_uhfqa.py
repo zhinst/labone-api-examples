@@ -1,5 +1,4 @@
-""" Helper functions for UHFQA examples.
-"""
+"""Helper functions for UHFQA examples."""
 
 # Copyright 2018 Zurich Instruments AG
 
@@ -79,9 +78,13 @@ def initialize_device(daq, device):
     # Set integration weights
     for i in range(num_readout_channels):
         weights = np.zeros(4096)
-        daq.setVector(f"/{device:s}/qas/0/integration/weights/{i:d}/real", weights)
-        daq.setVector(f"/{device:s}/qas/0/integration/weights/{i:d}/imag", weights)
-    daq.setInt(f"/{device:s}/qas/0/integration/length", 1)
+        daq.set(
+            [
+                (f"/{device:s}/qas/0/integration/weights/{i:d}/real", weights),
+                (f"/{device:s}/qas/0/integration/weights/{i:d}/imag", weights),
+            ]
+        )
+    daq.set(f"/{device:s}/qas/0/integration/length", 1)
 
 
 def acquisition_poll(daq, paths, num_samples, timeout=10.0):

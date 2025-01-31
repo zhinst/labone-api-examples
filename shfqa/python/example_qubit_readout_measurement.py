@@ -37,6 +37,7 @@ See the "LabOne Programming Manual" for further help, available:
     - On Linux in the LabOne .tar.gz archive in the "Documentation"
       sub-folder.
 """
+
 import numpy as np
 import zhinst.utils
 import zhinst.utils.shfqa as shfqa_utils
@@ -75,8 +76,12 @@ def run_example(
     )
     # enable qachannel
     path = f"/{device_id}/qachannels/{channel_index}/"
-    daq.setInt(path + "input/on", 1)
-    daq.setInt(path + "output/on", 1)
+    daq.set(
+        [
+            (path + "input/on", 1),
+            (path + "output/on", 1),
+        ]
+    )
 
     # generate and upload waveforms
     scaling = 0.9 / num_qubits

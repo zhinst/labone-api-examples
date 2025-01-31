@@ -132,8 +132,12 @@ def run_example(
     sweeper.set_to_device()
 
     # turn on the input / output channel
-    daq.setInt(f"/{dev}/qachannels/{rf_config.channel}/input/on", 1)
-    daq.setInt(f"/{dev}/qachannels/{rf_config.channel}/output/on", 1)
+    daq.set(
+        [
+            (f"/{dev}/qachannels/{rf_config.channel}/input/on", 1),
+            (f"/{dev}/qachannels/{rf_config.channel}/output/on", 1),
+        ]
+    )
     daq.sync()
 
     if scope:
@@ -154,7 +158,7 @@ def run_example(
         # NOTE: this only works if the device under test transmits the signal at the
         # selected center frequency. To obtain the actual pulse shape, the user must
         # connect the output of the SHFQA directly to the input on the same channel.
-        daq.setDouble(f"/{dev}/qachannels/{rf_config.channel}/oscs/0/freq", 0)
+        daq.set(f"/{dev}/qachannels/{rf_config.channel}/oscs/0/freq", 0)
         scope_trace = helper_resonator.measure_resonator_pulse_with_scope(
             daq,
             dev,

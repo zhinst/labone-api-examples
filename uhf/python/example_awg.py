@@ -219,29 +219,31 @@ def run_example(
     index = 3
     waveform_native = zhinst.utils.convert_awg_waveform(waveform_3)
     path = f"/{device:s}/awgs/0/waveform/waves/{index:d}"
-    daq.setVector(path, waveform_native)
+    daq.set(path, waveform_native)
 
     # Configure the Scope for measurement
-    # 'channels/0/inputselect' : the input channel for the scope:
-    #   0 - signal input 1
-    daq.setInt("/%s/scopes/0/channels/0/inputselect" % (device), in_channel)
-    # 'time' : timescale of the wave, sets the sampling rate to 1.8GHz/2**time.
-    #   0 - sets the sampling rate to 1.8 GHz
-    #   1 - sets the sampling rate to 900 MHz
-    #   ...
-    #   16 - sets the sampling rate to 27.5 kHz
-    daq.setInt("/%s/scopes/0/time" % device, 0)
-    # 'single' : only get a single scope shot.
-    #   0 - take continuous shots
-    #   1 - take a single shot
+    scope_settings = [
+        # 'channels/0/inputselect' : the input channel for the scope:
+        #   0 - signal input 1
+        ("/%s/scopes/0/channels/0/inputselect" % (device), in_channel),
+        # 'time' : timescale of the wave, sets the sampling rate to 1.8GHz/2**time.
+        #   0 - sets the sampling rate to 1.8 GHz
+        #   1 - sets the sampling rate to 900 MHz
+        #   ...
+        #   16 - sets the sampling rate to 27.5 kHz
+        ("/%s/scopes/0/time" % device, 0),
+        # 'single' : only get a single scope shot.
+        #   0 - take continuous shots
+        #   1 - take a single shot
+        # Disable the scope.
+        ("/%s/scopes/0/enable" % device, 0),
+        # Configure the length of the scope shot.
+        ("/%s/scopes/0/length" % device, 8000),
+        # Now configure the scope's trigger to get aligned data
+        # 'trigenable' : enable the scope's trigger (boolean).
+        ("/%s/scopes/0/trigenable" % device, 1),
+    ]
 
-    # Disable the scope.
-    daq.setInt("/%s/scopes/0/enable" % device, 0)
-    # Configure the length of the scope shot.
-    daq.setInt("/%s/scopes/0/length" % device, 8000)
-    # Now configure the scope's trigger to get aligned data
-    # 'trigenable' : enable the scope's trigger (boolean).
-    daq.setInt("/%s/scopes/0/trigenable" % device, 1)
     # Specify the trigger channel:
     #
     # Here we trigger on the signal from UHF signal input 1. If the instrument has the DIG Option
@@ -250,40 +252,49 @@ def run_example(
     # 0:   Signal Input 1
     # 192: AWG Trigger 1
     trigchannel = 0
-    daq.setInt("/%s/scopes/0/trigchannel" % device, trigchannel)
+    scope_settings.append(("/%s/scopes/0/trigchannel" % device, trigchannel))
     if trigchannel == 0:
-        # Trigger on the falling edge of the negative blackman waveform `w0` from our AWG program.
-        daq.setInt("/%s/scopes/0/trigslope" % device, 2)
-        daq.setDouble("/%s/scopes/0/triglevel" % device, -0.600)
-        # Set hysteresis triggering threshold to avoid triggering on noise
-        # 'trighysteresis/mode' :
-        #  0 - absolute, use an absolute value ('scopes/0/trighysteresis/absolute')
-        #  1 - relative, use a relative value ('scopes/0trighysteresis/relative') of the
-        #      trigchannel's input range (0.1=10%).
-        daq.setDouble("/%s/scopes/0/trighysteresis/mode" % device, 0)
-        daq.setDouble("/%s/scopes/0/trighysteresis/relative" % device, 0.025)
-        # Set a negative trigdelay to capture the beginning of the waveform.
         trigdelay = -1.0e-6
-        daq.setDouble("/%s/scopes/0/trigdelay" % device, trigdelay)
+        scope_settings += [
+            # Trigger on the falling edge of the negative blackman waveform `w0` from our AWG program.
+            ("/%s/scopes/0/trigslope" % device, 2),
+            ("/%s/scopes/0/triglevel" % device, -0.600),
+            # Set hysteresis triggering threshold to avoid triggering on noise
+            # 'trighysteresis/mode' :
+            #  0 - absolute, use an absolute value ('scopes/0/trighysteresis/absolute')
+            #  1 - relative, use a relative value ('scopes/0trighysteresis/relative') of the
+            #      trigchannel's input range (0.1=10%).
+            ("/%s/scopes/0/trighysteresis/mode" % device, 0),
+            ("/%s/scopes/0/trighysteresis/relative" % device, 0.025),
+            # Set a negative trigdelay to capture the beginning of the waveform.
+            ("/%s/scopes/0/trigdelay" % device, trigdelay),
+        ]
     else:
-        # Assume we're using an AWG Trigger, then the scope configuration is simple: Trigger on
-        # rising edge.
-        daq.setInt("/%s/scopes/0/trigslope" % device, 1)
-        # Set trigdelay to 0.0: Start recording from when the trigger is activated.
         trigdelay = 0.0
-        daq.setDouble("/%s/scopes/0/trigdelay" % device, trigdelay)
+        scope_settings += [
+            # Assume we're using an AWG Trigger, then the scope configuration is simple: Trigger on
+            # rising edge.
+            ("/%s/scopes/0/trigslope" % device, 1),
+            # Set trigdelay to 0.0: Start recording from when the trigger is activated.
+            ("/%s/scopes/0/trigdelay" % device, trigdelay),
+        ]
+
     trigreference = 0.0
-    # The trigger reference position relative within the wave, a value of 0.5 corresponds to the
-    # center of the wave.
-    daq.setDouble("/%s/scopes/0/trigreference" % device, trigreference)
-    # Set the hold off time in-between triggers.
-    daq.setDouble("/%s/scopes/0/trigholdoff" % device, 0.025)
+    scope_settings += [
+        # The trigger reference position relative within the wave, a value of 0.5 corresponds to the
+        # center of the wave.
+        ("/%s/scopes/0/trigreference" % device, trigreference),
+        # Set the hold off time in-between triggers.
+        ("/%s/scopes/0/trigholdoff" % device, 0.025),
+    ]
+
+    daq.set(scope_settings)
 
     # Set up the Scope Module.
     scopeModule = daq.scopeModule()
     scopeModule.set("mode", 1)
     scopeModule.subscribe(f"/{device}/scopes/0/wave")
-    daq.setInt("/%s/scopes/0/single" % device, 1)
+    daq.set("/%s/scopes/0/single" % device, 1)
 
     scopeModule.execute()
 
@@ -294,11 +305,11 @@ def run_example(
     daq.sync()
 
     # Start the scope...
-    daq.setInt("/%s/scopes/0/enable" % device, 1)
+    daq.set("/%s/scopes/0/enable" % device, 1)
     daq.sync()
     time.sleep(1.0)
 
-    daq.setInt("/%s/awgs/0/userregs/0" % device, 1)
+    daq.set("/%s/awgs/0/userregs/0" % device, 1)
 
     # Read the scope data with timeout.
     local_timeout = 2.0
@@ -309,7 +320,7 @@ def run_example(
         records = scopeModule.getInt("records")
 
     # Disable the scope.
-    daq.setInt("/%s/scopes/0/enable" % device, 0)
+    daq.set("/%s/scopes/0/enable" % device, 0)
 
     data_read = scopeModule.read(True)
     wave_nodepath = f"/{device}/scopes/0/wave"

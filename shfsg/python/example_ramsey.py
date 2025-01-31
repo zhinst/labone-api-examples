@@ -95,7 +95,7 @@ def run_example(
     )
 
     # Set marker source
-    daq.setInt(f"/{device_id}/SGCHANNELS/{channel}/MARKER/SOURCE", 0)
+    daq.set(f"/{device_id}/SGCHANNELS/{channel}/MARKER/SOURCE", 0)
 
     # Upload sequencer programm to AWG Module
     with open(os.path.join(os.path.dirname(__file__), "Ramsey.seq")) as f:
@@ -107,7 +107,7 @@ def run_example(
         os.path.join(os.path.dirname(__file__), "Ramsey_command_table.json")
     ) as f:
         ct_str = f.read()
-    daq.setVector(f"/{device_id}/SGCHANNELS/{channel}/AWG/COMMANDTABLE/DATA", ct_str)
+    daq.set(f"/{device_id}/SGCHANNELS/{channel}/AWG/COMMANDTABLE/DATA", ct_str)
 
     # Enable sequencer with single mode
     single = 1

@@ -137,39 +137,47 @@ def run_example(
 
     # Leader device settings
     leader = props[0]["deviceid"].lower()
-    daq.setInt("/%s/sigouts/%d/on" % (leader, out_c), 1)
-    daq.setDouble("/%s/sigouts/%d/range" % (leader, out_c), 1)
-    daq.setDouble(
-        "/%s/sigouts/%d/amplitudes/%d" % (leader, out_c, out_mixer_c), out_amp
+    daq.set(
+        [
+            ("/%s/sigouts/%d/on" % (leader, out_c), 1),
+            ("/%s/sigouts/%d/range" % (leader, out_c), 1),
+            ("/%s/sigouts/%d/amplitudes/%d" % (leader, out_c, out_mixer_c), out_amp),
+            ("/%s/demods/%d/phaseshift" % (leader, demod_c), 0),
+            ("/%s/demods/%d/order" % (leader, demod_c), filter_order),
+            ("/%s/demods/%d/rate" % (leader, demod_c), demod_rate),
+            ("/%s/demods/%d/harmonic" % (leader, demod_c), 1),
+            ("/%s/demods/%d/enable" % (leader, demod_c), 1),
+            ("/%s/demods/%d/oscselect" % (leader, demod_c), osc_c),
+            ("/%s/demods/%d/adcselect" % (leader, demod_c), in_c),
+            ("/%s/demods/%d/timeconstant" % (leader, demod_c), time_constant),
+            ("/%s/oscs/%d/freq" % (leader, osc_c), osc_freq),
+            ("/%s/sigins/%d/imp50" % (leader, in_c), 1),
+            ("/%s/sigins/%d/ac" % (leader, in_c), 0),
+            ("/%s/sigins/%d/range" % (leader, in_c), out_amp / 2),
+            ("/%s/sigouts/%d/enables/%d" % (leader, out_c, out_mixer_c), 0),
+        ]
     )
-    daq.setDouble("/%s/demods/%d/phaseshift" % (leader, demod_c), 0)
-    daq.setInt("/%s/demods/%d/order" % (leader, demod_c), filter_order)
-    daq.setDouble("/%s/demods/%d/rate" % (leader, demod_c), demod_rate)
-    daq.setInt("/%s/demods/%d/harmonic" % (leader, demod_c), 1)
-    daq.setInt("/%s/demods/%d/enable" % (leader, demod_c), 1)
-    daq.setInt("/%s/demods/%d/oscselect" % (leader, demod_c), osc_c)
-    daq.setInt("/%s/demods/%d/adcselect" % (leader, demod_c), in_c)
-    daq.setDouble("/%s/demods/%d/timeconstant" % (leader, demod_c), time_constant)
-    daq.setDouble("/%s/oscs/%d/freq" % (leader, osc_c), osc_freq)
-    daq.setInt("/%s/sigins/%d/imp50" % (leader, in_c), 1)
-    daq.setInt("/%s/sigins/%d/ac" % (leader, in_c), 0)
-    daq.setDouble("/%s/sigins/%d/range" % (leader, in_c), out_amp / 2)
-    daq.setDouble("/%s/sigouts/%d/enables/%d" % (leader, out_c, out_mixer_c), 0)
+
     # Follower device settings
     for prop in props[1:]:
         follower = prop["deviceid"].lower()
-        daq.setDouble("/%s/demods/%d/phaseshift" % (follower, demod_c), 0)
-        daq.setInt("/%s/demods/%d/order" % (follower, demod_c), filter_order)
-        daq.setDouble("/%s/demods/%d/rate" % (follower, demod_c), demod_rate)
-        daq.setInt("/%s/demods/%d/harmonic" % (follower, demod_c), 1)
-        daq.setInt("/%s/demods/%d/enable" % (follower, demod_c), 1)
-        daq.setInt("/%s/demods/%d/oscselect" % (follower, demod_c), osc_c)
-        daq.setInt("/%s/demods/%d/adcselect" % (follower, demod_c), in_c)
-        daq.setDouble("/%s/demods/%d/timeconstant" % (follower, demod_c), time_constant)
-        daq.setDouble("/%s/oscs/%d/freq" % (follower, osc_c), osc_freq)
-        daq.setInt("/%s/sigins/%d/imp50" % (follower, in_c), 1)
-        daq.setInt("/%s/sigins/%d/ac" % (follower, in_c), 0)
-        daq.setDouble("/%s/sigins/%d/range" % (follower, in_c), out_amp / 2)
+        daq.set(
+            [
+                ("/%s/demods/%d/phaseshift" % (follower, demod_c), 0),
+                ("/%s/demods/%d/order" % (follower, demod_c), filter_order),
+                ("/%s/demods/%d/rate" % (follower, demod_c), demod_rate),
+                ("/%s/demods/%d/harmonic" % (follower, demod_c), 1),
+                ("/%s/demods/%d/enable" % (follower, demod_c), 1),
+                ("/%s/demods/%d/oscselect" % (follower, demod_c), osc_c),
+                ("/%s/demods/%d/adcselect" % (follower, demod_c), in_c),
+                ("/%s/demods/%d/timeconstant" % (follower, demod_c), time_constant),
+                ("/%s/oscs/%d/freq" % (follower, osc_c), osc_freq),
+                ("/%s/sigins/%d/imp50" % (follower, in_c), 1),
+                ("/%s/sigins/%d/ac" % (follower, in_c), 0),
+                ("/%s/sigins/%d/range" % (follower, in_c), out_amp / 2),
+            ]
+        )
+
     # Synchronization
     daq.sync()
     time.sleep(1)
@@ -264,7 +272,7 @@ def run_example(
     # Execute the module
     daq_module.execute()
     # Send a trigger
-    daq.setDouble("/%s/sigouts/%d/enables/%d" % (leader, out_c, out_mixer_c), 1)
+    daq.set("/%s/sigouts/%d/enables/%d" % (leader, out_c, out_mixer_c), 1)
 
     # wait for the acquisition to be finished
     timeout = 20
@@ -283,14 +291,13 @@ def run_example(
     result = daq_module.read(True)
 
     # Turn off the trigger
-    daq.setDouble("/%s/sigouts/%d/enables/%d" % (leader, out_c, out_mixer_c), 0)
+    daq.set("/%s/sigouts/%d/enables/%d" % (leader, out_c, out_mixer_c), 0)
     # Finish the DAQ module
     daq_module.finish()
 
     #  Extracting and plotting the data
 
     if plot:
-
         # Leader data
         leader_clockbase = daq.getDouble("/%s/clockbase" % leader)
         timestamp = result[leader_subscribe_node][0]["timestamp"]

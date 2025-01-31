@@ -81,8 +81,12 @@ def run_example(
     )
     # enable qachannel
     path = f"/{device_id}/qachannels/{channel_index}/"
-    daq.setInt(path + "input/on", 1)
-    daq.setInt(path + "output/on", 1)
+    daq.set(
+        [
+            (path + "input/on", 1),
+            (path + "output/on", 1),
+        ]
+    )
 
     # configure scope
     shfqa_utils.configure_scope(
@@ -116,7 +120,6 @@ def run_example(
     # run experiment measurement loop
     weights = {}
     for i in range(num_qubits):
-
         print(f"Measuring qubit {i}.")
 
         # upload sequencer program

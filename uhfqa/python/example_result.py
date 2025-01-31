@@ -130,8 +130,12 @@ def run_example(
 
     # Apply a rotation on half the channels to get the imaginary part instead
     for i in range(5):
-        daq.setComplex(f"/{device:s}/qas/0/rotations/{i:d}", 1)
-        daq.setComplex(f"/{device:s}/qas/0/rotations/{i + 5:d}", -1j)
+        daq.set(
+            [
+                (f"/{device:s}/qas/0/rotations/{i:d}", 1),
+                (f"/{device:s}/qas/0/rotations/{i + 5:d}", -1j),
+            ]
+        )
 
     # Channels to test
     channels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -144,28 +148,33 @@ def run_example(
     weights = np.linspace(1.0, 0.1, 10)
     for i in channels:
         weight = np.array([weights[i]])
-        daq.setVector(f"/{device:s}/qas/0/integration/weights/{i}/real", weight)
-        daq.setVector(f"/{device:s}/qas/0/integration/weights/{i}/imag", weight)
+        daq.set(
+            [
+                (f"/{device:s}/qas/0/integration/weights/{i}/real", weight),
+                (f"/{device:s}/qas/0/integration/weights/{i}/imag", weight),
+            ]
+        )
 
-    daq.setInt(f"/{device:s}/qas/0/integration/length", 1)
-    daq.setInt(f"/{device:s}/qas/0/integration/mode", 0)
-    daq.setInt(f"/{device:s}/qas/0/delay", 0)
-
-    # Provide result length and number of averages in user register
-    daq.setDouble(f"/{device:s}/awgs/0/userregs/0", result_length)
-    daq.setDouble(f"/{device:s}/awgs/0/userregs/1", num_averages)
-
-    # Configure the result unit
-    daq.setInt(f"/{device:s}/qas/0/result/length", result_length)
-    daq.setInt(f"/{device:s}/qas/0/result/averages", num_averages)
-    daq.setInt(
-        f"/{device:s}/qas/0/result/source", common_uhfqa.ResultLoggingSource.TRANS
+    daq.set(
+        [
+            (f"/{device:s}/qas/0/integration/length", 1),
+            (f"/{device:s}/qas/0/integration/mode", 0),
+            (f"/{device:s}/qas/0/delay", 0),
+            # Provide result length and number of averages in user register
+            (f"/{device:s}/awgs/0/userregs/0", result_length),
+            (f"/{device:s}/awgs/0/userregs/1", num_averages),
+            # Configure the result unit
+            (f"/{device:s}/qas/0/result/length", result_length),
+            (f"/{device:s}/qas/0/result/averages", num_averages),
+            (
+                f"/{device:s}/qas/0/result/source",
+                common_uhfqa.ResultLoggingSource.TRANS,
+            ),
+            # Now we're ready for readout. Enable result unit and start acquisition.
+            (f"/{device:s}/qas/0/result/reset", 1),
+            (f"/{device:s}/qas/0/result/enable", 1),
+        ]
     )
-
-    # Now we're ready for readout. Enable result unit and start acquisition.
-    daq.setInt(f"/{device:s}/qas/0/result/reset", 1)
-    daq.setInt(f"/{device:s}/qas/0/result/enable", 1)
-    daq.sync()
 
     # Subscribe to result waves
     paths = []
@@ -175,8 +184,12 @@ def run_example(
     daq.subscribe(paths)
 
     # Arm the device
-    daq.asyncSetInt(f"/{device:s}/awgs/0/single", 1)
-    daq.syncSetInt(f"/{device:s}/awgs/0/enable", 1)
+    daq.set(
+        [
+            (f"/{device:s}/awgs/0/single", 1),
+            (f"/{device:s}/awgs/0/enable", 1),
+        ]
+    )
 
     # Perform acquisition
     print("Acquiring data...")
@@ -185,7 +198,7 @@ def run_example(
 
     # Stop result unit
     daq.unsubscribe(paths)
-    daq.setInt(f"/{device:s}/qas/0/result/enable", 0)
+    daq.set(f"/{device:s}/qas/0/result/enable", 0)
 
     if plot:
         fig, axes = plt.subplots(figsize=(12, 4))

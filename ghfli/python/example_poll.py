@@ -51,15 +51,17 @@ def run_example_demod(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
 
-    # Adjust the data rate of demodulator 1
     data_rate = 2000  # [Sa/s]
-    daq.setDouble(f"/{device}/demods/0/rate", data_rate)
-
-    # Enable the data transfer from demodulator 1 to data server
-    daq.setInt(f"/{device}/demods/0/enable", 1)
-
-    # Enable the continuous acquisition of demodulator 1 data
-    daq.setInt(f"/{device}/demods/0/trigger/triggeracq", 0)
+    daq.set(
+        [
+            # Adjust the data rate of demodulator 1
+            (f"/{device}/demods/0/rate", data_rate),
+            # Enable the data transfer from demodulator 1 to data server
+            (f"/{device}/demods/0/enable", 1),
+            # Enable the continuous acquisition of demodulator 1 data
+            (f"/{device}/demods/0/trigger/triggeracq", 0),
+        ]
+    )
 
     # Time difference (s) between two consecutive timestamp ticks
     dt_device = daq.getDouble(f"/{device}/system/properties/timebase")
@@ -112,16 +114,18 @@ def run_example_pid_vector(
         device_id, apilevel_example, server_host=server_host, server_port=server_port
     )
 
-    # Enable the data transfer from pid channel 1 to data server
-    daq.setInt(f"/{device}/pids/0/enable", 1)
-    daq.setInt(f"/{device}/pids/0/stream/enable", 1)
-
-    # Adjust the data rate of pid channel 1
     data_rate = 2000  # [Sa/s]
-    daq.setDouble(f"/{device}/pids/0/stream/rate", data_rate)
-
-    # Enable the continuous acquisition of pid channel 1 data
-    daq.setInt(f"/{device}/pids/0/stream/trigger/triggeracq", 0)
+    daq.set(
+        [
+            # Enable the data transfer from pid channel 1 to data server
+            (f"/{device}/pids/0/enable", 1),
+            (f"/{device}/pids/0/stream/enable", 1),
+            # Adjust the data rate of pid channel 1
+            (f"/{device}/pids/0/stream/rate", data_rate),
+            # Enable the continuous acquisition of pid channel 1 data
+            (f"/{device}/pids/0/stream/trigger/triggeracq", 0),
+        ]
+    )
 
     # Subscribe to the signal path of pid channel 1 for acquisition
     path = f"/{device}/pids/0/stream/sample"

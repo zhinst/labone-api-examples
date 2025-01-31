@@ -57,21 +57,21 @@ def run_example(
 
     # Use a software trigger for the sake of the example
     software_trigger = 1024
-    daq.setInt(f"/{device}/demods/{demod_index}/trigger/source", software_trigger)
-
-    # Enable the triggered acquisition
-    daq.setInt(f"/{device}/demods/{demod_index}/trigger/triggeracq", 1)
-
-    # Set the number of samples to be measured following a trigger event
     burst_length = 256
-    daq.setInt(f"/{device}/demods/{demod_index}/burstlen", burst_length)
-
-    # Adjust the data rate of demodulator 1
     data_rate = 2048  # [Sa/s]
-    daq.setDouble(f"/{device}/demods/{demod_index}/rate", data_rate)
-
-    # Enable the data transfer from demodulator 1 to data server
-    daq.setInt(f"/{device}/demods/{demod_index}/enable", 1)
+    daq.set(
+        [
+            (f"/{device}/demods/{demod_index}/trigger/source", software_trigger),
+            # Enable the triggered acquisition
+            (f"/{device}/demods/{demod_index}/trigger/triggeracq", 1),
+            # Set the number of samples to be measured following a trigger event
+            (f"/{device}/demods/{demod_index}/burstlen", burst_length),
+            # Adjust the data rate of demodulator 1
+            (f"/{device}/demods/{demod_index}/rate", data_rate),
+            # Enable the data transfer from demodulator 1 to data server
+            (f"/{device}/demods/{demod_index}/enable", 1),
+        ]
+    )
 
     # Time difference (s) between two consecutive timestamp ticks
     dt_device = daq.getDouble(f"/{device}/system/properties/timebase")
@@ -104,7 +104,7 @@ def run_example(
     # Issue multiple triggers according to trigger_count value
     for _ in range(trigger_count):
         # Issue the software trigger
-        daq.setInt(f"/{device}/system/swtriggers/0/single", 1)
+        daq.set(f"/{device}/system/swtriggers/0/single", 1)
 
         # Let the device process the trigger before triggering again
         time.sleep(1)
