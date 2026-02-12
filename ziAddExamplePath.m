@@ -7,7 +7,7 @@ function ziAddExamplePath
 % Get the name of the current function complete with full path
 mfile = which(mfilename);
 [pathstr, name] = fileparts(mfile);
-dirs = {'hf2-mf-uhf' 'hdawg' 'hf2' 'mf' 'uhf' 'shfli' 'ghfli'};
+dirs = {'hf2-mf-uhf' 'hdawg' 'hf2' 'mf' 'uhf' 'shfli' 'ghfli' 'modules'};
 for dir = dirs
     driverPath = [pathstr filesep string(dir) filesep 'matlab'];
     addpath(char(strjoin(driverPath,'')))
@@ -26,5 +26,5 @@ if strcmp(dbs(end).name, 'ziAddExamplePath')
     fprintf('\n');
     fprintf('   run(''%s%s%s'');\n\n', pathstr, filesep, name);
     fprintf('\n');
-    fprintf('See the LabOne Programming Manual for more help.\n');
+    fprintf('See the LabOne API User Manual for more help.\n');
 end
