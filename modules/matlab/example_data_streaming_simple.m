@@ -14,7 +14,7 @@ apilevel = 6;
 %%% MFLI, MFIA
 % device = 'dev4123';
 % interface = 'PCIe';
-% host = host = ['mf-' device];
+% host = ['mf-' device];
 % port = 8004;
 % apilevel = 6;
 
