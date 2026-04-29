@@ -331,7 +331,7 @@ grid on;
 box on;
 axis tight;
 xlabel('t (us)');
-fprintf('Number of scope records with triggering enabled: %d.\n', length(records_trig));
+fprintf('Number of scope records with triggering enabled: %d.\n', num_records_trig);
 
 % Plot the FFT'd scope data with triggering disabled.
 figure(2); clf;
