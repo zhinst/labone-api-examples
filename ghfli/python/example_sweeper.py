@@ -62,10 +62,10 @@ def run_example(
         [
             # Adjust the data rate of the demodulator
             (f"/{device}/demods/{demod_index}/rate", data_rate),
-            # Enable the data transfer from demodulator 1 to data server
+            # Enable the data transfer from selected demodulator to data server
             (f"/{device}/demods/{demod_index}/enable", 1),
-            # Enable the continuous acquisition of demodulator 1 data
-            (f"/{device}/demods/0/trigger/triggeracq", 0),
+            # Enable the continuous acquisition of selected demodulator data
+            (f"/{device}/demods/{demod_index}/trigger/triggeracq", 0),
         ]
     )
 
