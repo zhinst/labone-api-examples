@@ -13,4 +13,3 @@ for example = examples.'
     disp(example.name)
 end
 end
-
