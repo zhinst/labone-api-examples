@@ -64,6 +64,28 @@ import zhinst.utils
 import matplotlib.pyplot as plt
 
 
+def find_trigger_level(daq_module):
+    daq_module.set("findlevel", 1)
+    findlevel = 1
+    timeout = 10  # [s]
+    t0 = time.time()
+    while findlevel == 1:
+        time.sleep(0.05)
+        findlevel = daq_module.getInt("findlevel")
+        if time.time() - t0 > timeout:
+            daq_module.finish()
+            raise RuntimeError(
+                "Data Acquisition Module didn't find trigger level after %.3f seconds."
+                % timeout
+            )
+    level = daq_module.getDouble("level")
+    hysteresis = daq_module.getDouble("hysteresis")
+    print(
+        f"Data Acquisition Module found and set level: {level},",
+        f"hysteresis: {hysteresis}.",
+    )
+
+
 def run_example(
     device_id: str,
     server_host: str = "localhost",
@@ -245,7 +267,7 @@ def run_example(
     #   Specify the number of rows in the grid's matrix. Each row is the data
     #   recorded from one trigger.
     num_rows = 500
-    daq_module.set("grid/rows", 500)
+    daq_module.set("grid/rows", num_rows)
     # grid/direction (int)
     #   Specify the ordering of the data stored in the grid's matrix.
     #     0: Forward - the data in each row is ordered chronologically, e.g., the
@@ -317,30 +339,13 @@ def run_example(
     # Arm the Data Acquisition Module: ready for trigger acquisition.
     daq_module.execute()
     # Tell the Data Acquisition Module to determine the trigger level.
-    daq_module.set("findlevel", 1)
-    findlevel = 1
-    timeout = 10  # [s]
-    t0 = time.time()
-    while findlevel == 1:
-        time.sleep(0.05)
-        findlevel = daq_module.getInt("findlevel")
-        if time.time() - t0 > timeout:
-            daq_module.finish()
-            raise RuntimeError(
-                "Data Acquisition Module didn't find trigger level after %.3f seconds."
-                % timeout
-            )
-    level = daq_module.getDouble("level")
-    hysteresis = daq_module.getDouble("hysteresis")
-    print(
-        f"Data Acquisition Module found and set level: {level},",
-        f"hysteresis: {hysteresis}.",
-    )
+    find_trigger_level(daq_module)
 
     flags = 0
     return_flat_data_dict = True
     num_finished_grids = 0
     timeout = 120  # [s]
+    last_progress = 0
     t0 = time.time()
     while not daq_module.finished():
         # Read out the intermediate data captured by the Data Acquisition Module.
@@ -361,10 +366,15 @@ def run_example(
                         data[pid_error_stream_path].append(
                             data_read[pid_error_stream_path][i]
                         )
+            progress = daq_module.progress()[0]
             print(
-                f"Overall progress: {daq_module.progress()[0]}. \
-                     Grid {num_finished_grids} flags: {flags}."
+                f"Overall progress: {progress}. \
+                    Grid {num_finished_grids} flags: {flags}."
             )
+            if last_progress == progress:
+                # Update the trigger level if needed.
+                find_trigger_level(daq_module)
+            last_progress = progress
             if plot:
                 # Visualize the last grid's demodulator data (the demodulator used as
                 # the trigger path) from the intermediate read(). Plot the updated
@@ -374,7 +384,7 @@ def run_example(
         else:
             print("No update available since last read.")
         if plot:
-            plt.pause(0.01)
+            plt.pause(0.2)
         else:
             time.sleep(0.05)
         if time.time() - t0 > timeout:
