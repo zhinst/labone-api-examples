@@ -348,6 +348,7 @@ def run_example(
     last_progress = 0
     t0 = time.time()
     while not daq_module.finished():
+        has_progress = False
         # Read out the intermediate data captured by the Data Acquisition Module.
         data_read = daq_module.read(return_flat_data_dict)
         if (triggerpath in data_read) and data_read[triggerpath]:
@@ -371,10 +372,9 @@ def run_example(
                 f"Overall progress: {progress}. \
                     Grid {num_finished_grids} flags: {flags}."
             )
-            if last_progress == progress:
-                # Update the trigger level if needed.
-                find_trigger_level(daq_module)
-            last_progress = progress
+            if last_progress != progress:
+                last_progress = progress
+                has_progress = True
             if plot:
                 # Visualize the last grid's demodulator data (the demodulator used as
                 # the trigger path) from the intermediate read(). Plot the updated
@@ -383,6 +383,9 @@ def run_example(
                 img.autoscale()
         else:
             print("No update available since last read.")
+        if not has_progress:
+            # Update the trigger level if needed.
+            find_trigger_level(daq_module)
         if plot:
             plt.pause(0.2)
         else:
